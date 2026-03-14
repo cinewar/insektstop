@@ -24,10 +24,6 @@ export function Header() {
     {name: 'Contact', href: '/contact', icon: CONTACTSVG},
     {name: 'Products', href: '/products', icon: PRODUCTSSVG},
   ];
-  const routeBasedColors = {
-    active: 'bg-primary text-secondary',
-    inactive: 'bg-secondary text-dark-text',
-  };
 
   const delays = ['delay-100', 'delay-200', 'delay-300', 'delay-400'];
   return (
@@ -65,7 +61,12 @@ export function Header() {
                     : `scale-y-0 opacity-50 ${delays[delays.length - 1 - index]} `
                 } 
                     flex justify-between items-center px-4 py-2 shadow-custom
-                    ${pathName === route.href ? '[&>svg]:fill-tertiary text-tertiary' : 'text-dark-text'} 
+                    ${
+                      pathName === route.href ||
+                      (pathName.includes(route.href) && route.href !== '/')
+                        ? '[&>svg]:fill-tertiary text-tertiary'
+                        : 'text-dark-text'
+                    } 
                     rounded`}
               >
                 <span>{route.name}</span>

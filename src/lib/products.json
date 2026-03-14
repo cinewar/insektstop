@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Insektstop Universal Spray",
+    "price": 12.99,
+    "description": "All-purpose indoor insect spray effective against ants, flies, cockroaches, and more. Fast-acting formula with up to 4 weeks protection.",
+    "image": "/products/hero.png"
+  },
+  {
+    "id": 2,
+    "name": "Insektstop Ant Bait Gel",
+    "price": 8.49,
+    "description": "Highly attractive gel bait that eliminates entire ant colonies. Easy to apply in corners and crevices. Safe for indoor use.",
+    "image": "/products/hero.png"
+  },
+  {
+    "id": 3,
+    "name": "Insektstop Mosquito Repellent",
+    "price": 9.99,
+    "description": "Long-lasting mosquito repellent lotion with natural active ingredients. Provides up to 8 hours of protection against mosquitoes and midges.",
+    "image": "/products/hero.png"
+  },
+  {
+    "id": 4,
+    "name": "Insektstop Fly Trap",
+    "price": 5.49,
+    "description": "Non-toxic sticky fly trap for indoor and outdoor use. Odorless and discreet design. Each pack contains 4 traps.",
+    "image": "/products/hero.png"
+  },
+  {
+    "id": 5,
+    "name": "Insektstop Cockroach Killer",
+    "price": 14.99,
+    "description": "Powerful cockroach bait station with a child-resistant design. Kills cockroaches and prevents re-infestation for up to 3 months.",
+    "image": "/products/hero.png"
+  },
+  {
+    "id": 6,
+    "name": "Insektstop Spider Repellent Spray",
+    "price": 11.49,
+    "description": "Natural peppermint-based spray that deters spiders and other crawling insects. Safe for use around children and pets.",
+    "image": "/products/hero.png"
+  }
+]

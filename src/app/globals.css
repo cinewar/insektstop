@@ -17,6 +17,17 @@
       transform: translateX(700%) rotate(20deg);
     }
   }
+
+  /** Animation for right to left scroll*/
+  --animate-scroll: scroll 20s linear infinite;
+  @keyframes scroll {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {

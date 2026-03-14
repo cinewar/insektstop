@@ -19,7 +19,6 @@ export default function Svg({
       onClick={onClick}
       className={className}
       width={size}
-      //height={size}
       {...props}
     />
   );

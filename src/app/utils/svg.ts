@@ -6,3 +6,11 @@ export {default as INFOSVG} from '@/assets/info.svg';
 export {default as CONTACTSVG} from '@/assets/contact.svg';
 export {default as ABOUTSVG} from '@/assets/info.svg';
 export {default as PRODUCTSSVG} from '@/assets/products.svg';
+export {default as RIGHTARROWSVG} from '@/assets/right-arrow.svg';
+
+export {default as ADSVG} from '@/assets/ad.svg';
+export {default as ALSVG} from '@/assets/al.svg';
+export {default as CPSVG} from '@/assets/cp.svg';
+export {default as FRSVG} from '@/assets/fr.svg';
+export {default as RPSVG} from '@/assets/rp.svg';
+export {default as RP1SVG} from '@/assets/rp1.svg';
