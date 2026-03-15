@@ -14,3 +14,5 @@ export {default as CPSVG} from '@/assets/cp.svg';
 export {default as FRSVG} from '@/assets/fr.svg';
 export {default as RPSVG} from '@/assets/rp.svg';
 export {default as RP1SVG} from '@/assets/rp1.svg';
+
+export {default as FLYSVG} from '@/assets/fly.svg';

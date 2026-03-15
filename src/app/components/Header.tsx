@@ -27,7 +27,7 @@ export function Header() {
 
   const delays = ['delay-100', 'delay-200', 'delay-300', 'delay-400'];
   return (
-    <header className='bg-transparent flex max-w-120 justify-between items-center fixed top-0 w-full p-2 z-10'>
+    <header className='bg-transparent flex max-w-120 justify-between items-center fixed top-0 w-full p-2 z-30'>
       <Svg icon={LOGOSVG} className='rounded-full z-11' size={50} />
       {openDropNav ? (
         <Svg
