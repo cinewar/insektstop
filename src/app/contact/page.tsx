@@ -61,7 +61,7 @@ export default function Contact() {
 
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
-      <div className='fixed h-25 px-3 flex shadow-md items-end w-full bg-secondary'>
+      <div className='fixed h-25 px-3 flex shadow-md items-end w-full max-w-120 bg-secondary'>
         <h1 className='text-2xl font-bold text-dark-text'>Contact Us</h1>
       </div>
       <div className='flex text-md font-medium flex-col gap-2 mt-32 px-2'>
