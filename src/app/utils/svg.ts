@@ -11,6 +11,9 @@ export {default as PHONEINFOSVG} from '@/assets/phone-info.svg';
 export {default as WHATSUPSVG} from '@/assets/whatsup.svg';
 export {default as PHONESVG} from '@/assets/phone.svg';
 export {default as EMAILSVG} from '@/assets/email.svg';
+export {default as MAPSVG} from '@/assets/map.svg';
+export {default as COPYSVG} from '@/assets/copy.svg';
+export {default as COPIEDSVG} from '@/assets/copied.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';
@@ -20,3 +23,4 @@ export {default as RPSVG} from '@/assets/rp.svg';
 export {default as RP1SVG} from '@/assets/rp1.svg';
 
 export {default as FLYSVG} from '@/assets/fly.svg';
+export {default as CONTACTSCENESVG} from '@/assets/contact-scene.svg';
