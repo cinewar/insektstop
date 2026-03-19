@@ -95,14 +95,6 @@ export default function Contact() {
                   aria-label={`Copy ${item.key} to clipboard`}
                 />
               )}
-              {/* <button
-                type='button'
-                onClick={() => handleCopy(item.text, item.key)}
-                className='shrink-0 text-xs font-semibold text-dark-text border border-tertiary/60 rounded-full px-3 py-1 hover:bg-tertiary/25 transition-colors'
-                aria-label={`Copy ${item.key} to clipboard`}
-              >
-                {copiedKey === item.key ? 'Copied' : 'Copy'}
-              </button> */}
             </div>
           </div>
         ))}

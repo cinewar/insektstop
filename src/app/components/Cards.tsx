@@ -14,7 +14,7 @@ export function Cards() {
           href={`/products/${product.id}`}
           className='relative'
         >
-          <Card key={product.id} className='relative'>
+          <Card key={product.id} className='relative bg-tertiary'>
             <h2 className='absolute text-white font-bold shadow-lg top-2 right-2 bg-tertiary p-1 rounded-full'>
               ${product.price.toFixed(2)}
             </h2>

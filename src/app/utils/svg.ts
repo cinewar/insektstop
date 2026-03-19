@@ -14,6 +14,7 @@ export {default as EMAILSVG} from '@/assets/email.svg';
 export {default as MAPSVG} from '@/assets/map.svg';
 export {default as COPYSVG} from '@/assets/copy.svg';
 export {default as COPIEDSVG} from '@/assets/copied.svg';
+export {default as SEARCHSVG} from '@/assets/search.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';
