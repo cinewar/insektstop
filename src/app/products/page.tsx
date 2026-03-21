@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Svg from '../components/Svg';
 import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
+import {FilteredProductsDropdown} from '../components/FilteredProductsDropdown';
 
 const loadSearchParams = createLoader({
   q: parseAsString.withDefault(''),
@@ -19,12 +20,19 @@ type ProductsProps = {
 export default async function Products({searchParams}: ProductsProps) {
   const {q} = await loadSearchParams(searchParams);
 
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(q.toLowerCase()),
+  );
+
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
       <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
-        <div className='flex items-center w-full gap-2'>
+        <div className='flex items-center w-full gap-2 relative'>
           <h1 className='text-2xl font-bold text-dark-text'>Products</h1>
           <Search />
+          {q && filteredProducts.length !== 0 && (
+            <FilteredProductsDropdown products={filteredProducts} />
+          )}
         </div>
       </div>
       <div className='flex flex-col gap-4 mt-32 mb-4 px-4'>
@@ -63,10 +71,6 @@ export default async function Products({searchParams}: ProductsProps) {
           );
         })}
       </div>
-
-      {q ? (
-        <p className='pt-32 px-3 text-dark-text'>Search query: {q}</p>
-      ) : null}
     </div>
   );
 }
