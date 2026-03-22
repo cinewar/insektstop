@@ -4,41 +4,94 @@
     "name": "Insektstop Universal Spray",
     "price": 12.99,
     "description": "All-purpose indoor insect spray effective against ants, flies, cockroaches, and more. Fast-acting formula with up to 4 weeks protection.",
-    "image": "/products/hero.png"
+    "images": [{"id": 1, "img": "https://images.unsplash.com/photo-1657060169906-266c8ca36da5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 3, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1678807499708-868dc3d14ce9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   },
   {
     "id": 2,
     "name": "Insektstop Ant Bait Gel",
     "price": 8.49,
     "description": "Highly attractive gel bait that eliminates entire ant colonies. Easy to apply in corners and crevices. Safe for indoor use.",
-    "image": "/products/hero.png"
+    "images": [
+              {"id": 1, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+              {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Ant Bait Gel"}, 
+               {"id": 3, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1678807499708-868dc3d14ce9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   },
   {
     "id": 3,
     "name": "Insektstop Mosquito Repellent",
     "price": 9.99,
     "description": "Long-lasting mosquito repellent lotion with natural active ingredients. Provides up to 8 hours of protection against mosquitoes and midges.",
-    "image": "/products/hero.png"
+    "images": [
+              {"id": 1, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+              {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Mosquito Repellent"},
+              {"id": 3, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1678807499708-868dc3d14ce9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   },
   {
     "id": 4,
     "name": "Insektstop Fly Trap",
     "price": 5.49,
     "description": "Non-toxic sticky fly trap for indoor and outdoor use. Odorless and discreet design. Each pack contains 4 traps.",
-    "image": "/products/hero.png"
+    "images": [
+              {"id": 1, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+              {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Fly Trap"},
+              {"id": 3, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1678807499708-868dc3d14ce9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   },
   {
     "id": 5,
     "name": "Insektstop Cockroach Killer",
     "price": 14.99,
     "description": "Powerful cockroach bait station with a child-resistant design. Kills cockroaches and prevents re-infestation for up to 3 months.",
-    "image": "/products/hero.png"
+    "images": [
+              {"id": 1, "img": "https://images.unsplash.com/photo-1678807499708-868dc3d14ce9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+              {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Cockroach Killer"}, 
+              {"id": 3, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   },
   {
     "id": 6,
     "name": "Insektstop Spider Repellent Spray",
     "price": 11.49,
     "description": "Natural peppermint-based spray that deters spiders and other crawling insects. Safe for use around children and pets.",
-    "image": "/products/hero.png"
+    "images": [
+              {"id": 1, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+              {"id": 2, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Spider Repellent Spray"}, 
+              {"id": 3, "img": "https://images.unsplash.com/photo-1628952542177-1832b370e58d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 4, "img": "https://images.unsplash.com/photo-1628952542515-9efd6d280838?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 5, "img": "https://images.unsplash.com/photo-1628952542512-752dc5d034c2?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"},
+               {"id": 6, "img": "https://images.unsplash.com/photo-1680003559115-3a357ef2a137?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 8, "img": "https://plus.unsplash.com/premium_photo-1770739326355-3f7964fed6f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 9, "img": "https://plus.unsplash.com/premium_photo-1768237333760-377e2c36685a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}, 
+               {"id": 10, "img": "https://plus.unsplash.com/premium_photo-1743649669512-808070178887?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "alt": "Insektstop Universal Spray"}]
   }
 ]

@@ -1,3 +1,5 @@
+'use client';
+
 interface ButtonProps {
   children: React.ReactNode;
   className?: string;

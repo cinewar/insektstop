@@ -56,8 +56,8 @@ export default async function Products({searchParams}: ProductsProps) {
                   <p className='line-clamp-3'>{product.description}</p>
                 </div>
                 <Image
-                  src={product.image}
-                  alt={product.name}
+                  src={product.images[0].img}
+                  alt={product.images[0].alt || product.name}
                   fill
                   className='object-cover rounded-lg -z-1'
                 />
