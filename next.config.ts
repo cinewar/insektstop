@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/**': ['./generated/prisma/**/*.node'],
   },
+  serverExternalPackages: ['@prisma/client', 'prisma'],
 };
 
 export default nextConfig;
