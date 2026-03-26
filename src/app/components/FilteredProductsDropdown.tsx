@@ -2,14 +2,10 @@
 
 import Link from 'next/link';
 import {useEffect, useRef, useState} from 'react';
-
-type ProductItem = {
-  id: number;
-  name: string;
-};
+import {Product} from '../../../generated/prisma/client';
 
 type FilteredProductsDropdownProps = {
-  products: ProductItem[];
+  products: Product[];
 };
 
 export function FilteredProductsDropdown({

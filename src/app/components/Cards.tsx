@@ -1,14 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import products from '@/lib/products.json';
 import {Card} from './Card';
 import Svg from './Svg';
 import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
 import {useEffect, useRef, useState} from 'react';
+import {Product} from '../../../generated/prisma/client';
 
-export function Cards() {
+interface CardsProps {
+  products: Product[];
+}
+
+export function Cards({products}: CardsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftGlow, setShowLeftGlow] = useState(false);
   const [showRightGlow, setShowRightGlow] = useState(false);
@@ -49,7 +53,7 @@ export function Cards() {
               </h2>
               <Image
                 src={product.images[0].img}
-                alt={product.images[0].alt || product.name}
+                alt={product.name}
                 width={200}
                 height={200}
                 className='rounded-lg h-32 w-full object-cover'
