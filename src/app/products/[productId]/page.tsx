@@ -1,7 +1,7 @@
 import {Cards} from '@/app/components/Cards';
-import products from '@/lib/products.json';
 import Link from 'next/link';
 import {ProductImageGallery} from '../../components/ProductImageGallery';
+import {prisma} from '@/lib/prisma';
 
 export default async function ProductPage({
   params,
@@ -9,7 +9,20 @@ export default async function ProductPage({
   params: {productId: string};
 }) {
   const {productId} = await params;
-  const product = products.find((p) => p.id.toString() === productId);
+
+  if (!productId) {
+    return (
+      <div className='min-h-screen text-dark-text bg-secondary pt-18 p-4'>
+        Product not found.
+      </div>
+    );
+  }
+
+  const product = await prisma.product.findUnique({
+    where: {id: productId},
+  });
+
+  const products = await prisma.product.findMany();
 
   if (!product) {
     return (
@@ -37,7 +50,7 @@ export default async function ProductPage({
           Fiyat Al
         </Link>
       </div>
-      <Cards />
+      <Cards products={products} />
     </div>
   );
 }

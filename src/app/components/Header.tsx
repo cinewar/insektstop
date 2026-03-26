@@ -20,6 +20,7 @@ export function Header() {
   console.log('Current Path:', pathName);
   const routes = [
     {name: 'Home', href: '/', icon: HOMESVG},
+    {name: 'Order', href: '/order', icon: HOMESVG},
     {name: 'About', href: '/about', icon: ABOUTSVG},
     {name: 'Contact', href: '/contact', icon: CONTACTSVG},
     {name: 'Products', href: '/products', icon: PRODUCTSSVG},
@@ -61,6 +62,7 @@ export function Header() {
                     : `scale-y-0 opacity-50 ${delays[delays.length - 1 - index]} `
                 } 
                     flex justify-between items-center px-4 py-2 shadow-custom
+
                     ${
                       pathName === route.href ||
                       (pathName.includes(route.href) && route.href !== '/')

@@ -1,13 +1,13 @@
 import {Search} from '../components/Search';
 import {createLoader, parseAsString, SearchParams} from 'nuqs/server';
 
-import products from '@/lib/products.json';
 import {Card} from '../components/Card';
 import Image from 'next/image';
 import Svg from '../components/Svg';
 import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
 import {FilteredProductsDropdown} from '../components/FilteredProductsDropdown';
+import {prisma} from '@/lib/prisma';
 
 const loadSearchParams = createLoader({
   q: parseAsString.withDefault(''),
@@ -18,6 +18,8 @@ type ProductsProps = {
 };
 
 export default async function Products({searchParams}: ProductsProps) {
+  const products = await prisma.product.findMany();
+
   const {q} = await loadSearchParams(searchParams);
 
   const filteredProducts = products.filter((product) =>
@@ -57,7 +59,7 @@ export default async function Products({searchParams}: ProductsProps) {
                 </div>
                 <Image
                   src={product.images[0].img}
-                  alt={product.images[0].alt || product.name}
+                  alt={product.name}
                   fill
                   className='object-cover rounded-lg -z-1'
                 />

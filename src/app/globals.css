@@ -10,6 +10,7 @@ body {
   --color-secondary: #fffff0;
   --color-tertiary: #c285c0;
   --color-dark-text: #432042;
+  --color-blue: #4794ff;
 
   /** Animation for shining effect */
   --animate-shine: shine 2s linear infinite;
@@ -278,4 +279,22 @@ body {
 }
 
 @layer components {
+  a[href] {
+    @apply relative origin-center transition-[transform,filter,top,opacity] duration-120 ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a[href]:active {
+    @apply top-px scale-[0.97] brightness-[0.94] opacity-[0.92];
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a[href] {
+      @apply transition-opacity duration-120 ease-out;
+    }
+
+    a[href]:active {
+      @apply transform-none;
+    }
+  }
 }
