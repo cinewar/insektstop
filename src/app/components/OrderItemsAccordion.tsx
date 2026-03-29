@@ -33,10 +33,10 @@ export default function OrderItemsAccordion({items}: OrderItemsAccordionProps) {
                 size={30}
                 className='absolute top-1 right-1 cursor-pointer'
               />
-              <div className='flex p-1'>
-                <span className='flex-3'>{productLink.product.name}</span>
-                <span className='flex-1'>{productLink.width}m</span>
-                <span className='flex-1'>{productLink.length}m</span>
+              <div className='grid grid-cols-5 p-1'>
+                <span className='col-span-3'>{productLink.product.name}</span>
+                <span className='col-span-1'>{productLink.width}m</span>
+                <span className='col-span-1'>{productLink.length}m</span>
               </div>
               <div className='flex gap-2 p-1'>
                 {[
@@ -51,7 +51,7 @@ export default function OrderItemsAccordion({items}: OrderItemsAccordionProps) {
                       alt={productLink.product.name}
                       width={200}
                       height={200}
-                      className='aspect-square w-full object-cover rounded-lg shadow-lg'
+                      className='aspect-square min-w-0 flex-1 object-cover rounded-lg shadow-lg'
                     />
                   ))}
               </div>
