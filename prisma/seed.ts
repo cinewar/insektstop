@@ -90,7 +90,7 @@ async function main() {
   });
 
   const orderItemsData = selectedProducts.map((product, index) => ({
-    name: product.name,
+    name: `Room${index + 1}`,
     orderRefId: order.id,
     productIds: [product.id],
     length: 100 + index * 20,
@@ -103,7 +103,7 @@ async function main() {
   }));
 
   orderItemsData.push({
-    name: 'Bundle Item',
+    name: `Room${orderItemsData.length + 1}`,
     orderRefId: order.id,
     productIds: selectedProducts.map((product) => product.id),
     length: 180,
