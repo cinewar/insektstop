@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.cloudflarestorage.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.gettogethertr.com',
+      },
     ],
   },
   turbopack: {

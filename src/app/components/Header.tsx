@@ -20,7 +20,7 @@ export function Header() {
   console.log('Current Path:', pathName);
   const routes = [
     {name: 'Home', href: '/', icon: HOMESVG},
-    {name: 'Order', href: '/order', icon: HOMESVG},
+    {name: 'Order', href: '/createorder', icon: HOMESVG},
     {name: 'About', href: '/about', icon: ABOUTSVG},
     {name: 'Contact', href: '/contact', icon: CONTACTSVG},
     {name: 'Products', href: '/products', icon: PRODUCTSSVG},

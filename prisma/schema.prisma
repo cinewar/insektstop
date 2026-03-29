@@ -31,7 +31,7 @@ model Product {
   description String
   price       Float
   images      ProductImage[]
-  orderItems  OrderProduct[]
+  orderItems  OrderItemProduct[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
@@ -42,29 +42,40 @@ type ProductImage {
 }
 
 model Order {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  orderId       Int            @unique
-  orderName     String
-  orderItems    OrderProduct[]
-  totalPrice    Float
-  createrName   String
-  createrEmail  String
-  createrPhone  String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  orderId      Int            @unique
+  orderName    String
+  orderItems   OrderProduct[]
+  totalPrice   Float
+  createrName  String
+  createrEmail String
+  createrPhone String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model OrderProduct {
-  id          String              @id @default(auto()) @map("_id") @db.ObjectId
-  orderRefId  String              @db.ObjectId
-  productRefId String             @db.ObjectId
-  length      Int
-  width       Int
-  images      OrderProductImage[]
-  price       Float
+  id       String              @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  orderRefId String            @db.ObjectId
+  price    Float
 
-  order       Order               @relation(fields: [orderRefId], references: [id])
-  product     Product             @relation(fields: [productRefId], references: [id])
+  order    Order              @relation(fields: [orderRefId], references: [id])
+  products OrderItemProduct[]
+}
+
+model OrderItemProduct {
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  orderProductRefId String       @db.ObjectId
+  productRefId      String       @db.ObjectId
+  length   Int
+  width    Int
+  images   OrderProductImage[]
+
+  orderProduct OrderProduct @relation(fields: [orderProductRefId], references: [id])
+  product      Product      @relation(fields: [productRefId], references: [id])
+
+  @@unique([orderProductRefId, productRefId])
 }
 
 type OrderProductImage {

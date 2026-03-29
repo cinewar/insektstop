@@ -3,17 +3,53 @@ import {PrismaClient} from '../generated/prisma/client';
 import productsJson from '../src/lib/products.json';
 
 const prisma = new PrismaClient();
+const cloudflareImages = [
+  {
+    id: 1,
+    img: 'https://images.gettogethertr.com/photo-1628952542177-1832b370e58d.webp',
+  },
+  {
+    id: 2,
+    img: 'https://images.gettogethertr.com/photo-1628952542512-752dc5d034c2.webp',
+  },
+  {
+    id: 3,
+    img: 'https://images.gettogethertr.com/photo-1628952542515-9efd6d280838.webp',
+  },
+  {
+    id: 4,
+    img: 'https://images.gettogethertr.com/photo-1657060169906-266c8ca36da5.webp',
+  },
+  {
+    id: 5,
+    img: 'https://images.gettogethertr.com/photo-1678807499708-868dc3d14ce9.webp',
+  },
+  {
+    id: 6,
+    img: 'https://images.gettogethertr.com/photo-1680003559115-3a357ef2a137.webp',
+  },
+];
+
+function buildProductImages(productIndex: number) {
+  const startIndex = productIndex % cloudflareImages.length;
+  const rotated = [
+    ...cloudflareImages.slice(startIndex),
+    ...cloudflareImages.slice(0, startIndex),
+  ];
+
+  return rotated.map((image, index) => ({
+    id: index + 1,
+    img: image.img,
+  }));
+}
 
 async function main() {
-  const products = productsJson.map((product) => ({
+  const products = productsJson.map((product, index) => ({
     productId: product.id,
     name: product.name,
     description: product.description,
     price: product.price,
-    images: product.images.map((image) => ({
-      id: image.id,
-      img: image.img,
-    })),
+    images: buildProductImages(index),
   }));
 
   for (const product of products) {
@@ -29,6 +65,7 @@ async function main() {
     });
   }
 
+  await prisma.orderItemProduct.deleteMany();
   await prisma.orderProduct.deleteMany();
   await prisma.order.deleteMany({where: {orderId: 1001}});
 
@@ -53,8 +90,9 @@ async function main() {
   });
 
   const orderItemsData = selectedProducts.map((product, index) => ({
+    name: product.name,
     orderRefId: order.id,
-    productRefId: product.id,
+    productIds: [product.id],
     length: 100 + index * 20,
     width: 50 + index * 10,
     price: product.price,
@@ -64,8 +102,51 @@ async function main() {
     })),
   }));
 
-  await prisma.orderProduct.createMany({
-    data: orderItemsData,
+  orderItemsData.push({
+    name: 'Bundle Item',
+    orderRefId: order.id,
+    productIds: selectedProducts.map((product) => product.id),
+    length: 180,
+    width: 90,
+    price: selectedProducts.reduce((sum, product) => sum + product.price, 0),
+    images: selectedProducts.flatMap((product) =>
+      product.images.slice(0, 1).map((image) => ({
+        id: image.id,
+        img: image.img,
+      })),
+    ),
+  });
+
+  for (const item of orderItemsData) {
+    const createdItem = await prisma.orderProduct.create({
+      data: {
+        name: item.name,
+        orderRefId: item.orderRefId,
+        price: item.price,
+      },
+    });
+
+    for (const productId of item.productIds) {
+      await prisma.orderItemProduct.create({
+        data: {
+          orderProductRefId: createdItem.id,
+          productRefId: productId,
+          length: item.length,
+          width: item.width,
+          images: item.images,
+        },
+      });
+    }
+  }
+
+  const calculatedTotalPrice = orderItemsData.reduce(
+    (sum, item) => sum + item.price,
+    0,
+  );
+
+  await prisma.order.update({
+    where: {id: order.id},
+    data: {totalPrice: calculatedTotalPrice},
   });
 
   console.log(
