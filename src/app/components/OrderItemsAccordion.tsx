@@ -1,8 +1,10 @@
+'use client';
+
 import type {OrderProductWithProducts} from '@/lib/prisma-types';
 import Accordion, {AccordionItem} from './Accordion';
-import Svg from './Svg';
-import {VERTICALDOTSSVG} from '../utils/svg';
+import {PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import Image from 'next/image';
+import ActionMenu from './ActionMenu';
 
 type OrderItemsAccordionProps = {
   items: OrderProductWithProducts[];
@@ -28,15 +30,35 @@ export default function OrderItemsAccordion({items}: OrderItemsAccordionProps) {
               className='relative flex flex-col px-1 py-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.1)] bg-white
               rounded-lg gap-2'
             >
-              <Svg
-                icon={VERTICALDOTSSVG}
-                size={30}
-                className='absolute top-1 right-1 cursor-pointer'
-              />
-              <div className='grid grid-cols-5 p-1'>
+              <div className='grid grid-cols-5 items-center p-1'>
                 <span className='col-span-3'>{productLink.product.name}</span>
                 <span className='col-span-1'>{productLink.width}m</span>
-                <span className='col-span-1'>{productLink.length}m</span>
+                <span className='col-span-1 flex items-center'>
+                  {productLink.length}m{' '}
+                  <ActionMenu
+                    direction='vertical'
+                    menuClassName='items-center -top-2'
+                    actions={[
+                      {
+                        id: 'edit',
+                        icon: SETSVG,
+                        iconSize: 40,
+                        onClick: () =>
+                          console.log('Edit action clicked for item', item.id),
+                      },
+                      {
+                        id: 'delete',
+                        icon: TRASHSVG,
+                        iconSize: 40,
+                        onClick: () =>
+                          console.log(
+                            'Delete action clicked for item',
+                            item.id,
+                          ),
+                      },
+                    ]}
+                  />
+                </span>
               </div>
               <div className='flex gap-2 p-1'>
                 {[

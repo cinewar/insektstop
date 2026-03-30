@@ -2,8 +2,8 @@
 
 import {ReactNode, useState} from 'react';
 import Svg from './Svg';
-import {DOWNSVG, SETSVG, TRASHSVG} from '../utils/svg';
-import {RoundedButton} from './RoundedButton';
+import {DOWNSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
+import ActionMenu from './ActionMenu';
 
 export type AccordionItem = {
   id: string;
@@ -43,18 +43,42 @@ export default function Accordion({
               ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}`}
           >
             <div
+              onClick={() => handleToggle(item.id)}
               className={`flex justify-between p-2 items-center ${isOpen ? 'shadow-md rounded-lg' : ''}`}
             >
               <div className='text-md font-semibold'>{item.title}</div>
               <div className='flex'>
                 {isOpen && (
-                  <div className='flex gap-1'>
-                    <RoundedButton icon={SETSVG} iconSize={40} className='' />
-                    <RoundedButton icon={TRASHSVG} iconSize={40} className='' />
-                  </div>
+                  <ActionMenu
+                    actions={[
+                      {
+                        id: 'add',
+                        icon: PLUSSVG,
+                        iconSize: 40,
+                        onClick: () =>
+                          console.log('Add action clicked for item', item.id),
+                      },
+                      {
+                        id: 'edit',
+                        icon: SETSVG,
+                        iconSize: 40,
+                        onClick: () =>
+                          console.log('Edit action clicked for item', item.id),
+                      },
+                      {
+                        id: 'delete',
+                        icon: TRASHSVG,
+                        iconSize: 40,
+                        onClick: () =>
+                          console.log(
+                            'Delete action clicked for item',
+                            item.id,
+                          ),
+                      },
+                    ]}
+                  />
                 )}
                 <Svg
-                  onClick={() => handleToggle(item.id)}
                   icon={DOWNSVG}
                   size={40}
                   className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
