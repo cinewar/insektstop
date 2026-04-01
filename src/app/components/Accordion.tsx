@@ -2,13 +2,17 @@
 
 import {ReactNode, useState} from 'react';
 import Svg from './Svg';
-import {DOWNSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
+import {DOWNSVG, OKSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import ActionMenu from './ActionMenu';
+import {RoundedButton} from './RoundedButton';
 
 export type AccordionItem = {
   id: string;
   title: ReactNode;
   content: ReactNode;
+  onAdd?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 type AccordionProps = {
@@ -26,9 +30,11 @@ export default function Accordion({
   contentClassName = '',
 }: AccordionProps) {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
 
   const handleToggle = (id: string) => {
     setOpenItemId((prev) => (prev === id ? null : id));
+    setIsEdit(false);
   };
 
   return (
@@ -46,7 +52,30 @@ export default function Accordion({
               onClick={() => handleToggle(item.id)}
               className={`flex justify-between p-2 items-center ${isOpen ? 'shadow-md rounded-lg' : ''}`}
             >
-              <div className='text-md font-semibold'>{item.title}</div>
+              {isOpen && isEdit ? (
+                <div className='' onClick={(event) => event.stopPropagation()}>
+                  <form className='flex gap-1'>
+                    <input
+                      type='text'
+                      defaultValue={
+                        typeof item.title === 'string' ? item.title : ''
+                      }
+                      placeholder='Section Name'
+                      className='relative w-full p-1 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
+                    border-2 focus:border-primary/50 focus:outline-0 border-gray-300'
+                    />
+                    <RoundedButton
+                      icon={OKSVG}
+                      iconSize={30}
+                      className=''
+                      onClick={() => setIsEdit(false)}
+                    />
+                  </form>
+                </div>
+              ) : (
+                <div className='text-md font-semibold'>{item.title}</div>
+              )}
+
               <div className='flex'>
                 {isOpen && (
                   <ActionMenu
@@ -55,25 +84,22 @@ export default function Accordion({
                         id: 'add',
                         icon: PLUSSVG,
                         iconSize: 40,
-                        onClick: () =>
-                          console.log('Add action clicked for item', item.id),
+                        onClick: item.onAdd,
                       },
                       {
                         id: 'edit',
                         icon: SETSVG,
                         iconSize: 40,
-                        onClick: () =>
-                          console.log('Edit action clicked for item', item.id),
+                        onClick: () => {
+                          setIsEdit(true);
+                          item.onEdit?.();
+                        },
                       },
                       {
                         id: 'delete',
                         icon: TRASHSVG,
                         iconSize: 40,
-                        onClick: () =>
-                          console.log(
-                            'Delete action clicked for item',
-                            item.id,
-                          ),
+                        onClick: item.onDelete,
                       },
                     ]}
                   />

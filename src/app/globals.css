@@ -11,6 +11,7 @@ body {
   --color-tertiary: #c285c0;
   --color-dark-text: #432042;
   --color-blue: #4794ff;
+  --color-gray: #909090;
 
   /** Animation for shining effect */
   --animate-shine: shine 2s linear infinite;
@@ -161,7 +162,7 @@ body {
 
 @layer utilities {
   .shadow-custom {
-    box-shadow: 0px 0px 4px rgba(194, 133, 192, 0.25);
+    box-shadow: 0px 0px 10px rgba(255, 71, 249, 0.45);
   }
 
   .glassy-bg {

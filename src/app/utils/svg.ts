@@ -21,6 +21,7 @@ export {default as TRASHSVG} from '@/assets/trash.svg';
 export {default as SETSVG} from '@/assets/set.svg';
 export {default as VERTICALDOTSSVG} from '@/assets/verticaldots.svg';
 export {default as PLUSSVG} from '@/assets/plus.svg';
+export {default as OKSVG} from '@/assets/ok.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';

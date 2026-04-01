@@ -26,7 +26,13 @@ export function Header() {
     {name: 'Products', href: '/products', icon: PRODUCTSSVG},
   ];
 
-  const delays = ['delay-100', 'delay-200', 'delay-300', 'delay-400'];
+  const delays = [
+    'delay-100',
+    'delay-200',
+    'delay-300',
+    'delay-400',
+    'delay-500',
+  ];
   return (
     <header className='bg-transparent flex max-w-120 justify-between items-center fixed top-0 w-full p-2 z-30'>
       <Svg icon={LOGOSVG} className='rounded-full z-11' size={50} />
@@ -49,25 +55,24 @@ export function Header() {
       <div
         className={`${openDropNav ? 'scale-y-100 delay-0' : 'scale-y-0 delay-700'} 
         transition-transform origin-top absolute top-0 left-0
-         bg-secondary shadow-custom p-4 pt-18 w-full`}
+         bg-gray rounded-lg shadow-custom p-4 pt-18 w-full`}
       >
         <ul className='space-y-2 text-dark-text font-medium text-lg'>
           {routes.map((route, index) => (
             <li key={index}>
               <Link
                 href={route.href}
-                className={` ${
+                className={`bg-secondary ${
                   openDropNav
                     ? `scale-y-100 opacity-100 ${delays[index]}`
                     : `scale-y-0 opacity-50 ${delays[delays.length - 1 - index]} `
                 } 
                     flex justify-between items-center px-4 py-2 shadow-custom
-
                     ${
                       pathName === route.href ||
                       (pathName.includes(route.href) && route.href !== '/')
-                        ? '[&>svg]:fill-tertiary text-tertiary'
-                        : 'text-dark-text'
+                        ? '[&>svg]:fill-primary text-primary'
+                        : '[&>svg]:fill-tertiary text-dark-text '
                     } 
                     rounded`}
               >

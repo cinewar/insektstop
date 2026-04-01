@@ -2,6 +2,7 @@ import {prisma} from '@/lib/prisma';
 import OrderItemsAccordion from '../components/OrderItemsAccordion';
 
 export default async function Order() {
+  const products = await prisma.product.findMany();
   const order = await prisma.order.findFirst({
     where: {
       orderName: 'Sample Order',
@@ -33,7 +34,7 @@ export default async function Order() {
           <div>Total Price: ${totalPrice.toFixed(2)}</div>
         </div>
       </div>
-      <OrderItemsAccordion items={orderItems} />
+      <OrderItemsAccordion items={orderItems} products={products} />
     </div>
   );
 }
