@@ -133,7 +133,7 @@ export function OrderContent({order}: OrderContentProps) {
       </div>
       <div className='flex mx-auto gap-4 mt-32 mb-4 px-4'>
         <Button
-          className='shining'
+          className='shining self-start'
           onClick={() => {
             setModalType('create');
             setShowModal(true);

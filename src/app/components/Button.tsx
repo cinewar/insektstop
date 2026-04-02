@@ -17,7 +17,7 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`relative inline-flex self-start cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw]
+      className={`relative inline-flex cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw]
          shadow-md hover:bg-tertiary z-2 ${className}
          `}
     >
