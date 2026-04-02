@@ -3,12 +3,14 @@
 import {ComponentType, SVGProps, useState} from 'react';
 import Svg from './Svg';
 import {CLOSESVG, VERTICALDOTSSVG} from '../utils/svg';
-import {RoundedButton} from './RoundedButton';
+import {GlassyButton} from './GlassyButton';
 
 export type ActionMenuAction = {
   id: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   iconSize?: number;
+  label?: string;
+  href?: string;
   className?: string;
   closeOnClick?: boolean;
   onClick?: () => void;
@@ -73,7 +75,7 @@ export default function ActionMenu({
           className='transition-transform duration-200 active:scale-95'
         />
         {actions.map((action) => (
-          <RoundedButton
+          <GlassyButton
             key={action.id}
             icon={action.icon}
             iconSize={action.iconSize ?? triggerSize}

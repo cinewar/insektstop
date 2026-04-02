@@ -1,7 +1,7 @@
 'use client';
 
 import {useState} from 'react';
-import {RoundedButton} from './RoundedButton';
+import {GlassyButton} from './GlassyButton';
 import {
   CLOSESVG,
   EMAILSVG,
@@ -64,7 +64,7 @@ export function ContactButtons() {
           />
         </li>
         <li>
-          <RoundedButton
+          <GlassyButton
             icon={EMAILSVG}
             iconSize={45}
             className={`${openMenu ? 'delay-100 scale-100' : 'delay-300 scale-0'}`}
@@ -72,7 +72,7 @@ export function ContactButtons() {
           />
         </li>
         <li>
-          <RoundedButton
+          <GlassyButton
             icon={WHATSUPSVG}
             iconSize={45}
             className={`${openMenu ? 'delay-200 scale-100' : 'delay-200 scale-0'}`}
@@ -80,7 +80,7 @@ export function ContactButtons() {
           />
         </li>
         <li>
-          <RoundedButton
+          <GlassyButton
             icon={PHONESVG}
             iconSize={45}
             className={`${openMenu ? 'delay-300 scale-100' : 'delay-100 scale-0'}`}
@@ -90,7 +90,7 @@ export function ContactButtons() {
       </ul>
 
       {!openMenu && (
-        <RoundedButton
+        <GlassyButton
           icon={PHONEINFOSVG}
           iconSize={45}
           onClick={() => setOpenMenu(!openMenu)}

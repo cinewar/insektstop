@@ -4,7 +4,7 @@ import {ReactNode, useState} from 'react';
 import Svg from './Svg';
 import {DOWNSVG, OKSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import ActionMenu from './ActionMenu';
-import {RoundedButton} from './RoundedButton';
+import {GlassyButton} from './GlassyButton';
 
 export type AccordionItem = {
   id: string;
@@ -64,7 +64,7 @@ export default function Accordion({
                       className='relative w-full p-1 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
                     border-2 focus:border-primary/50 focus:outline-0 border-gray-300'
                     />
-                    <RoundedButton
+                    <GlassyButton
                       icon={OKSVG}
                       iconSize={30}
                       className=''

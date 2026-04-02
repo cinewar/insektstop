@@ -158,6 +158,26 @@ body {
       filter: none;
     }
   }
+
+  --animate-fade-in: fade-in 260ms ease-out;
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  --animate-fade-out: fade-out 220ms ease-in forwards;
+  @keyframes fade-out {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
 }
 
 @layer utilities {

@@ -86,6 +86,7 @@ async function main() {
       createrName: 'Sample Customer',
       createrEmail: 'customer@example.com',
       createrPhone: '+90 555 123 45 67',
+      createrAddress: 'Sample Neighborhood, Istanbul',
     },
   });
 

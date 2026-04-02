@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Svg from '../components/Svg';
 import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
-import {FilteredProductsDropdown} from '../components/FilteredProductsDropdown';
+import {SearchDropdown} from '../components/SearchDropdown';
 import {prisma} from '@/lib/prisma';
 
 const loadSearchParams = createLoader({
@@ -33,7 +33,7 @@ export default async function Products({searchParams}: ProductsProps) {
           <h1 className='text-2xl font-bold text-dark-text'>Products</h1>
           <Search />
           {q && filteredProducts.length !== 0 && (
-            <FilteredProductsDropdown products={filteredProducts} />
+            <SearchDropdown products={filteredProducts} />
           )}
         </div>
       </div>

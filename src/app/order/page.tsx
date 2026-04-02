@@ -1,27 +1,27 @@
 import {prisma} from '@/lib/prisma';
+import {createLoader, parseAsString, SearchParams} from 'nuqs/server';
+import {OrderContent} from '../components/OrderContent';
 
-export default async function CreateOrder() {
+const loadSearchParams = createLoader({
+  q: parseAsString.withDefault(''),
+});
+
+type ProductsProps = {
+  searchParams: SearchParams;
+};
+
+export default async function CreateOrder({searchParams}: ProductsProps) {
+  const {q} = await loadSearchParams(searchParams);
   const order = await prisma.order.findFirst({
     where: {
-      orderName: 'Sample Order',
-    },
-    include: {
-      orderItems: {
-        include: {
-          products: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      },
+      orderName: q,
     },
   });
 
-  console.log('Order:', order);
+  console.log(q, 'Search query from URL:', order);
   return (
-    <div className='min-h-screen flex items-center justify-center bg-secondary'>
-      <h1 className='text-4xl font-bold text-dark-text'>Create Order</h1>
+    <div className='min-h-screen flex flex-col bg-secondary'>
+      <OrderContent order={order ?? undefined} />
     </div>
   );
 }

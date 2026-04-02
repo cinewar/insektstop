@@ -8,6 +8,7 @@ import {Input} from './Input';
 interface SearchProps {
   placeholder?: string;
   paramKey?: string;
+  className?: string;
 }
 
 export function Search({
@@ -31,7 +32,7 @@ export function Search({
       />
       <Svg
         onClick={() => {
-          if (query) setQuery('');
+          if (query) setQuery(null);
         }}
         icon={query ? CLOSESVG : SEARCHSVG}
         size={40}
