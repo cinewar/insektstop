@@ -6,6 +6,61 @@ import {getOrderFormValues, orderSchema} from './schema';
 
 const ORDER_NAME_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
+type OrderAction = 'created' | 'updated' | 'deleted';
+
+type OrderNotificationPayload = {
+  action: OrderAction;
+  orderName: string;
+  orderId: number;
+  createrName: string;
+  createrEmail: string;
+  createrPhone: string;
+  createrAddress: string;
+  totalPrice: number;
+};
+
+function buildOrderEmailText(payload: OrderNotificationPayload) {
+  return [
+    `Order ${payload.action}`,
+    `Order Name: ${payload.orderName}`,
+    `Order ID: ${payload.orderId}`,
+    `Customer: ${payload.createrName}`,
+    `Email: ${payload.createrEmail}`,
+    `Phone: ${payload.createrPhone}`,
+    `Address: ${payload.createrAddress}`,
+    `Total Price: ${payload.totalPrice}`,
+  ].join('\n');
+}
+
+async function sendResendEmail(payload: OrderNotificationPayload) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+  const to = payload.createrEmail || process.env.RESEND_TO_EMAIL;
+
+  if (!apiKey || !from || !to) {
+    return;
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject: `Order ${payload.action}: ${payload.orderName}`,
+      text: buildOrderEmailText(payload),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Resend request failed: ${response.status} ${errorText}`);
+  }
+}
+
 function generateRandomOrderName(length = 10) {
   return Array.from(
     randomBytes(length),
@@ -24,7 +79,7 @@ export async function createOrder(formData: FormData) {
   const orderId = Date.now();
   const orderName = generateRandomOrderName(10);
 
-  const result = prisma.order.create({
+  const result = await prisma.order.create({
     data: {
       orderId,
       orderName,
@@ -35,6 +90,22 @@ export async function createOrder(formData: FormData) {
       createrAddress: submittedValues.address,
     },
   });
+
+  try {
+    await sendResendEmail({
+      action: 'created',
+      orderName: result.orderName,
+      orderId: result.orderId,
+      createrName: result.createrName,
+      createrEmail: result.createrEmail,
+      createrPhone: result.createrPhone,
+      createrAddress: result.createrAddress,
+      totalPrice: result.totalPrice,
+    });
+  } catch (error) {
+    console.error('Resend notification failed:', error);
+  }
+
   return result;
 }
 
@@ -49,7 +120,7 @@ export async function updateOrder(formData: FormData) {
   const orderName = formData.get('orderName') as string;
   const id = formData.get('id') as string;
 
-  const result = prisma.order.update({
+  const result = await prisma.order.update({
     where: {id},
     data: {
       orderName: orderName,
@@ -59,6 +130,22 @@ export async function updateOrder(formData: FormData) {
       createrAddress: submittedValues.address,
     },
   });
+
+  try {
+    await sendResendEmail({
+      action: 'updated',
+      orderName: result.orderName,
+      orderId: result.orderId,
+      createrName: result.createrName,
+      createrEmail: result.createrEmail,
+      createrPhone: result.createrPhone,
+      createrAddress: result.createrAddress,
+      totalPrice: result.totalPrice,
+    });
+  } catch (error) {
+    console.error('Resend notification failed:', error);
+  }
+
   return result;
 }
 
@@ -66,9 +153,25 @@ export async function deleteOrder(id: string) {
   if (!id) {
     throw new Error('Order ID is required for deletion');
   }
-  const result = prisma.order.delete({
+  const result = await prisma.order.delete({
     where: {id},
   });
+
+  try {
+    await sendResendEmail({
+      action: 'deleted',
+      orderName: result.orderName,
+      orderId: result.orderId,
+      createrName: result.createrName,
+      createrEmail: result.createrEmail,
+      createrPhone: result.createrPhone,
+      createrAddress: result.createrAddress,
+      totalPrice: result.totalPrice,
+    });
+  } catch (error) {
+    console.error('Resend notification failed:', error);
+  }
+
   console.log('Deleted order with ID:', id);
   return result;
 }

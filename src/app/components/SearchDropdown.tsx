@@ -7,6 +7,7 @@ import {Product} from '../../../generated/prisma/client';
 import {EDITSVG, RIGHTARROWSVG, TRASHSVG} from '../utils/svg';
 import {GlassyButton} from './GlassyButton';
 import {useRouter} from 'next/navigation';
+import {Confirmation} from './Confirmation';
 
 type SearchDropdownProps = {
   products?: Product[];
@@ -29,6 +30,7 @@ export function SearchDropdown({
   const listRef = useRef<HTMLDivElement>(null);
   const [showTopGlow, setShowTopGlow] = useState(false);
   const [showBottomGlow, setShowBottomGlow] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const updateGlowVisibility = () => {
     const el = listRef.current;
@@ -49,9 +51,14 @@ export function SearchDropdown({
     return () => cancelAnimationFrame(frameId);
   }, [products]);
 
-  const handleDelete = async () => {
+  const handleConfirmDelete = async () => {
     await onDelete?.();
     setQuery(null);
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleDelete = () => {
+    setShowDeleteConfirmation(true);
   };
 
   return (
@@ -98,6 +105,13 @@ export function SearchDropdown({
           </div>
         )}
       </div>
+      {showDeleteConfirmation && (
+        <Confirmation
+          message='Are you sure you want to delete this order?'
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowDeleteConfirmation(false)}
+        />
+      )}
       {showTopGlow && (
         <div className='pointer-events-none absolute top-0 left-0 w-full h-4 bg-linear-to-b from-dark-text/50 to-secondary/50' />
       )}
