@@ -5,8 +5,6 @@ import {Button} from './Button';
 import {Modal} from './Modal';
 import {Input} from './Input';
 import {Textarea} from './Textarea';
-import {GlassyButton} from './GlassyButton';
-import {CLOSESVG, OKSVG} from '../utils/svg';
 import {createOrder, deleteOrder, updateOrder} from '../order/action';
 import {
   getOrderFormValues,
@@ -14,20 +12,26 @@ import {
   type OrderErrors,
   type OrderField,
 } from '../order/schema';
-import {Loading} from './Loading';
 import {Search} from './Search';
 import {SearchDropdown} from './SearchDropdown';
 import {Order} from '../../../generated/prisma/client';
+import {FormPendingOverlay} from '../order/components/FormPendingOverlay';
+import {FormActions} from '../order/components/FormActions';
 
+/**
+ * Props for rendering the order create/edit controls with an optional selected order.
+ */
 interface OrderContentProps {
   order?: Order;
 }
 
+/**
+ * Renders the order search controls and the modal used to create or edit an order.
+ */
 export function OrderContent({order}: OrderContentProps) {
   const [modalType, setModalType] = useState<'create' | 'edit' | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<OrderErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [values, setValues] = useState({
     name: '',
     email: '',
@@ -35,6 +39,9 @@ export function OrderContent({order}: OrderContentProps) {
     address: '',
   });
 
+  /**
+   * Validates a single field and stores its error message when validation fails.
+   */
   function validateField(field: OrderField, value: string) {
     const result = orderSchema.shape[field].safeParse(value);
     setErrors((prev) => ({
@@ -43,6 +50,9 @@ export function OrderContent({order}: OrderContentProps) {
     }));
   }
 
+  /**
+   * Creates a change handler for a specific field and normalizes phone input to digits only.
+   */
   function handleChange(field: OrderField) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value =
@@ -57,12 +67,18 @@ export function OrderContent({order}: OrderContentProps) {
     };
   }
 
+  /**
+   * Creates a blur handler that validates a single field after the user leaves it.
+   */
   function handleBlur(field: OrderField) {
     return (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       validateField(field, e.target.value);
     };
   }
 
+  /**
+   * Validates submitted form data and dispatches either the create or update server action.
+   */
   async function handleAction(formData: FormData) {
     if (modalType === 'edit' && order?.orderName) {
       formData.append('orderName', order.orderName);
@@ -81,22 +97,20 @@ export function OrderContent({order}: OrderContentProps) {
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      if (modalType === 'edit') {
-        await updateOrder(formData);
-      } else {
-        await createOrder(formData);
-      }
-      setErrors({});
-      setValues(submittedValues);
-      setShowModal(false);
-    } finally {
-      setIsSubmitting(false);
+    if (modalType === 'edit') {
+      await updateOrder(formData);
+    } else {
+      await createOrder(formData);
     }
+
+    setErrors({});
+    setValues(submittedValues);
+    setShowModal(false);
   }
 
+  /**
+   * Opens the modal with the selected order values prefilled for editing.
+   */
   function handleEdit() {
     setValues({
       name: order?.createrName ?? '',
@@ -108,6 +122,9 @@ export function OrderContent({order}: OrderContentProps) {
     setModalType('edit');
   }
 
+  /**
+   * Deletes the currently selected order when one is available.
+   */
   async function handleDelete() {
     if (order?.id) {
       await deleteOrder(order.id);
@@ -145,10 +162,9 @@ export function OrderContent({order}: OrderContentProps) {
           <Modal onClose={() => setShowModal(false)}>
             {({close}) => (
               <div className='relative'>
-                {isSubmitting && <Loading className='absolute inset-0 z-100' />}
-
                 <h2 className='text-lg font-bold mb-2'>Create an Order</h2>
                 <form className='flex flex-col gap-1' action={handleAction}>
+                  <FormPendingOverlay />
                   <Input
                     placeholder='Enter your name and Surname'
                     label='Name & Surname'
@@ -188,25 +204,10 @@ export function OrderContent({order}: OrderContentProps) {
                     onBlur={handleBlur('address')}
                     error={errors.address}
                   />
-                  <div className='flex justify-end mt-4'>
-                    <div className='flex gap-2 bg-gray rounded-full p-2 text-lg'>
-                      <GlassyButton
-                        onClick={close}
-                        label='Cancel'
-                        icon={CLOSESVG}
-                        iconSize={32}
-                        className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-4'
-                      />
-                      <GlassyButton
-                        label={modalType === 'create' ? 'Create' : 'Edit'}
-                        icon={OKSVG}
-                        iconSize={40}
-                        type='submit'
-                        disabled={isSubmitting}
-                        className='[&>svg]:stroke-4 gap-4'
-                      />
-                    </div>
-                  </div>
+                  <FormActions
+                    close={close}
+                    label={modalType === 'create' ? 'Create' : 'Edit'}
+                  />
                 </form>
               </div>
             )}

@@ -31,6 +31,7 @@ export function SearchDropdown({
   const [showTopGlow, setShowTopGlow] = useState(false);
   const [showBottomGlow, setShowBottomGlow] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const updateGlowVisibility = () => {
     const el = listRef.current;
@@ -52,9 +53,15 @@ export function SearchDropdown({
   }, [products]);
 
   const handleConfirmDelete = async () => {
-    await onDelete?.();
-    setQuery(null);
-    setShowDeleteConfirmation(false);
+    setIsDeleting(true);
+
+    try {
+      await onDelete?.();
+      setQuery(null);
+      setShowDeleteConfirmation(false);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleDelete = () => {
@@ -110,6 +117,7 @@ export function SearchDropdown({
           message='Are you sure you want to delete this order?'
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirmation(false)}
+          isLoading={isDeleting}
         />
       )}
       {showTopGlow && (

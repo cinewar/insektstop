@@ -18,7 +18,6 @@ export default async function CreateOrder({searchParams}: ProductsProps) {
     },
   });
 
-  console.log(q, 'Search query from URL:', order);
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
       <OrderContent order={order ?? undefined} />

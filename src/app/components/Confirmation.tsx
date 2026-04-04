@@ -3,21 +3,27 @@
 import {GlassyButton} from './GlassyButton';
 import {Modal} from './Modal';
 import {CLOSESVG, OKSVG} from '../utils/svg';
+import {Loading} from './Loading';
 
 type ConfirmationProps = {
   message: string;
   onConfirm: () => void;
   onCancel: () => void;
+  isLoading?: boolean;
 };
 
 export function Confirmation({
   message,
   onConfirm,
   onCancel,
+  isLoading = false,
 }: ConfirmationProps) {
   return (
     <Modal onClose={onCancel}>
-      <div className='p-2'>
+      <div className='relative p-2'>
+        {isLoading && (
+          <Loading className='absolute inset-0 z-50 rounded-lg bg-secondary/75' />
+        )}
         <h2 className='text-lg font-bold mb-2'>Delete Order</h2>
         <p className='text-dark-text'>{message}</p>
         <div className='flex justify-end mt-4'>
@@ -28,6 +34,7 @@ export function Confirmation({
               label='Cancel'
               icon={CLOSESVG}
               iconSize={32}
+              disabled={isLoading}
               className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-4'
             />
             <GlassyButton
@@ -36,6 +43,7 @@ export function Confirmation({
               label='OK'
               icon={OKSVG}
               iconSize={40}
+              disabled={isLoading}
               className='[&>svg]:stroke-4 gap-4'
             />
           </div>

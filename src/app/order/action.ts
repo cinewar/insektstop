@@ -6,8 +6,14 @@ import {getOrderFormValues, orderSchema} from './schema';
 
 const ORDER_NAME_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
+/**
+ * Supported order lifecycle actions used in notification content.
+ */
 type OrderAction = 'created' | 'updated' | 'deleted';
 
+/**
+ * Data required to compose and send order notification emails.
+ */
 type OrderNotificationPayload = {
   action: OrderAction;
   orderName: string;
@@ -19,6 +25,9 @@ type OrderNotificationPayload = {
   totalPrice: number;
 };
 
+/**
+ * Builds the plain-text email body for order notifications.
+ */
 function buildOrderEmailText(payload: OrderNotificationPayload) {
   return [
     `Order ${payload.action}`,
@@ -32,6 +41,9 @@ function buildOrderEmailText(payload: OrderNotificationPayload) {
   ].join('\n');
 }
 
+/**
+ * Sends an order notification email via Resend when credentials are configured.
+ */
 async function sendResendEmail(payload: OrderNotificationPayload) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
@@ -61,6 +73,9 @@ async function sendResendEmail(payload: OrderNotificationPayload) {
   }
 }
 
+/**
+ * Generates an uppercase alphanumeric order name with cryptographically random bytes.
+ */
 function generateRandomOrderName(length = 10) {
   return Array.from(
     randomBytes(length),
@@ -68,6 +83,9 @@ function generateRandomOrderName(length = 10) {
   ).join('');
 }
 
+/**
+ * Validates incoming form data, creates a new order record, and triggers notification email.
+ */
 export async function createOrder(formData: FormData) {
   const submittedValues = getOrderFormValues(formData);
   const validationResult = orderSchema.safeParse(submittedValues);
@@ -109,6 +127,9 @@ export async function createOrder(formData: FormData) {
   return result;
 }
 
+/**
+ * Validates incoming form data, updates an existing order, and triggers notification email.
+ */
 export async function updateOrder(formData: FormData) {
   const submittedValues = getOrderFormValues(formData);
   const validationResult = orderSchema.safeParse(submittedValues);
@@ -149,6 +170,9 @@ export async function updateOrder(formData: FormData) {
   return result;
 }
 
+/**
+ * Deletes an order by ID and triggers notification email for the deleted record.
+ */
 export async function deleteOrder(id: string) {
   if (!id) {
     throw new Error('Order ID is required for deletion');
