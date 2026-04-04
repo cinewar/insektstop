@@ -8,6 +8,7 @@ import {EDITSVG, RIGHTARROWSVG, TRASHSVG} from '../utils/svg';
 import {GlassyButton} from './GlassyButton';
 import {useRouter} from 'next/navigation';
 import {Confirmation} from './Confirmation';
+import {notify} from '../lib/notifications';
 
 type SearchDropdownProps = {
   products?: Product[];
@@ -28,6 +29,7 @@ export function SearchDropdown({
     parseAsString.withOptions({shallow: false}),
   );
   const listRef = useRef<HTMLDivElement>(null);
+  const isDeletingRef = useRef(false);
   const [showTopGlow, setShowTopGlow] = useState(false);
   const [showBottomGlow, setShowBottomGlow] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -53,13 +55,28 @@ export function SearchDropdown({
   }, [products]);
 
   const handleConfirmDelete = async () => {
+    if (isDeletingRef.current) return;
+
+    isDeletingRef.current = true;
     setIsDeleting(true);
 
     try {
       await onDelete?.();
       setQuery(null);
       setShowDeleteConfirmation(false);
+      notify({
+        type: 'success',
+        title: 'Order deleted',
+        message: 'The selected order was removed successfully.',
+      });
+    } catch {
+      notify({
+        type: 'error',
+        title: 'Order deletion failed',
+        message: 'Please try again.',
+      });
     } finally {
+      isDeletingRef.current = false;
       setIsDeleting(false);
     }
   };

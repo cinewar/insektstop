@@ -17,6 +17,7 @@ import {SearchDropdown} from './SearchDropdown';
 import {Order} from '../../../generated/prisma/client';
 import {FormPendingOverlay} from '../order/components/FormPendingOverlay';
 import {FormActions} from '../order/components/FormActions';
+import {notify} from '../lib/notifications';
 
 /**
  * Props for rendering the order create/edit controls with an optional selected order.
@@ -80,6 +81,8 @@ export function OrderContent({order}: OrderContentProps) {
    * Validates submitted form data and dispatches either the create or update server action.
    */
   async function handleAction(formData: FormData) {
+    const actionType = modalType;
+
     if (modalType === 'edit' && order?.orderName) {
       formData.append('orderName', order.orderName);
       formData.append('id', order.id.toString());
@@ -97,15 +100,33 @@ export function OrderContent({order}: OrderContentProps) {
       return;
     }
 
-    if (modalType === 'edit') {
-      await updateOrder(formData);
-    } else {
-      await createOrder(formData);
+    try {
+      if (modalType === 'edit') {
+        await updateOrder(formData);
+      } else {
+        await createOrder(formData);
+      }
+    } catch {
+      notify({
+        type: 'error',
+        title: `Order ${actionType === 'edit' ? 'update' : 'creation'} failed`,
+        message: 'Please try again.',
+      });
+      return;
     }
 
     setErrors({});
     setValues(submittedValues);
     setShowModal(false);
+    notify({
+      type: 'success',
+      title: `Order ${actionType === 'edit' ? 'updated' : 'created'}`,
+      message:
+        actionType === 'edit'
+          ? 'The order details were saved successfully.'
+          : 'A new order was created successfully.',
+      duration: 4000,
+    });
   }
 
   /**

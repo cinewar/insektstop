@@ -5,6 +5,7 @@ import './globals.css';
 import {Header} from './components/Header';
 import {Footer} from './components/Footer';
 import {ContactButtons} from './components/ContactButtons';
+import {Notification} from './components/Notification';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen max-w-120 relative mx-auto`}
       >
         <NuqsAdapter>
+          <Notification />
           <ContactButtons />
           <Header />
           {children}

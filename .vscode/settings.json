@@ -1,4 +1,22 @@
 {
   "prisma.pinToPrisma6": true,
-  "prisma.scriptRunner": "npx"
+  "prisma.scriptRunner": "npx",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.hover.enabled": "on",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.configFile": "src/app/globals.css",
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "html"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className"
+  ]
 }

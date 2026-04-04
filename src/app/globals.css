@@ -1,5 +1,17 @@
 @import 'tailwindcss';
 
+@property --notification-progress {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 100;
+}
+
+@property --notification-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 225deg;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -178,6 +190,30 @@ body {
       opacity: 0;
     }
   }
+
+  --animate-notification-toast-enter: notification-toast-enter 320ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+  @keyframes notification-toast-enter {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -10px, 0) scale(0.96);
+    }
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  --animate-notification-toast-progress: notification-toast-progress 3.2s linear
+    forwards;
+  @keyframes notification-toast-progress {
+    0% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
 }
 
 @layer utilities {
@@ -218,6 +254,25 @@ body {
     border-radius: 30px;
   }
 
+  /** Border glow border progress bar */
+  .border-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    padding: 2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      var(--color-primary) 15%,
+      transparent 20%
+    );
+    animation: rotateShine 3s linear infinite;
+  }
+
   /** Border glow effect using masking */
   .border-mask {
     position: absolute;
@@ -225,7 +280,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 30px;
+    border-radius: inherit;
     padding: 2px;
     mask:
       linear-gradient(black 0 0) content-box,
@@ -296,6 +351,67 @@ body {
   .contact-scene-buzz path[data-testid^='fly-']:nth-of-type(3n) {
     animation-duration: 0.78s;
     animation-delay: -0.33s;
+  }
+
+  .notification-toast-enter {
+    animation: var(--animate-notification-toast-enter);
+  }
+
+  .notification-toast-progress {
+    animation: var(--animate-notification-toast-progress);
+  }
+
+  .notification-border-progress {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 6px;
+    --notification-duration: 3200ms;
+    --notification-angle: 225deg;
+    --notification-glow-color: var(--color-primary);
+    --notification-glow-shadow: rgba(255, 71, 249, 0.95);
+  }
+
+  .notification-border-progress .border-mask {
+    padding: 6px;
+  }
+
+  .notification-border-progress-glow {
+    position: absolute;
+    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    transform: none;
+    background: conic-gradient(
+      from var(--notification-angle),
+      transparent 0 calc(var(--notification-progress) * 0.08%),
+      color-mix(in srgb, transparent 15%, var(--notification-glow-color))
+        calc(var(--notification-progress) * 0.24%),
+      var(--notification-glow-color) calc(var(--notification-progress) * 0.72%),
+      color-mix(in srgb, #ffffff 45%, var(--notification-glow-color))
+        calc(var(--notification-progress) * 0.9%),
+      transparent calc(var(--notification-progress) * 1%)
+    );
+    filter: drop-shadow(0 0 6px var(--notification-glow-shadow))
+      drop-shadow(0 0 14px var(--notification-glow-shadow))
+      drop-shadow(0 0 24px var(--notification-glow-shadow));
+    animation: notification-border-progress var(--notification-duration) linear
+      forwards;
+  }
+
+  @keyframes notification-border-progress {
+    0% {
+      --notification-progress: 0;
+      opacity: 1;
+    }
+    100% {
+      --notification-progress: 100;
+      opacity: 1;
+    }
   }
 }
 
