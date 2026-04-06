@@ -195,7 +195,5 @@ export async function deleteOrder(id: string) {
   } catch (error) {
     console.error('Resend notification failed:', error);
   }
-
-  console.log('Deleted order with ID:', id);
   return result;
 }

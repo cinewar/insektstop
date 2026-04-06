@@ -17,7 +17,6 @@ import {usePathname} from 'next/navigation';
 export function Header() {
   const [openDropNav, setOpenDropNav] = useState(false);
   const pathName = usePathname();
-  console.log('Current Path:', pathName);
   const routes = [
     {name: 'Home', href: '/', icon: HOMESVG},
     {name: 'Create & Check Order', href: '/order', icon: HOMESVG},

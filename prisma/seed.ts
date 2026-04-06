@@ -149,10 +149,6 @@ async function main() {
     where: {id: order.id},
     data: {totalPrice: calculatedTotalPrice},
   });
-
-  console.log(
-    `Seed completed: ${products.length} products, 1 order, ${orderItemsData.length} order items.`,
-  );
 }
 
 main()

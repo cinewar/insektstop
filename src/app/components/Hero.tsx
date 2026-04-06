@@ -21,10 +21,7 @@ export function Hero() {
           Evinizde Rahatça Oturmanın Yegane Yolu
         </h1>
       </div>
-      <Button
-        className='shining'
-        onClick={() => console.log('Fiyat Al Button Clicked')}
-      >
+      <Button className='shining' onClick={() => {}}>
         Fiyat Al
       </Button>
       {/* <Image

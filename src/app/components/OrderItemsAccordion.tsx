@@ -32,7 +32,7 @@ export default function OrderItemsAccordion({
     onAdd: () => setIsAdd(true),
     content: (
       <>
-        <div className='mt-2 flex flex-col gap-2'>
+        <div className='flex flex-col gap-2'>
           {isAdd && (
             <div
               className='relative flex flex-col px-1 py-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.1)]
@@ -86,18 +86,13 @@ export default function OrderItemsAccordion({
                         id: 'edit',
                         icon: SETSVG,
                         iconSize: 40,
-                        onClick: () =>
-                          console.log('Edit action clicked for item', item.id),
+                        onClick: () => {},
                       },
                       {
                         id: 'delete',
                         icon: TRASHSVG,
                         iconSize: 40,
-                        onClick: () =>
-                          console.log(
-                            'Delete action clicked for item',
-                            item.id,
-                          ),
+                        onClick: () => {},
                       },
                     ]}
                   />
@@ -132,7 +127,7 @@ export default function OrderItemsAccordion({
   return (
     <Accordion
       items={accordionItems}
-      className='mt-32 p-2 flex flex-col gap-2 w-full'
+      className='p-2 flex flex-col gap-2 w-full'
     />
   );
 }

@@ -15,9 +15,10 @@ import {
 import {Search} from './Search';
 import {SearchDropdown} from './SearchDropdown';
 import {Order} from '../../../generated/prisma/client';
-import {FormPendingOverlay} from '../order/components/FormPendingOverlay';
-import {FormActions} from '../order/components/FormActions';
+import {FormPendingOverlay} from './FormPendingOverlay';
+import {FormActions} from './FormActions';
 import {notify} from '../lib/notifications';
+import {useRouter} from 'next/navigation';
 
 /**
  * Props for rendering the order create/edit controls with an optional selected order.
@@ -30,6 +31,7 @@ interface OrderContentProps {
  * Renders the order search controls and the modal used to create or edit an order.
  */
 export function OrderContent({order}: OrderContentProps) {
+  const router = useRouter();
   const [modalType, setModalType] = useState<'create' | 'edit' | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [errors, setErrors] = useState<OrderErrors>({});
@@ -89,10 +91,10 @@ export function OrderContent({order}: OrderContentProps) {
     }
     const submittedValues = getOrderFormValues(formData);
 
-    const result = orderSchema.safeParse(submittedValues);
-    if (!result.success) {
+    const validateResult = orderSchema.safeParse(submittedValues);
+    if (!validateResult.success) {
       const fieldErrors: OrderErrors = {};
-      for (const issue of result.error.issues) {
+      for (const issue of validateResult.error.issues) {
         const field = issue.path[0] as OrderField;
         fieldErrors[field] = issue.message;
       }
@@ -100,12 +102,14 @@ export function OrderContent({order}: OrderContentProps) {
       return;
     }
 
+    let result: Order | null = null;
     try {
       if (modalType === 'edit') {
-        await updateOrder(formData);
+        result = await updateOrder(formData);
       } else {
-        await createOrder(formData);
+        result = await createOrder(formData);
       }
+      router.push(`/order/${result.id}`);
     } catch {
       notify({
         type: 'error',
