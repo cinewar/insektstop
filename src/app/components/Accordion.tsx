@@ -2,7 +2,7 @@
 
 import {ReactNode, useState} from 'react';
 import Svg from './Svg';
-import {DOWNSVG, OKSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
+import {DOWNSVG, EDITSVG, OKSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import ActionMenu from './ActionMenu';
 import {GlassyButton} from './GlassyButton';
 
@@ -45,7 +45,7 @@ export default function Accordion({
         return (
           <div
             key={item.id}
-            className={`shadow-custom p-1 rounded-lg overflow-hidden  ${itemClassName} 
+            className={`shadow-custom p-1 rounded-lg  ${itemClassName} 
               ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}`}
           >
             <div
@@ -77,18 +77,13 @@ export default function Accordion({
               )}
 
               <div className='flex'>
-                {isOpen && (
+                {!isOpen && (
                   <ActionMenu
                     actions={[
                       {
-                        id: 'add',
-                        icon: PLUSSVG,
-                        iconSize: 40,
-                        onClick: item.onAdd,
-                      },
-                      {
                         id: 'edit',
-                        icon: SETSVG,
+                        label: 'Edit',
+                        icon: EDITSVG,
                         iconSize: 40,
                         onClick: () => {
                           setIsEdit(true);
@@ -96,6 +91,7 @@ export default function Accordion({
                         },
                       },
                       {
+                        label: 'Delete',
                         id: 'delete',
                         icon: TRASHSVG,
                         iconSize: 40,

@@ -13,15 +13,15 @@ import {notify} from '../lib/notifications';
 type SearchDropdownProps = {
   products?: Product[];
   orderId?: string;
-  onEdit?: () => void | Promise<void>;
-  onDelete?: () => void | Promise<void>;
+  onEditAction?: () => void | Promise<void>;
+  onDeleteAction?: () => void | Promise<void>;
 };
 
 export function SearchDropdown({
   products,
   orderId,
-  onEdit,
-  onDelete,
+  onEditAction,
+  onDeleteAction,
 }: SearchDropdownProps) {
   const router = useRouter();
   const [, setQuery] = useQueryState(
@@ -61,7 +61,7 @@ export function SearchDropdown({
     setIsDeleting(true);
 
     try {
-      await onDelete?.();
+      await onDeleteAction?.();
       setQuery(null);
       setShowDeleteConfirmation(false);
       notify({
@@ -117,7 +117,7 @@ export function SearchDropdown({
                 icon={EDITSVG}
                 label='Edit Order'
                 iconSize={40}
-                onClick={onEdit}
+                onClick={onEditAction}
               />
               <GlassyButton
                 icon={TRASHSVG}
@@ -132,8 +132,8 @@ export function SearchDropdown({
       {showDeleteConfirmation && (
         <Confirmation
           message='Are you sure you want to delete this order?'
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setShowDeleteConfirmation(false)}
+          onConfirmAction={handleConfirmDelete}
+          onCancelAction={() => setShowDeleteConfirmation(false)}
           isLoading={isDeleting}
         />
       )}

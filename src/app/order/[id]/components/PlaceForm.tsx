@@ -4,7 +4,7 @@ import {FormActions} from '@/app/components/FormActions';
 import {FormPendingOverlay} from '@/app/components/FormPendingOverlay';
 import {Input} from '@/app/components/Input';
 import {useState} from 'react';
-import {createPlace, updatePlace} from './action';
+import {createPlace, deletePlace, updatePlace} from './action';
 import {
   getPlaceFormValues,
   PlaceErrors,
@@ -12,13 +12,14 @@ import {
   placeSchema,
 } from './schema';
 import {notify} from '@/app/lib/notifications';
+import {Confirmation} from '@/app/components/Confirmation';
 
 /**
  * Props needed to render and submit the place create/edit form.
  */
 interface PlaceFormProps {
   close: () => void;
-  modalType: 'create' | 'edit';
+  modalType: 'create' | 'edit' | 'delete';
   orderId: string;
   placeId?: string;
   initialPlace?: string;
@@ -38,6 +39,7 @@ export function PlaceForm({
     place: initialPlace,
   });
   const [errors, setErrors] = useState<PlaceErrors>({});
+  const [isDeleting, setIsDeleting] = useState(false);
 
   /**
    * Validates a single field and stores its error message when validation fails.
@@ -123,6 +125,50 @@ export function PlaceForm({
 
     setErrors({});
     close();
+  }
+
+  async function handleDelete() {
+    if (!placeId) {
+      notify({
+        type: 'error',
+        title: 'Place deletion failed',
+        message: 'Place ID is required for delete.',
+      });
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const result = await deletePlace(orderId, placeId);
+      if (!result.ok) {
+        notify({
+          type: 'error',
+          title: 'Place deletion failed',
+          message: result.message,
+        });
+        return;
+      }
+
+      notify({
+        type: 'success',
+        title: 'Place deleted successfully',
+      });
+      close();
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  if (modalType === 'delete') {
+    return (
+      <Confirmation
+        title='Delete Place'
+        message={`Are you sure you want to delete "${initialPlace || 'this place'}"?`}
+        onConfirmAction={handleDelete}
+        onCancelAction={close}
+        isLoading={isDeleting}
+      />
+    );
   }
 
   return (

@@ -24,6 +24,8 @@ body {
   --color-dark-text: #432042;
   --color-blue: #4794ff;
   --color-gray: #909090;
+  --color-red: #ff0004;
+  --color-mid-magenta: #992a95;
 
   /** Animation for shining effect */
   --animate-shine: shine 2s linear infinite;

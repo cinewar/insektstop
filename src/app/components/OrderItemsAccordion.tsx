@@ -9,17 +9,26 @@ import {useState} from 'react';
 import {Input} from './Input';
 import {Select} from './Select';
 import {Product} from '../../../generated/prisma';
+import {Modal} from './Modal';
+import {PlaceForm} from '../order/[id]/components/PlaceForm';
 
 type OrderItemsAccordionProps = {
+  orderId: string;
   items: OrderProductWithProducts[];
   products: Product[];
 };
 
 export default function OrderItemsAccordion({
+  orderId,
   items,
   products,
 }: OrderItemsAccordionProps) {
   const [isAdd, setIsAdd] = useState(false);
+  const [placeModal, setPlaceModal] = useState<{
+    modalType: 'edit' | 'delete';
+    id: string;
+    name: string;
+  } | null>(null);
   const defaultImages = [
     '/placeholder.png',
     '/placeholder.png',
@@ -30,6 +39,19 @@ export default function OrderItemsAccordion({
     id: item.id,
     title: item.name,
     onAdd: () => setIsAdd(true),
+    onEdit: () =>
+      setPlaceModal({
+        modalType: 'edit',
+        id: item.id,
+        name: item.name,
+      }),
+    onDelete: () => {
+      setPlaceModal({
+        modalType: 'delete',
+        id: item.id,
+        name: item.name,
+      });
+    },
     content: (
       <>
         <div className='flex flex-col gap-2'>
@@ -125,9 +147,32 @@ export default function OrderItemsAccordion({
   }));
 
   return (
-    <Accordion
-      items={accordionItems}
-      className='p-2 flex flex-col gap-2 w-full'
-    />
+    <>
+      <Accordion
+        items={accordionItems}
+        className='p-2 flex flex-col gap-2 w-full'
+      />
+
+      {placeModal ? (
+        <Modal onClose={() => setPlaceModal(null)}>
+          {({close}) => (
+            <div className='relative'>
+              <h2 className='mb-2 text-lg font-bold'>
+                {placeModal.modalType === 'delete'
+                  ? 'Delete Place & Room'
+                  : 'Edit a Place & Room'}
+              </h2>
+              <PlaceForm
+                close={close}
+                modalType={placeModal.modalType}
+                orderId={orderId}
+                placeId={placeModal.id}
+                initialPlace={placeModal.name}
+              />
+            </div>
+          )}
+        </Modal>
+      ) : null}
+    </>
   );
 }

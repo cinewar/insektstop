@@ -38,7 +38,11 @@ export default async function Order({
         </div>
       </div>
       <div className='mt-28'>
-        <OrderItemsAccordion items={orderItems} products={products} />
+        <OrderItemsAccordion
+          orderId={orderId}
+          items={orderItems}
+          products={products}
+        />
         <PlaceContent orderId={orderId} />
       </div>
     </div>

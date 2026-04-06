@@ -40,17 +40,9 @@ export default function ActionMenu({
   const [isOpen, setIsOpen] = useState(false);
   const isVertical = direction === 'vertical';
 
-  const panelPositionClassName = isVertical
-    ? 'top-0 -right-2 mt-2 flex-col rounded-3xl py-2 origin-top-right'
-    : '-top-2 right-0 rounded-[100vw] px-2 origin-right';
-
-  const panelStateClassName = isVertical
-    ? isOpen
-      ? 'opacity-100 translate-y-0 scale-y-100 pointer-events-auto'
-      : 'opacity-0 -translate-y-2 scale-y-0 pointer-events-none'
-    : isOpen
-      ? 'opacity-100 translate-x-0 scale-x-100 pointer-events-auto'
-      : 'opacity-0 translate-x-1 scale-x-0 pointer-events-none';
+  const panelStateClassName = isOpen
+    ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+    : 'opacity-0 -translate-y-2 scale-95 pointer-events-none';
 
   return (
     <div
@@ -64,22 +56,23 @@ export default function ActionMenu({
         className='transition-transform duration-200 active:scale-95'
       />
       <div
-        className={`flex gap-1 absolute z-10 border border-primary 
-            shadow-custom bg-secondary/50 backdrop-blur-sm transition-all duration-200 
-            ease-out ${panelPositionClassName} ${panelStateClassName} ${menuClassName}`}
+        className={`flex flex-col pt-8 p-1 gap-2 absolute z-50
+            shadow-custom bg-gray backdrop-blur-sm transition-all duration-200 
+            ease-out top-0 right-2 mt-2 py-2 rounded-2xl origin-top-right ${panelStateClassName} ${menuClassName}`}
       >
         <Svg
           onClick={() => setIsOpen(false)}
           icon={CLOSESVG}
-          size={triggerSize}
-          className='transition-transform duration-200 active:scale-95'
+          size={28}
+          className='absolute top-1 right-1 transition-transform text-mid-magenta duration-200 active:scale-95'
         />
         {actions.map((action) => (
           <GlassyButton
+            label={action.label}
             key={action.id}
             icon={action.icon}
             iconSize={action.iconSize ?? triggerSize}
-            className={action.className ?? ''}
+            className={`gap-3 ${action.className}`}
             onClick={() => {
               action.onClick?.();
 

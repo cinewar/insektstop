@@ -166,8 +166,8 @@ export function OrderContent({order}: OrderContentProps) {
           <Search />
           {order && (
             <SearchDropdown
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+              onEditAction={handleEdit}
+              onDeleteAction={handleDelete}
               orderId={order.id}
             />
           )}

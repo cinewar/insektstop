@@ -67,6 +67,11 @@ export async function updatePlace(
       return {ok: false, message: 'Place ID is required'} as const;
     }
 
+    const orderId = formData.get('id');
+    if (typeof orderId !== 'string' || !orderId) {
+      return {ok: false, message: 'Order ID is required'} as const;
+    }
+
     const submittedValues = getPlaceFormValues(formData);
     const validationResult = placeSchema.safeParse(submittedValues);
     if (!validationResult.success) {
@@ -82,8 +87,21 @@ export async function updatePlace(
         name: submittedValues.place,
       },
     });
+    revalidatePath(`/order/${orderId}`);
     return {ok: true, data: result} as const;
   } catch (error) {
     return {ok: false, message: `Failed to update place, ${error}`} as const;
+  }
+}
+
+export async function deletePlace(orderId: string, placeId: string) {
+  try {
+    const result = await prisma.orderProduct.delete({
+      where: {id: placeId},
+    });
+    revalidatePath(`/order/${orderId}`);
+    return {ok: true, data: result} as const;
+  } catch (error) {
+    return {ok: false, message: `Failed to delete place, ${error}`} as const;
   }
 }
