@@ -18,7 +18,7 @@ export function Modal({children, onClose}: ModalProps) {
 
   return (
     <div
-      className={`fixed inset-0 bg-black/15 backdrop-blur-sm flex items-center justify-center z-50 px-2 ${
+      className={`fixed inset-0 text-dark-text bg-black/15 backdrop-blur-sm flex items-center justify-center z-50 px-2 ${
         isClosing ? 'animate-fade-out' : 'animate-fade-in'
       }`}
       onClick={(e) => {

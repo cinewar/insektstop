@@ -23,6 +23,8 @@ export {default as VERTICALDOTSSVG} from '@/assets/verticaldots.svg';
 export {default as PLUSSVG} from '@/assets/plus.svg';
 export {default as OKSVG} from '@/assets/ok.svg';
 export {default as EDITSVG} from '@/assets/edit.svg';
+export {default as ADDSVG} from '@/assets/add.svg';
+export {default as ADDPHOTOSVG} from '@/assets/add-photo.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';

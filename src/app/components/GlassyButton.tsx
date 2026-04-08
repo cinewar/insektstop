@@ -22,7 +22,7 @@ export function GlassyButton({
       {...props}
       className={`rounded-full glassy-bg p-1 shadow-custom transition 
         hover:scale-101 active:scale-95 ${className}
-        flex items-center  ${label ? 'pl-4 pr-2 py-2 w-full h-12 justify-between' : 'p-1 justify-center'}
+        flex items-center  ${label ? 'pl-4 pr-2 py-2 h-12 justify-between' : 'p-1 justify-center'}
         `}
     >
       {label && <span className='text-secondary'>{label}</span>}

@@ -112,11 +112,6 @@ export default function Accordion({
               <div
                 className={`px-1 pb-3 text-sm text-dark-text border-t border-gray-100 ${contentClassName}`}
               >
-                <div className='flex px-1 font-semibold py-2'>
-                  <span className='flex-3'>Product</span>
-                  <span className='flex-1'>Width(m)</span>
-                  <span className='flex-1'>Length(m)</span>
-                </div>
                 {item.content}
               </div>
             )}

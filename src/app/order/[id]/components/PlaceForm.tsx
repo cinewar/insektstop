@@ -4,13 +4,13 @@ import {FormActions} from '@/app/components/FormActions';
 import {FormPendingOverlay} from '@/app/components/FormPendingOverlay';
 import {Input} from '@/app/components/Input';
 import {useState} from 'react';
-import {createPlace, deletePlace, updatePlace} from './action';
+import {createPlace, deletePlace, updatePlace} from '../action';
 import {
   getPlaceFormValues,
   PlaceErrors,
   PlaceField,
   placeSchema,
-} from './schema';
+} from '../schema';
 import {notify} from '@/app/lib/notifications';
 import {Confirmation} from '@/app/components/Confirmation';
 
