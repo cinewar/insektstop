@@ -2,7 +2,7 @@
 
 import {prisma} from '@/lib/prisma';
 import {revalidatePath} from 'next/cache';
-import type {Order, OrderProduct} from '../../../../../generated/prisma/client';
+import type {Order, OrderProduct} from '../../../../generated/prisma/client';
 import {getPlaceFormValues, placeSchema} from './schema';
 
 /**
