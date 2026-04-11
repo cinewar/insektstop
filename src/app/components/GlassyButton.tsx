@@ -1,5 +1,9 @@
 import Svg from './Svg';
 
+/**
+  * Defines the IGlassyButtonProps interface.
+  * Usage: Implement or consume IGlassyButtonProps when exchanging this structured contract.
+  */
 interface IGlassyButtonProps {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   iconSize?: number;
@@ -8,16 +12,22 @@ interface IGlassyButtonProps {
   onClick?: () => void;
 }
 
+/**
+  * Describes behavior for GlassyButton.
+  * Usage: Call GlassyButton(...) where this declaration is needed in the current module flow.
+  */
 export function GlassyButton({
   icon,
   onClick,
   iconSize,
   label,
   className = '',
+  type,
   ...props
 }: IGlassyButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
+      type={type ?? 'button'}
       onClick={onClick}
       {...props}
       className={`rounded-full glassy-bg p-1 shadow-custom transition 

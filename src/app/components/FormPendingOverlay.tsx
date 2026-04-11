@@ -1,6 +1,10 @@
 import {Loading} from '@/app/components/Loading';
 import {useFormStatus} from 'react-dom';
 
+/**
+  * Describes behavior for FormPendingOverlay.
+  * Usage: Call FormPendingOverlay(...) where this declaration is needed in the current module flow.
+  */
 export function FormPendingOverlay() {
   const {pending} = useFormStatus();
 

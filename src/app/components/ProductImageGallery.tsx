@@ -2,13 +2,22 @@
 
 import Image from 'next/image';
 import {useEffect, useRef, useState} from 'react';
+import {normalizeImageUrl} from '@/lib/image-url';
 
+/**
+  * Defines the ProductImage type.
+  * Usage: Use ProductImage to type related values and keep data contracts consistent.
+  */
 type ProductImage = {
   id: number;
   img: string;
   alt?: string;
 };
 
+/**
+  * Describes behavior for ProductImageGallery.
+  * Usage: Call ProductImageGallery(...) where this declaration is needed in the current module flow.
+  */
 export function ProductImageGallery({images}: {images: ProductImage[]}) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showLeftGlow, setShowLeftGlow] = useState(false);
@@ -74,7 +83,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
                 ? 'border-primary'
                 : 'border-dark-text hover:border-primary'
             }`}
-            src={image.img}
+            src={normalizeImageUrl(image.img)}
             alt={image.alt || 'Product Image'}
             width={200}
             height={200}
@@ -88,7 +97,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
         <div className='pointer-events-none absolute top-0 right-0 z-20 h-20 w-8 bg-linear-to-l from-dark-text/50 to-transparent' />
       )}
       <Image
-        src={activeImage.img}
+        src={normalizeImageUrl(activeImage.img)}
         alt={activeImage.alt || 'Product Image'}
         width={500}
         height={400}

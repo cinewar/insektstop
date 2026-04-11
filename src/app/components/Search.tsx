@@ -5,12 +5,20 @@ import {CLOSESVG, SEARCHSVG} from '../utils/svg';
 import Svg from './Svg';
 import {Input} from './Input';
 
+/**
+  * Defines the SearchProps interface.
+  * Usage: Implement or consume SearchProps when exchanging this structured contract.
+  */
 interface SearchProps {
   placeholder?: string;
   paramKey?: string;
   className?: string;
 }
 
+/**
+  * Describes behavior for Search.
+  * Usage: Call Search(...) where this declaration is needed in the current module flow.
+  */
 export function Search({
   placeholder = 'Search products...',
   paramKey = 'q',

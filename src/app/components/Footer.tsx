@@ -1,5 +1,9 @@
 import Link from 'next/link';
 
+/**
+  * Describes behavior for Footer.
+  * Usage: Call Footer(...) where this declaration is needed in the current module flow.
+  */
 export function Footer() {
   return (
     <footer className='w-full text-center py-4 bg-dark-text text-primary mt-auto'>

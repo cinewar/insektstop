@@ -2,6 +2,10 @@ import {useState} from 'react';
 import Svg from './Svg';
 import {CLOSESVG} from '../utils/svg';
 
+/**
+  * Defines the ModalProps type.
+  * Usage: Use ModalProps to type related values and keep data contracts consistent.
+  */
 type ModalProps = {
   children:
     | React.ReactNode
@@ -9,6 +13,10 @@ type ModalProps = {
   onClose: () => void;
 };
 
+/**
+  * Describes behavior for Modal.
+  * Usage: Call Modal(...) where this declaration is needed in the current module flow.
+  */
 export function Modal({children, onClose}: ModalProps) {
   const [isClosing, setIsClosing] = useState(false);
 

@@ -1,6 +1,10 @@
 'use client';
-import {Button} from './Button';
+import Link from 'next/link';
 
+/**
+  * Describes behavior for Hero.
+  * Usage: Call Hero(...) where this declaration is needed in the current module flow.
+  */
 export function Hero() {
   return (
     <section
@@ -21,9 +25,12 @@ export function Hero() {
           Evinizde Rahatça Oturmanın Yegane Yolu
         </h1>
       </div>
-      <Button className='shining' onClick={() => {}}>
+      <Link
+        href='/order'
+        className='relative active:scale-95 transition-transform inline-flex items-center justify-center cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw] shadow-md hover:bg-tertiary z-2 shining'
+      >
         Fiyat Al
-      </Button>
+      </Link>
       {/* <Image
         src='/hero.png'
         alt='Hero Image'

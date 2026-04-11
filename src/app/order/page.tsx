@@ -6,6 +6,10 @@ const loadSearchParams = createLoader({
   q: parseAsString.withDefault(''),
 });
 
+/**
+  * Defines the ProductsProps type.
+  * Usage: Use ProductsProps to type related values and keep data contracts consistent.
+  */
 type ProductsProps = {
   searchParams: SearchParams;
 };

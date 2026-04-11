@@ -9,10 +9,18 @@ import {Textarea} from '@/app/components/Textarea';
 import {useState} from 'react';
 import {PlaceForm} from './PlaceForm';
 
+/**
+  * Defines the PlaceContentProps interface.
+  * Usage: Implement or consume PlaceContentProps when exchanging this structured contract.
+  */
 interface PlaceContentProps {
   orderId: string;
 }
 
+/**
+  * Describes behavior for PlaceContent.
+  * Usage: Call PlaceContent(...) where this declaration is needed in the current module flow.
+  */
 export function PlaceContent({orderId}: PlaceContentProps) {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'create' | 'edit'>('create');

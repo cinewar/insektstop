@@ -2,11 +2,19 @@ import {GlassyButton} from '@/app/components/GlassyButton';
 import {CLOSESVG, OKSVG} from '@/app/utils/svg';
 import {useFormStatus} from 'react-dom';
 
+/**
+  * Defines the FormActionsProps interface.
+  * Usage: Implement or consume FormActionsProps when exchanging this structured contract.
+  */
 interface FormActionsProps {
   close: () => void;
   label: string;
 }
 
+/**
+  * Describes behavior for FormActions.
+  * Usage: Call FormActions(...) where this declaration is needed in the current module flow.
+  */
 export function FormActions({close, label}: FormActionsProps) {
   const {pending} = useFormStatus();
 

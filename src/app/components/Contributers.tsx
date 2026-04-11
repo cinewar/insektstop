@@ -1,6 +1,10 @@
 import {ADSVG, ALSVG, CPSVG, FRSVG, RP1SVG, RPSVG} from '../utils/svg';
 import Svg from './Svg';
 
+/**
+  * Describes behavior for Contributers.
+  * Usage: Call Contributers(...) where this declaration is needed in the current module flow.
+  */
 export function Contributers() {
   const contributers = [
     ADSVG,

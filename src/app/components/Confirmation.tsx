@@ -5,6 +5,10 @@ import {Modal} from './Modal';
 import {CLOSESVG, OKSVG} from '../utils/svg';
 import {Loading} from './Loading';
 
+/**
+  * Defines the ConfirmationProps type.
+  * Usage: Use ConfirmationProps to type related values and keep data contracts consistent.
+  */
 type ConfirmationProps = {
   title?: string;
   message: string;
@@ -13,6 +17,10 @@ type ConfirmationProps = {
   isLoading?: boolean;
 };
 
+/**
+  * Describes behavior for Confirmation.
+  * Usage: Call Confirmation(...) where this declaration is needed in the current module flow.
+  */
 export function Confirmation({
   title = 'Delete Order',
   message,

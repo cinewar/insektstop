@@ -2,27 +2,53 @@
 
 import {useRef, useState} from 'react';
 import Image from 'next/image';
-import {ADDPHOTOSVG, EDITSVG} from '../utils/svg';
-import Svg from './Svg';
+import {EDITSVG, TRASHSVG} from '../utils/svg';
+import ActionMenu from './ActionMenu';
 
-interface ImageUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
+/**
+  * Defines the ImageUploadProps interface.
+  * Usage: Implement or consume ImageUploadProps when exchanging this structured contract.
+  */
+interface ImageUploadProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'defaultValue'
+> {
   label?: string;
+  defaultValue?: string;
+  onDeleteAction?: () => void;
+  onFileSelectedAction?: () => void;
 }
 
+/**
+  * Describes behavior for ImageUpload.
+  * Usage: Call ImageUpload(...) where this declaration is needed in the current module flow.
+  */
 export function ImageUpload({
   label,
   className,
   onChange,
+  defaultValue,
+  onDeleteAction,
+  onFileSelectedAction,
   ...props
 }: ImageUploadProps) {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const preview =
+    selectedPreview ?? (isDeleted ? null : (defaultValue ?? null));
+  const effectiveProgress = selectedPreview ? progress : preview ? 100 : 0;
   const showProgressBorder = progress > 0 || Boolean(preview);
 
   return (
-    <div className='relative w-full aspect-square rounded-md overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer'>
-      <div className='relative z-10 flex h-12 w-12 items-center justify-center rounded-full'>
+    <div className='relative w-full aspect-square rounded-md bg-gray-200 flex items-center justify-center cursor-pointer'>
+      <div
+        className={`relative flex h-12 w-12 items-center justify-center rounded-full ${
+          isMenuOpen ? 'z-200' : 'z-10'
+        }`}
+      >
         <svg
           viewBox='0 0 48 48'
           className='pointer-events-none absolute inset-0 h-full w-full -rotate-90'
@@ -45,13 +71,40 @@ export function ImageUpload({
             strokeWidth='3'
             strokeLinecap='round'
             pathLength='100'
-            strokeDasharray={`${progress} 100`}
+            strokeDasharray={`${effectiveProgress} 100`}
             className='transition-[stroke-dasharray,opacity] duration-150'
             opacity={showProgressBorder ? 1 : 0}
           />
         </svg>
+        <ActionMenu
+          className='absolute inset-0 z-50'
+          onOpenChangeAction={setIsMenuOpen}
+          actions={[
+            {
+              id: 'edit',
+              icon: EDITSVG,
+              label: preview ? 'Edit' : 'Add',
+              onClick: () => inputRef.current?.click(),
+            },
+            {
+              id: 'delete',
+              icon: TRASHSVG,
+              label: 'Delete',
+              onClick: () => {
+                if (inputRef.current) {
+                  inputRef.current.value = '';
+                }
 
-        <button
+                setSelectedPreview(null);
+                setProgress(0);
+                setIsDeleted(true);
+                onDeleteAction?.();
+              },
+            },
+          ]}
+        />
+
+        {/* <button
           type='button'
           className='relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray/50'
           onClick={() => inputRef.current?.click()}
@@ -62,14 +115,14 @@ export function ImageUpload({
             size={30}
             className='text-primary'
           />
-        </button>
+        </button> */}
       </div>
 
       {preview && (
         <Image
           src={preview}
           alt='Preview'
-          className='absolute inset-0 w-full h-full object-cover'
+          className='absolute inset-0 w-full h-full object-cover rounded-[inherit]'
           fill
         />
       )}
@@ -87,7 +140,8 @@ export function ImageUpload({
         onChange={(e) => {
           onChange?.(e);
 
-          setPreview(null);
+          setIsDeleted(false);
+          setSelectedPreview(null);
           setProgress(0);
 
           const file = e.target.files?.[0];
@@ -95,6 +149,8 @@ export function ImageUpload({
           if (!file) {
             return;
           }
+
+          onFileSelectedAction?.();
 
           const reader = new FileReader();
 
@@ -111,7 +167,7 @@ export function ImageUpload({
           };
 
           reader.onloadend = () => {
-            setPreview(
+            setSelectedPreview(
               typeof reader.result === 'string' ? reader.result : null,
             );
             setProgress(100);

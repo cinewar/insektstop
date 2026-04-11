@@ -7,11 +7,20 @@ import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
 import {useEffect, useRef, useState} from 'react';
 import {Product} from '../../../generated/prisma/client';
+import {normalizeImageUrl} from '@/lib/image-url';
 
+/**
+  * Defines the CardsProps interface.
+  * Usage: Implement or consume CardsProps when exchanging this structured contract.
+  */
 interface CardsProps {
   products: Product[];
 }
 
+/**
+  * Describes behavior for Cards.
+  * Usage: Call Cards(...) where this declaration is needed in the current module flow.
+  */
 export function Cards({products}: CardsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftGlow, setShowLeftGlow] = useState(false);
@@ -52,7 +61,7 @@ export function Cards({products}: CardsProps) {
                 ${product.price.toFixed(2)}
               </h2>
               <Image
-                src={product.images[0].img}
+                src={normalizeImageUrl(product.images[0].img)}
                 alt={product.name}
                 width={200}
                 height={200}

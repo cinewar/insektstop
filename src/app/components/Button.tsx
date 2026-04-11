@@ -1,5 +1,9 @@
 'use client';
 
+/**
+  * Defines the ButtonProps interface.
+  * Usage: Implement or consume ButtonProps when exchanging this structured contract.
+  */
 interface ButtonProps {
   children: React.ReactNode;
   className?: string;
@@ -7,6 +11,10 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
+/**
+  * Describes behavior for Button.
+  * Usage: Call Button(...) where this declaration is needed in the current module flow.
+  */
 export function Button({
   onClick,
   children,

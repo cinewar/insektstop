@@ -11,6 +11,10 @@ import {
 } from '../utils/svg';
 import Svg from './Svg';
 
+/**
+  * Describes behavior for ContactButtons.
+  * Usage: Call ContactButtons(...) where this declaration is needed in the current module flow.
+  */
 export function ContactButtons() {
   const [openMenu, setOpenMenu] = useState(false);
 

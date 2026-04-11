@@ -9,15 +9,37 @@ import {Product} from '../../../../../generated/prisma';
 import {ImageUpload} from '@/app/components/ImageUpload';
 import {
   getPlaceProductFormValues,
+  PlaceProductErrors,
   PlaceProductField,
   placeProductSchema,
 } from '../schema';
+import {
+  createPlaceProduct,
+  deletePlace,
+  deletePlaceProduct,
+  updatePlaceProduct,
+} from '../action';
+import {notify} from '@/app/lib/notifications';
+
+/**
+  * Defines the PlaceProductFormValues type.
+  * Usage: Use PlaceProductFormValues to type related values and keep data contracts consistent.
+  */
+type PlaceProductFormValues = {
+  product?: string;
+  width?: number;
+  length?: number;
+  images?: string[];
+  placeId?: string;
+  orderId?: string;
+};
 
 /**
  * Props accepted by the place-product form modal.
  */
 interface PlaceProductFormProps {
   close: () => void;
+  initialValues?: PlaceProductFormValues;
   orderId: string;
   placeId?: string;
   products: Product[];
@@ -36,19 +58,19 @@ export default function PlaceProductForm({
   orderId,
   placeName,
   productId,
-  productName,
   modalType,
   products,
+  initialValues,
 }: PlaceProductFormProps) {
   const [values, setValues] = useState({
-    product: '',
-    width: '',
-    length: '',
-    images: ['', '', ''],
+    product: initialValues?.product || '',
+    width: initialValues?.width || '',
+    length: initialValues?.length || '',
+    images: initialValues?.images || ['', '', ''],
     placeId: placeId,
     orderId: orderId,
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<PlaceProductErrors>({
     product: undefined,
     width: undefined,
     length: undefined,
@@ -58,21 +80,67 @@ export default function PlaceProductForm({
   /**
    * Receives submitted FormData and maps values for backend actions.
    */
-  function handleAction(formData: FormData) {
+  async function handleAction(formData: FormData) {
     console.log(
       'Form submitted with values:',
       getPlaceProductFormValues(formData),
     );
     // TODO: Implement create/edit/delete logic based on modalType and provided IDs
     // For example:
-    // if (modalType === 'create') {
-    //   createPlaceProduct({ placeId, productId, orderId });
-    // } else if (modalType === 'edit') {
-    //   updatePlaceProduct({ placeId, productId, orderId });
-    // } else if (modalType === 'delete') {
-    //   deletePlaceProduct({ placeId, productId, orderId });
-    // }
-    close();
+    try {
+      if (modalType === 'create') {
+        const result = await createPlaceProduct(formData);
+        if (!result.ok) {
+          console.error('Error creating place product:', result.message);
+          notify({
+            type: 'error',
+            message: result.message,
+            title: 'Error',
+          });
+          return;
+        }
+
+        notify({
+          type: 'success',
+          message: `${result.data.name} added to place ${placeName} successfully!`,
+          title: 'Success',
+        });
+        close();
+        return;
+      } else if (modalType === 'edit') {
+        const result = await updatePlaceProduct(formData);
+        if (!result.ok) {
+          console.error('Error updating place product:', result.message);
+          notify({
+            type: 'error',
+            message: result.message,
+            title: 'Error',
+          });
+          return;
+        }
+        notify({
+          type: 'success',
+          message: `${result.data.name} updated in place ${placeName} successfully!`,
+          title: 'Success',
+        });
+        close();
+        return;
+      }
+    } catch (error) {
+      console.error('Error handling form action:', error);
+      notify({
+        type: 'error',
+        message: 'An unexpected error occurred',
+        title: 'Error',
+      });
+      return;
+    }
+
+    notify({
+      type: 'error',
+      message: 'Only create mode is implemented for this form.',
+      title: 'Not Implemented',
+    });
   }
 
   /**
@@ -111,11 +179,41 @@ export default function PlaceProductForm({
     };
   }
 
+  /**
+    * Describes behavior for markImageSlotRemoved.
+    * Usage: Call markImageSlotRemoved(...) where this declaration is needed in the current module flow.
+    */
+  function markImageSlotRemoved(index: number) {
+    setValues((prev) => {
+      const nextImages = [...prev.images];
+      nextImages[index] = '';
+      return {
+        ...prev,
+        images: nextImages,
+      };
+    });
+  }
+
   return (
     <form className='flex flex-col gap-1 text-dark-text' action={handleAction}>
       <FormPendingOverlay />
       <input type='hidden' name='placeId' value={placeId} />
       <input type='hidden' name='orderId' value={orderId} />
+      <input
+        type='hidden'
+        name='initialProductId'
+        value={productId ?? values.product}
+      />
+      {values.images
+        .filter((image) => image)
+        .map((imageUrl, index) => (
+          <input
+            key={`${imageUrl}-${index}`}
+            type='hidden'
+            name='existingImages'
+            value={imageUrl}
+          />
+        ))}
       <Select
         name='product'
         options={products.map((product) => ({
@@ -163,9 +261,24 @@ export default function PlaceProductForm({
         className='flex justify-between gap-1 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
              focus-within:border-primary/50 focus-within:outline-0'
       >
-        <ImageUpload name='images' />
-        <ImageUpload name='images' />
-        <ImageUpload name='images' />
+        <ImageUpload
+          defaultValue={values.images[0]}
+          name='images'
+          onDeleteAction={() => markImageSlotRemoved(0)}
+          onFileSelectedAction={() => markImageSlotRemoved(0)}
+        />
+        <ImageUpload
+          defaultValue={values.images[1]}
+          name='images'
+          onDeleteAction={() => markImageSlotRemoved(1)}
+          onFileSelectedAction={() => markImageSlotRemoved(1)}
+        />
+        <ImageUpload
+          defaultValue={values.images[2]}
+          name='images'
+          onDeleteAction={() => markImageSlotRemoved(2)}
+          onFileSelectedAction={() => markImageSlotRemoved(2)}
+        />
       </div>
       <FormActions
         close={close}

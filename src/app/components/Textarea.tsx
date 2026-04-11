@@ -1,9 +1,17 @@
+/**
+  * Defines the TextareaProps interface.
+  * Usage: Implement or consume TextareaProps when exchanging this structured contract.
+  */
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
   label?: string;
   error?: string;
 }
 
+/**
+  * Describes behavior for Textarea.
+  * Usage: Call Textarea(...) where this declaration is needed in the current module flow.
+  */
 export function Textarea({className, label, error, ...props}: TextareaProps) {
   return (
     <>

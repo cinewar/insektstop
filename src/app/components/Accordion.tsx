@@ -6,15 +6,24 @@ import {DOWNSVG, EDITSVG, OKSVG, PLUSSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import ActionMenu from './ActionMenu';
 import {GlassyButton} from './GlassyButton';
 
+/**
+  * Defines the AccordionItem type.
+  * Usage: Use AccordionItem to type related values and keep data contracts consistent.
+  */
 export type AccordionItem = {
   id: string;
   title: ReactNode;
+  price?: number;
   content: ReactNode;
   onAdd?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
+/**
+  * Defines the AccordionProps type.
+  * Usage: Use AccordionProps to type related values and keep data contracts consistent.
+  */
 type AccordionProps = {
   items: AccordionItem[];
   className?: string;
@@ -50,8 +59,13 @@ export default function Accordion({
           >
             <div
               onClick={() => handleToggle(item.id)}
-              className={`flex justify-between p-2 items-center ${isOpen ? 'shadow-md rounded-lg' : ''}`}
+              className={`relative flex justify-between p-2 items-center ${isOpen ? 'shadow-md rounded-lg' : ''}`}
             >
+              {!isOpen && item.price !== undefined && (
+                <div className='absolute -bottom-1 left-2 text-sm text-tertiary font-semibold'>
+                  £{item.price.toFixed(2)}
+                </div>
+              )}
               {isOpen && isEdit ? (
                 <div className='' onClick={(event) => event.stopPropagation()}>
                   <form className='flex gap-1'>
@@ -73,7 +87,9 @@ export default function Accordion({
                   </form>
                 </div>
               ) : (
-                <div className='text-md font-semibold'>{item.title}</div>
+                <>
+                  <div className='text-md font-semibold'>{item.title}</div>
+                </>
               )}
 
               <div className='flex'>

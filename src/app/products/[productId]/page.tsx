@@ -44,8 +44,9 @@ export default async function ProductPage({
       </div>
       <div className='flex justify-center mt-2'>
         <Link
-          href='#'
-          className='relative inline-flex items-center justify-center cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw] shadow-md hover:bg-tertiary z-2 shining'
+          href='/order'
+          className='relative active:scale-95 transition-transform inline-flex
+           items-center justify-center cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw] shadow-md hover:bg-tertiary z-2 shining'
         >
           Fiyat Al
         </Link>

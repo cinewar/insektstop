@@ -4,6 +4,10 @@ import {useState} from 'react';
 import {CLOSESVG, DOWNSVG, SEARCHSVG} from '../utils/svg';
 import Svg from './Svg';
 
+/**
+  * Defines the SelectProps interface.
+  * Usage: Implement or consume SelectProps when exchanging this structured contract.
+  */
 interface SelectProps {
   name?: string;
   error?: string;
@@ -15,6 +19,10 @@ interface SelectProps {
   placeholder?: string;
 }
 
+/**
+  * Describes behavior for Select.
+  * Usage: Call Select(...) where this declaration is needed in the current module flow.
+  */
 export function Select({
   options,
   value,
@@ -31,6 +39,10 @@ export function Select({
   const [searchTerm, setSearchTerm] = useState('');
   const [internalValue, setInternalValue] = useState(value);
 
+  /**
+    * Describes behavior for handleChange.
+    * Usage: Call handleChange(...) where this declaration is needed in the current module flow.
+    */
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const inputValue = e.target.value;
     setSearchTerm(inputValue);

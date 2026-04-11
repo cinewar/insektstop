@@ -127,6 +127,10 @@ export function PlaceForm({
     close();
   }
 
+  /**
+    * Describes behavior for handleDelete.
+    * Usage: Call handleDelete(...) where this declaration is needed in the current module flow.
+    */
   async function handleDelete() {
     if (!placeId) {
       notify({

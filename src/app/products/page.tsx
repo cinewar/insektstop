@@ -8,11 +8,16 @@ import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
 import {SearchDropdown} from '../components/SearchDropdown';
 import {prisma} from '@/lib/prisma';
+import {normalizeImageUrl} from '@/lib/image-url';
 
 const loadSearchParams = createLoader({
   q: parseAsString.withDefault(''),
 });
 
+/**
+  * Defines the ProductsProps type.
+  * Usage: Use ProductsProps to type related values and keep data contracts consistent.
+  */
 type ProductsProps = {
   searchParams: SearchParams;
 };
@@ -58,7 +63,7 @@ export default async function Products({searchParams}: ProductsProps) {
                   <p className='line-clamp-3'>{product.description}</p>
                 </div>
                 <Image
-                  src={product.images[0].img}
+                  src={normalizeImageUrl(product.images[0].img)}
                   alt={product.name}
                   fill
                   className='object-cover rounded-lg -z-1'

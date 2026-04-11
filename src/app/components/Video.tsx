@@ -1,3 +1,7 @@
+/**
+  * Describes behavior for VideoPlayer.
+  * Usage: Call VideoPlayer(...) where this declaration is needed in the current module flow.
+  */
 export function VideoPlayer() {
   return (
     <div className='w-full my-3 relative overflow-hidden'>

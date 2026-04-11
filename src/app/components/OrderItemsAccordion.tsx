@@ -2,7 +2,7 @@
 
 import type {OrderProductWithProducts} from '@/lib/prisma-types';
 import Accordion, {AccordionItem} from './Accordion';
-import {ADDSVG, OKSVG, SETSVG, TRASHSVG} from '../utils/svg';
+import {ADDSVG, SETSVG, TRASHSVG} from '../utils/svg';
 import Image from 'next/image';
 import ActionMenu from './ActionMenu';
 import {useState} from 'react';
@@ -11,7 +11,16 @@ import {Modal} from './Modal';
 import {PlaceForm} from '../order/[id]/components/PlaceForm';
 import {GlassyButton} from './GlassyButton';
 import PlaceProductForm from '../order/[id]/components/PlaceProductForm';
+import {EnlargedImageGalery} from './EnlargedImageGalery';
+import {normalizeImageUrl} from '@/lib/image-url';
+import {deletePlaceProduct} from '../order/[id]/action';
+import {notify} from '../lib/notifications';
+import {Confirmation} from './Confirmation';
 
+/**
+  * Defines the OrderItemsAccordionProps type.
+  * Usage: Use OrderItemsAccordionProps to type related values and keep data contracts consistent.
+  */
 type OrderItemsAccordionProps = {
   orderId: string;
   items: OrderProductWithProducts[];
@@ -35,16 +44,78 @@ export default function OrderItemsAccordion({
     placeName: string;
     productId?: string;
     productName?: string;
+    width?: number;
+    length?: number;
+    images?: string[];
   } | null>(null);
+  const [enlargedGallery, setEnlargedGallery] = useState<{
+    images: string[];
+    currentIndex: number;
+  } | null>(null);
+  const [placeProductDeleteConfirmation, setPlaceProductDeleteConfirmation] =
+    useState<{
+      placeId: string;
+      placeName: string;
+      productId: string;
+      productName: string;
+      images: string[];
+    } | null>(null);
+  const [isDeletingPlaceProduct, setIsDeletingPlaceProduct] = useState(false);
   const defaultImages = [
     '/placeholder.png',
     '/placeholder.png',
     '/placeholder.png',
   ];
 
+  /**
+    * Describes behavior for handleImageGallery.
+    * Usage: Call handleImageGallery(...) where this declaration is needed in the current module flow.
+    */
+  function handleImageGallery(images: string[], currentIndex: number) {
+    setEnlargedGallery({images, currentIndex});
+  }
+
+  /**
+    * Describes behavior for handleDeletePlaceProduct.
+    * Usage: Call handleDeletePlaceProduct(...) where this declaration is needed in the current module flow.
+    */
+  async function handleDeletePlaceProduct(
+    productId: string,
+    placeId: string,
+    images: string[],
+  ) {
+    setIsDeletingPlaceProduct(true);
+
+    try {
+      await deletePlaceProduct(
+        orderId,
+        placeId,
+        productId,
+        images.map((img, index) => ({id: index + 1, img})),
+      );
+
+      notify({
+        type: 'success',
+        message: 'Product deleted successfully.',
+        title: 'Success',
+      });
+      setPlaceProductDeleteConfirmation(null);
+    } catch (error) {
+      console.error('Error deleting place product:', error);
+      notify({
+        type: 'error',
+        message: 'An error occurred while deleting the product.',
+        title: 'Error',
+      });
+    } finally {
+      setIsDeletingPlaceProduct(false);
+    }
+  }
+
   const accordionItems: AccordionItem[] = items.map((item) => ({
     id: item.id,
     title: item.name,
+    price: item.price,
     onAdd: () => setIsAdd(true),
     onEdit: () =>
       setPlaceModal({
@@ -61,39 +132,62 @@ export default function OrderItemsAccordion({
     },
     content: (
       <>
-        <div className='flex flex-col gap-2'>
+        <div className='flex mt-2 flex-col gap-2'>
           {item.products.map((productLink) => (
-            <>
-              <div className='flex px-1 font-semibold py-2'>
+            <div
+              key={productLink.id}
+              className='relative flex flex-col pb-2 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)] bg-white
+              rounded-lg'
+            >
+              <div className='flex px-2 text-secondary font-semibold bg-gray rounded-t-lg'>
                 <span className='flex-3'>Product</span>
                 <span className='flex-1'>Width(m)</span>
                 <span className='flex-1'>Length(m)</span>
               </div>
-              <div
-                key={productLink.id}
-                className='relative flex flex-col px-1 py-2 shadow-[inset_0_0_10px_rgba(0,0,0,0.1)] bg-white
-              rounded-lg gap-2'
-              >
-                <div className='grid grid-cols-5 items-center p-1'>
+              <div className='p-1 flex flex-col gap-2'>
+                <div className='grid grid-cols-5 items-center px-1'>
                   <span className='col-span-3'>{productLink.product.name}</span>
                   <span className='col-span-1'>{productLink.width}m</span>
                   <span className='col-span-1 flex items-center gap-2'>
                     {productLink.length}m{' '}
                     <ActionMenu
-                      direction='vertical'
-                      menuClassName='items-center -top-2 right-2'
+                      className='ml-auto'
                       actions={[
                         {
                           id: 'edit',
                           icon: SETSVG,
+                          label: 'Edit',
                           iconSize: 40,
-                          onClick: () => {},
+                          onClick: () => {
+                            setPlaceProductModal({
+                              modalType: 'edit',
+                              placeId: item.id,
+                              placeName: item.name,
+                              productId: productLink.product.id,
+                              width: productLink.width,
+                              length: productLink.length,
+                              images: productLink.images.map((image) =>
+                                normalizeImageUrl(image.img),
+                              ),
+                            });
+                          },
                         },
                         {
                           id: 'delete',
                           icon: TRASHSVG,
+                          label: 'Delete',
                           iconSize: 40,
-                          onClick: () => {},
+                          onClick: () => {
+                            setPlaceProductDeleteConfirmation({
+                              placeId: item.id,
+                              placeName: item.name,
+                              productId: productLink.product.id,
+                              productName: productLink.product.name,
+                              images: productLink.images.map((image) =>
+                                normalizeImageUrl(image.img),
+                              ),
+                            });
+                          },
                         },
                       ]}
                     />
@@ -101,12 +195,24 @@ export default function OrderItemsAccordion({
                 </div>
                 <div className='flex gap-2 p-1'>
                   {[
-                    ...productLink.images.slice(0, 3).map((image) => image.img),
+                    ...productLink.images
+                      .slice(0, 3)
+                      .map((image) => normalizeImageUrl(image.img)),
                     ...defaultImages,
                   ]
                     .slice(0, 3)
                     .map((imageSrc, index) => (
                       <Image
+                        onClick={() => {
+                          if (imageSrc === '/placeholder.png') return;
+
+                          handleImageGallery(
+                            productLink.images.map((image) =>
+                              normalizeImageUrl(image.img),
+                            ),
+                            index,
+                          );
+                        }}
                         key={`${productLink.id}-${index}`}
                         src={imageSrc || '/placeholder.png'}
                         alt={productLink.product.name}
@@ -116,13 +222,17 @@ export default function OrderItemsAccordion({
                       />
                     ))}
                 </div>
-
-                <span>${productLink.product.price.toFixed(2)}</span>
+                <span
+                  className='bg-gray max-w-max py-1 px-3 text-secondary text-base rounded-full
+                    font-semibold ml-1'
+                >
+                  price: ${productLink.product.price.toFixed(2)}
+                </span>
               </div>
-            </>
+            </div>
           ))}
           <div className='flex justify-end'>
-            <span className='max-w-fit bg-gray rounded-full px-2 py-1 mt-2'>
+            <span className='max-w-fit bg-gray rounded-full p-1 mt-2'>
               <GlassyButton
                 icon={ADDSVG}
                 iconSize={40}
@@ -176,9 +286,19 @@ export default function OrderItemsAccordion({
           {({close}) => (
             <div className='relative'>
               <h2 className='mb-2 text-lg font-bold'>
-                Add Product to {placeProductModal.placeName}
+                {placeProductModal.modalType === 'edit' ? 'Edit' : 'Add'}{' '}
+                Product {placeProductModal.modalType === 'edit' ? 'of' : 'to'}{' '}
+                {placeProductModal.placeName}
               </h2>
               <PlaceProductForm
+                initialValues={{
+                  placeId: placeProductModal.placeId,
+                  orderId,
+                  product: placeProductModal.productId || '',
+                  width: placeProductModal.width,
+                  length: placeProductModal.length,
+                  images: placeProductModal.images || ['', '', ''],
+                }}
                 close={close}
                 modalType={placeProductModal.modalType}
                 placeId={placeProductModal.placeId}
@@ -191,6 +311,28 @@ export default function OrderItemsAccordion({
             </div>
           )}
         </Modal>
+      )}
+      {enlargedGallery && (
+        <EnlargedImageGalery
+          images={enlargedGallery.images}
+          onCloseAction={() => setEnlargedGallery(null)}
+          currentIndex={enlargedGallery.currentIndex}
+        />
+      )}
+      {placeProductDeleteConfirmation && (
+        <Confirmation
+          title='Delete Place Product'
+          message={`Are you sure you want to delete ${placeProductDeleteConfirmation.productName} from ${placeProductDeleteConfirmation.placeName}?`}
+          onConfirmAction={() =>
+            handleDeletePlaceProduct(
+              placeProductDeleteConfirmation.productId,
+              placeProductDeleteConfirmation.placeId,
+              placeProductDeleteConfirmation.images,
+            )
+          }
+          onCancelAction={() => setPlaceProductDeleteConfirmation(null)}
+          isLoading={isDeletingPlaceProduct}
+        />
       )}
     </>
   );

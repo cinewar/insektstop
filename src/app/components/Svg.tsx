@@ -1,5 +1,9 @@
 import {SVGProps, ComponentType} from 'react';
 
+/**
+  * Defines the ISvgProps interface.
+  * Usage: Implement or consume ISvgProps when exchanging this structured contract.
+  */
 interface ISvgProps {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   size?: number;

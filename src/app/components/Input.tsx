@@ -1,8 +1,16 @@
+/**
+  * Defines the InputProps interface.
+  * Usage: Implement or consume InputProps when exchanging this structured contract.
+  */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   label?: string;
   error?: string;
 }
+/**
+  * Describes behavior for Input.
+  * Usage: Call Input(...) where this declaration is needed in the current module flow.
+  */
 export function Input({className, label, error, ...props}: InputProps) {
   return (
     <>

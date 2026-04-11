@@ -1,6 +1,10 @@
 import {FLYSVG} from '../utils/svg';
 import Svg from './Svg';
 
+/**
+  * Describes behavior for Fly.
+  * Usage: Call Fly(...) where this declaration is needed in the current module flow.
+  */
 export function Fly() {
   return (
     <div className='w-full mx-auto '>

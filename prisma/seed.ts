@@ -30,6 +30,10 @@ const cloudflareImages = [
   },
 ];
 
+/**
+  * Describes behavior for buildProductImages.
+  * Usage: Call buildProductImages(...) where this declaration is needed in the current module flow.
+  */
 function buildProductImages(productIndex: number) {
   const startIndex = productIndex % cloudflareImages.length;
   const rotated = [
@@ -43,6 +47,10 @@ function buildProductImages(productIndex: number) {
   }));
 }
 
+/**
+  * Describes behavior for main.
+  * Usage: Call main(...) where this declaration is needed in the current module flow.
+  */
 async function main() {
   const products = productsJson.map((product, index) => ({
     productId: product.id,

@@ -14,6 +14,10 @@ import Svg from './Svg';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
+/**
+  * Describes behavior for Header.
+  * Usage: Call Header(...) where this declaration is needed in the current module flow.
+  */
 export function Header() {
   const [openDropNav, setOpenDropNav] = useState(false);
   const pathName = usePathname();

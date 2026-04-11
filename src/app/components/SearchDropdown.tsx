@@ -10,6 +10,10 @@ import {useRouter} from 'next/navigation';
 import {Confirmation} from './Confirmation';
 import {notify} from '../lib/notifications';
 
+/**
+  * Defines the SearchDropdownProps type.
+  * Usage: Use SearchDropdownProps to type related values and keep data contracts consistent.
+  */
 type SearchDropdownProps = {
   products?: Product[];
   orderId?: string;
@@ -17,6 +21,10 @@ type SearchDropdownProps = {
   onDeleteAction?: () => void | Promise<void>;
 };
 
+/**
+  * Describes behavior for SearchDropdown.
+  * Usage: Call SearchDropdown(...) where this declaration is needed in the current module flow.
+  */
 export function SearchDropdown({
   products,
   orderId,
