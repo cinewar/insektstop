@@ -17,9 +17,9 @@ import {deleteOrderImageFromR2, uploadOrderImagesToR2} from './functions';
 type PlaceActionResult<T> = {ok: true; data: T} | {ok: false; message: string};
 
 /**
-  * Describes behavior for getErrorMessage.
-  * Usage: Call getErrorMessage(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for getErrorMessage.
+ * Usage: Call getErrorMessage(...) where this declaration is needed in the current module flow.
+ */
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message) {
     return error.message;
@@ -42,9 +42,9 @@ function getErrorMessage(error: unknown): string {
 }
 
 /**
-  * Describes behavior for syncOrderProductPrice.
-  * Usage: Call syncOrderProductPrice(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for syncOrderProductPrice.
+ * Usage: Call syncOrderProductPrice(...) where this declaration is needed in the current module flow.
+ */
 async function syncOrderProductPrice(
   orderProductId: string,
 ): Promise<OrderProduct> {
@@ -81,9 +81,9 @@ async function syncOrderProductPrice(
 }
 
 /**
-  * Describes behavior for syncOrderTotalPrice.
-  * Usage: Call syncOrderTotalPrice(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for syncOrderTotalPrice.
+ * Usage: Call syncOrderTotalPrice(...) where this declaration is needed in the current module flow.
+ */
 async function syncOrderTotalPrice(orderId: string): Promise<Order> {
   const orderWithItems = await prisma.order.findUnique({
     where: {id: orderId},
@@ -206,16 +206,26 @@ export async function updatePlace(
 }
 
 /**
-  * Describes behavior for deletePlace.
-  * Usage: Call deletePlace(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for deletePlace.
+ * Usage: Call deletePlace(...) where this declaration is needed in the current module flow.
+ */
 export async function deletePlace(orderId: string, placeId: string) {
   try {
+    const itemsWithImages = await prisma.orderItemProduct.findMany({
+      where: {orderProductRefId: placeId},
+      select: {images: true},
+    });
+
     await prisma.orderItemProduct.deleteMany({
       where: {
         orderProductRefId: placeId,
       },
     });
+
+    const allImages = itemsWithImages.flatMap((item) => item.images);
+    await Promise.allSettled(
+      allImages.map((image) => deleteOrderImageFromR2(image.img)),
+    );
 
     const result = await prisma.orderProduct.delete({
       where: {id: placeId},
@@ -234,9 +244,9 @@ export async function deletePlace(orderId: string, placeId: string) {
 }
 
 /**
-  * Describes behavior for createPlaceProduct.
-  * Usage: Call createPlaceProduct(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for createPlaceProduct.
+ * Usage: Call createPlaceProduct(...) where this declaration is needed in the current module flow.
+ */
 export async function createPlaceProduct(
   formData: FormData,
 ): Promise<PlaceActionResult<OrderProduct> & {imageUrls?: string[]}> {
@@ -324,9 +334,9 @@ export async function createPlaceProduct(
 }
 
 /**
-  * Describes behavior for updatePlaceProduct.
-  * Usage: Call updatePlaceProduct(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for updatePlaceProduct.
+ * Usage: Call updatePlaceProduct(...) where this declaration is needed in the current module flow.
+ */
 export async function updatePlaceProduct(
   formData: FormData,
 ): Promise<PlaceActionResult<OrderProduct> & {imageUrls?: string[]}> {
@@ -457,9 +467,9 @@ export async function updatePlaceProduct(
 }
 
 /**
-  * Describes behavior for deletePlaceProduct.
-  * Usage: Call deletePlaceProduct(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for deletePlaceProduct.
+ * Usage: Call deletePlaceProduct(...) where this declaration is needed in the current module flow.
+ */
 export async function deletePlaceProduct(
   orderId: string,
   placeId: string,

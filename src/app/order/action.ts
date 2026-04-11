@@ -3,6 +3,7 @@
 import {randomBytes} from 'crypto';
 import {prisma} from '@/lib/prisma';
 import {getOrderFormValues, orderSchema} from './schema';
+import {deleteOrderImageFromR2} from './[id]/functions';
 
 const ORDER_NAME_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -177,6 +178,35 @@ export async function deleteOrder(id: string) {
   if (!id) {
     throw new Error('Order ID is required for deletion');
   }
+
+  const places = await prisma.orderProduct.findMany({
+    where: {orderRefId: id},
+    select: {
+      id: true,
+      products: {
+        select: {images: true},
+      },
+    },
+  });
+
+  const allImages = places.flatMap((place) =>
+    place.products.flatMap((item) => item.images),
+  );
+
+  const placeIds = places.map((place) => place.id);
+
+  await prisma.orderItemProduct.deleteMany({
+    where: {orderProductRefId: {in: placeIds}},
+  });
+
+  await prisma.orderProduct.deleteMany({
+    where: {orderRefId: id},
+  });
+
+  await Promise.allSettled(
+    allImages.map((image) => deleteOrderImageFromR2(image.img)),
+  );
+
   const result = await prisma.order.delete({
     where: {id},
   });

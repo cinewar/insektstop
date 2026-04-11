@@ -6,9 +6,9 @@ import {
 import {randomUUID} from 'crypto';
 
 /**
-  * Defines the UploadedOrderImage interface.
-  * Usage: Implement or consume UploadedOrderImage when exchanging this structured contract.
-  */
+ * Defines the UploadedOrderImage interface.
+ * Usage: Implement or consume UploadedOrderImage when exchanging this structured contract.
+ */
 interface UploadedOrderImage {
   id: number;
   img: string;
@@ -17,9 +17,9 @@ interface UploadedOrderImage {
 let r2Client: S3Client | null = null;
 
 /**
-  * Describes behavior for getR2Config.
-  * Usage: Call getR2Config(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for getR2Config.
+ * Usage: Call getR2Config(...) where this declaration is needed in the current module flow.
+ */
 function getR2Config() {
   const accountId =
     process.env.CLOUDFLARE_R2_ACCOUNT_ID ?? process.env.R2_ACCOUNT_ID;
@@ -54,9 +54,9 @@ function getR2Config() {
 }
 
 /**
-  * Describes behavior for getR2Client.
-  * Usage: Call getR2Client(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for getR2Client.
+ * Usage: Call getR2Client(...) where this declaration is needed in the current module flow.
+ */
 function getR2Client() {
   if (!r2Client) {
     const config = getR2Config();
@@ -74,9 +74,9 @@ function getR2Client() {
 }
 
 /**
-  * Describes behavior for uploadOrderImagesToR2.
-  * Usage: Call uploadOrderImagesToR2(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for uploadOrderImagesToR2.
+ * Usage: Call uploadOrderImagesToR2(...) where this declaration is needed in the current module flow.
+ */
 export async function uploadOrderImagesToR2(
   files: File[],
   orderId: string,
@@ -89,10 +89,26 @@ export async function uploadOrderImagesToR2(
   const client = getR2Client();
   const config = getR2Config();
 
+  const mimeToExt: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/webp': 'webp',
+    'image/bmp': 'bmp',
+    'image/tiff': 'tiff',
+    'image/heic': 'jpg',
+    'image/heif': 'jpg',
+  };
+
   const uploads = files.map(async (file, index) => {
-    const extension = file.name.includes('.')
-      ? file.name.split('.').pop()?.toLowerCase() || 'bin'
-      : 'bin';
+    const nameExt = file.name.includes('.')
+      ? file.name.split('.').pop()?.toLowerCase() || ''
+      : '';
+    const extension =
+      nameExt && nameExt !== 'heic' && nameExt !== 'heif'
+        ? nameExt
+        : (mimeToExt[file.type] ?? nameExt) || 'jpg';
     const key = `order/${orderId}/${placeId}/${randomUUID()}.${extension}`;
 
     await client.send(
@@ -114,9 +130,9 @@ export async function uploadOrderImagesToR2(
 }
 
 /**
-  * Describes behavior for deleteOrderImageFromR2.
-  * Usage: Call deleteOrderImageFromR2(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for deleteOrderImageFromR2.
+ * Usage: Call deleteOrderImageFromR2(...) where this declaration is needed in the current module flow.
+ */
 export async function deleteOrderImageFromR2(imageUrl: string) {
   const client = getR2Client();
   const config = getR2Config();
