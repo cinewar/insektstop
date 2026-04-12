@@ -13,7 +13,7 @@ export default async function ProductPage({
   if (!productId) {
     return (
       <div className='min-h-screen text-dark-text bg-secondary pt-18 p-4'>
-        Product not found.
+        Urun bulunamadı.
       </div>
     );
   }
@@ -27,7 +27,7 @@ export default async function ProductPage({
   if (!product) {
     return (
       <div className='min-h-screen text-dark-text bg-secondary pt-18 p-4'>
-        Product not found.
+        Urun bulunamadı.
       </div>
     );
   }

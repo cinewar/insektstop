@@ -154,13 +154,13 @@ export function ImageUpload({
             {
               id: 'edit',
               icon: EDITSVG,
-              label: preview ? 'Edit' : 'Add',
+              label: preview ? 'Düzenle' : 'Ekle',
               onClick: () => inputRef.current?.click(),
             },
             {
               id: 'delete',
               icon: TRASHSVG,
-              label: 'Delete',
+              label: 'Sil',
               onClick: () => {
                 if (inputRef.current) {
                   inputRef.current.value = '';
@@ -179,7 +179,7 @@ export function ImageUpload({
       {preview && (
         <Image
           src={preview}
-          alt='Preview'
+          alt='Önizleme'
           className='absolute inset-0 w-full h-full object-cover rounded-[inherit]'
           fill
         />

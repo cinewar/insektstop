@@ -19,7 +19,7 @@ export default function Contact() {
     {
       key: 'map',
       icon: MAPSVG,
-      text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, minima!',
+      text: 'Londra, Birleşik Krallik',
       iconClassName: 'inline-block min-w-10 mr-2',
       textClassName: 'text-dark-text leading-tight',
     },
@@ -40,7 +40,7 @@ export default function Contact() {
     {
       key: 'email',
       icon: EMAILSVG,
-      text: 'info@example.com',
+      text: 'sevinc65semih@gmail.com',
       iconClassName: 'inline-block mr-2',
       textClassName: 'text-dark-text',
     },
@@ -62,7 +62,7 @@ export default function Contact() {
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
       <div className='fixed h-25 px-3 flex shadow-md items-end w-full max-w-120 bg-secondary'>
-        <h1 className='text-2xl font-bold text-dark-text'>Contact Us</h1>
+        <h1 className='text-2xl font-bold text-dark-text'>İletişim</h1>
       </div>
       <div className='flex text-md font-medium flex-col gap-2 mt-32 px-2'>
         {contactItems.map((item) => (
@@ -84,7 +84,7 @@ export default function Contact() {
                   icon={COPIEDSVG}
                   size={40}
                   className='shrink-0 text-xs font-semibold text-green-500'
-                  aria-label={`${item.key} copied to clipboard`}
+                  aria-label={`${item.key} panoya kopyalandı`}
                 />
               ) : (
                 <Svg
@@ -92,7 +92,7 @@ export default function Contact() {
                   size={40}
                   onClick={() => handleCopy(item.text, item.key)}
                   className='shrink-0 text-xs font-semibold text-dark-text/60'
-                  aria-label={`Copy ${item.key} to clipboard`}
+                  aria-label={`${item.key} panoya kopyala`}
                 />
               )}
             </div>

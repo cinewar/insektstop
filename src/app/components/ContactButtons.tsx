@@ -12,9 +12,9 @@ import {
 import Svg from './Svg';
 
 /**
-  * Describes behavior for ContactButtons.
-  * Usage: Call ContactButtons(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for ContactButtons.
+ * Usage: Call ContactButtons(...) where this declaration is needed in the current module flow.
+ */
 export function ContactButtons() {
   const [openMenu, setOpenMenu] = useState(false);
 
@@ -23,8 +23,10 @@ export function ContactButtons() {
   const whatsAppNumber = '+905380600694';
 
   const handleEmailClick = () => {
-    const subject = encodeURIComponent('Hello');
-    const body = encodeURIComponent('I want to contact you for insektstop.');
+    const subject = encodeURIComponent('Merhaba');
+    const body = encodeURIComponent(
+      'Insektstop icin sizinle iletişime gecmek istiyorum.',
+    );
 
     window.open(
       `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}&su=${subject}&body=${body}`,
@@ -35,7 +37,7 @@ export function ContactButtons() {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
-      'Hello, I want to contact you for insektstop.',
+      'Merhaba, Insektstop icin sizinle iletişime gecmek istiyorum.',
     );
 
     window.open(`https://wa.me/${whatsAppNumber}?text=${message}`, '_blank');
@@ -51,7 +53,7 @@ export function ContactButtons() {
     <div className='fixed sm:hidden right-4 bottom-4 z-40'>
       <ul
         id='quick-contact-menu'
-        aria-label='Quick contact menu'
+        aria-label='Hizli iletişim menusu'
         className={`absolute right-0 bottom-14 flex flex-col gap-2 rounded-[100vw] border border-dark-text/10 bg-secondary/50
               py-1 shadow-custom backdrop-blur-sm transition-all origin-bottom duration-200 ${
                 openMenu

@@ -15,18 +15,18 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 /**
-  * Describes behavior for Header.
-  * Usage: Call Header(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Header.
+ * Usage: Call Header(...) where this declaration is needed in the current module flow.
+ */
 export function Header() {
   const [openDropNav, setOpenDropNav] = useState(false);
   const pathName = usePathname();
   const routes = [
-    {name: 'Home', href: '/', icon: HOMESVG},
-    {name: 'Create & Check Order', href: '/order', icon: HOMESVG},
-    {name: 'About', href: '/about', icon: ABOUTSVG},
-    {name: 'Contact', href: '/contact', icon: CONTACTSVG},
-    {name: 'Products', href: '/products', icon: PRODUCTSSVG},
+    {name: 'Ana Sayfa', href: '/', icon: HOMESVG},
+    {name: 'Sipariş Oluştur ve Göruntule', href: '/order', icon: HOMESVG},
+    {name: 'Hakkımızda', href: '/about', icon: ABOUTSVG},
+    {name: 'İletişim', href: '/contact', icon: CONTACTSVG},
+    {name: 'Urunler', href: '/products', icon: PRODUCTSSVG},
   ];
 
   const delays = [

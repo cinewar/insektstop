@@ -15,9 +15,9 @@ const loadSearchParams = createLoader({
 });
 
 /**
-  * Defines the ProductsProps type.
-  * Usage: Use ProductsProps to type related values and keep data contracts consistent.
-  */
+ * Defines the ProductsProps type.
+ * Usage: Use ProductsProps to type related values and keep data contracts consistent.
+ */
 type ProductsProps = {
   searchParams: SearchParams;
 };
@@ -35,7 +35,7 @@ export default async function Products({searchParams}: ProductsProps) {
     <div className='min-h-screen flex flex-col bg-secondary'>
       <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
         <div className='flex items-center w-full gap-2 relative'>
-          <h1 className='text-2xl font-bold text-dark-text'>Products</h1>
+          <h1 className='text-2xl font-bold text-dark-text'>Urunler</h1>
           <Search />
           {q && filteredProducts.length !== 0 && (
             <SearchDropdown products={filteredProducts} />

@@ -31,14 +31,14 @@ type OrderNotificationPayload = {
  */
 function buildOrderEmailText(payload: OrderNotificationPayload) {
   return [
-    `Order ${payload.action}`,
-    `Order Name: ${payload.orderName}`,
-    `Order ID: ${payload.orderId}`,
-    `Customer: ${payload.createrName}`,
-    `Email: ${payload.createrEmail}`,
-    `Phone: ${payload.createrPhone}`,
-    `Address: ${payload.createrAddress}`,
-    `Total Price: ${payload.totalPrice}`,
+    `Sipariş ${payload.action}`,
+    `Sipariş Adi: ${payload.orderName}`,
+    `Sipariş ID: ${payload.orderId}`,
+    `Müşteri: ${payload.createrName}`,
+    `E-posta: ${payload.createrEmail}`,
+    `Telefon: ${payload.createrPhone}`,
+    `Adres: ${payload.createrAddress}`,
+    `Toplam Fiyat: ${payload.totalPrice}`,
   ].join('\n');
 }
 
@@ -63,14 +63,14 @@ async function sendResendEmail(payload: OrderNotificationPayload) {
     body: JSON.stringify({
       from,
       to: [to],
-      subject: `Order ${payload.action}: ${payload.orderName}`,
+      subject: `Sipariş ${payload.action}: ${payload.orderName}`,
       text: buildOrderEmailText(payload),
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Resend request failed: ${response.status} ${errorText}`);
+    throw new Error(`Resend istegi basarisiz: ${response.status} ${errorText}`);
   }
 }
 
@@ -92,7 +92,7 @@ export async function createOrder(formData: FormData) {
   const validationResult = orderSchema.safeParse(submittedValues);
 
   if (!validationResult.success) {
-    throw new Error('Invalid order form data');
+    throw new Error('Gecersiz sipariş form verisi');
   }
 
   const orderId = Date.now();
@@ -122,7 +122,7 @@ export async function createOrder(formData: FormData) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend notification failed:', error);
+    console.error('Resend bildirimi basarisiz:', error);
   }
 
   return result;
@@ -136,7 +136,7 @@ export async function updateOrder(formData: FormData) {
   const validationResult = orderSchema.safeParse(submittedValues);
 
   if (!validationResult.success) {
-    throw new Error('Invalid order form data');
+    throw new Error('Gecersiz sipariş form verisi');
   }
 
   const orderName = formData.get('orderName') as string;
@@ -165,7 +165,7 @@ export async function updateOrder(formData: FormData) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend notification failed:', error);
+    console.error('Resend bildirimi basarisiz:', error);
   }
 
   return result;
@@ -176,7 +176,7 @@ export async function updateOrder(formData: FormData) {
  */
 export async function deleteOrder(id: string) {
   if (!id) {
-    throw new Error('Order ID is required for deletion');
+    throw new Error('Silme islemi icin sipariş kimliği gereklidir');
   }
 
   const places = await prisma.orderProduct.findMany({
@@ -223,7 +223,7 @@ export async function deleteOrder(id: string) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend notification failed:', error);
+    console.error('Resend bildirimi basarisiz:', error);
   }
   return result;
 }

@@ -96,8 +96,8 @@ export function PlaceForm({
       if (!placeId) {
         notify({
           type: 'error',
-          title: 'Place update failed',
-          message: 'Place ID is required for edit.',
+          title: 'Mekan güncelleme basarisiz',
+          message: 'Düzenleme icin mekan kimliği gerekli.',
         });
         return;
       }
@@ -110,7 +110,7 @@ export function PlaceForm({
     if (!result.ok) {
       notify({
         type: 'error',
-        title: `Place ${modalType === 'edit' ? 'update' : 'creation'} failed`,
+        title: `Mekan ${modalType === 'edit' ? 'güncelleme' : 'oluşturma'} basarisiz`,
         message: result.message,
       });
       return;
@@ -118,7 +118,7 @@ export function PlaceForm({
 
     notify({
       type: 'success',
-      title: `Place ${modalType === 'edit' ? 'updated' : 'created'} successfully`,
+      title: `Mekan başarıyla ${modalType === 'edit' ? 'güncellendi' : 'oluşturuldu'}`,
     });
 
     setValues(submittedValues);
@@ -128,15 +128,15 @@ export function PlaceForm({
   }
 
   /**
-    * Describes behavior for handleDelete.
-    * Usage: Call handleDelete(...) where this declaration is needed in the current module flow.
-    */
+   * Describes behavior for handleDelete.
+   * Usage: Call handleDelete(...) where this declaration is needed in the current module flow.
+   */
   async function handleDelete() {
     if (!placeId) {
       notify({
         type: 'error',
-        title: 'Place deletion failed',
-        message: 'Place ID is required for delete.',
+        title: 'Mekan silme basarisiz',
+        message: 'Silme icin mekan kimliği gerekli.',
       });
       return;
     }
@@ -147,7 +147,7 @@ export function PlaceForm({
       if (!result.ok) {
         notify({
           type: 'error',
-          title: 'Place deletion failed',
+          title: 'Mekan silme basarisiz',
           message: result.message,
         });
         return;
@@ -155,7 +155,7 @@ export function PlaceForm({
 
       notify({
         type: 'success',
-        title: 'Place deleted successfully',
+        title: 'Mekan başarıyla silindi',
       });
       close();
     } finally {
@@ -166,8 +166,8 @@ export function PlaceForm({
   if (modalType === 'delete') {
     return (
       <Confirmation
-        title='Delete Place'
-        message={`Are you sure you want to delete "${initialPlace || 'this place'}"?`}
+        title='Mekanı Sil'
+        message={`"${initialPlace || 'bu mekan'}" kaydini silmek istediginize emin misiniz?`}
         onConfirmAction={handleDelete}
         onCancelAction={close}
         isLoading={isDeleting}
@@ -181,8 +181,8 @@ export function PlaceForm({
       <input type='hidden' name='id' value={orderId} />
       {placeId ? <input type='hidden' name='placeId' value={placeId} /> : null}
       <Input
-        placeholder='Enter the room & place name'
-        label='Room & Place Name'
+        placeholder='Oda ve mekan adını girin'
+        label='Oda ve Mekan Adi'
         name='place'
         value={values.place}
         onChange={handleChange('place')}
@@ -191,7 +191,7 @@ export function PlaceForm({
       />
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Create' : 'Edit'}
+        label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
       />
     </form>
   );

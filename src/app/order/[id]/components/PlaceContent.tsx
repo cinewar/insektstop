@@ -10,17 +10,17 @@ import {useState} from 'react';
 import {PlaceForm} from './PlaceForm';
 
 /**
-  * Defines the PlaceContentProps interface.
-  * Usage: Implement or consume PlaceContentProps when exchanging this structured contract.
-  */
+ * Defines the PlaceContentProps interface.
+ * Usage: Implement or consume PlaceContentProps when exchanging this structured contract.
+ */
 interface PlaceContentProps {
   orderId: string;
 }
 
 /**
-  * Describes behavior for PlaceContent.
-  * Usage: Call PlaceContent(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for PlaceContent.
+ * Usage: Call PlaceContent(...) where this declaration is needed in the current module flow.
+ */
 export function PlaceContent({orderId}: PlaceContentProps) {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'create' | 'edit'>('create');
@@ -29,11 +29,11 @@ export function PlaceContent({orderId}: PlaceContentProps) {
   const title =
     formType === 'place'
       ? modalType === 'create'
-        ? 'Create a Place & Room'
-        : 'Edit a Place & Room'
+        ? 'Mekan ve Oda Oluştur'
+        : 'Mekan ve Oda Düzenle'
       : modalType === 'create'
-        ? 'Create a Product'
-        : 'Edit a Product';
+        ? 'Urun Oluştur'
+        : 'Urun Düzenle';
   return (
     <div className='flex items-center justify-center'>
       <Button
@@ -43,7 +43,7 @@ export function PlaceContent({orderId}: PlaceContentProps) {
           setShowModal(true);
         }}
       >
-        Add Place & Room
+        Mekan ve Oda Ekle
       </Button>
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
@@ -58,7 +58,7 @@ export function PlaceContent({orderId}: PlaceContentProps) {
                 />
               ) : (
                 // <ProductForm close={close} modalType={modalType} />
-                <div>Product Form Coming Soon...</div>
+                <div>Urun formu yakında...</div>
               )}
             </div>
           )}

@@ -5,9 +5,9 @@ import {useEffect, useRef, useState} from 'react';
 import {normalizeImageUrl} from '@/lib/image-url';
 
 /**
-  * Defines the ProductImage type.
-  * Usage: Use ProductImage to type related values and keep data contracts consistent.
-  */
+ * Defines the ProductImage type.
+ * Usage: Use ProductImage to type related values and keep data contracts consistent.
+ */
 type ProductImage = {
   id: number;
   img: string;
@@ -15,9 +15,9 @@ type ProductImage = {
 };
 
 /**
-  * Describes behavior for ProductImageGallery.
-  * Usage: Call ProductImageGallery(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for ProductImageGallery.
+ * Usage: Call ProductImageGallery(...) where this declaration is needed in the current module flow.
+ */
 export function ProductImageGallery({images}: {images: ProductImage[]}) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showLeftGlow, setShowLeftGlow] = useState(false);
@@ -84,7 +84,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
                 : 'border-dark-text hover:border-primary'
             }`}
             src={normalizeImageUrl(image.img)}
-            alt={image.alt || 'Product Image'}
+            alt={image.alt || 'Urun Görseli'}
             width={200}
             height={200}
           />
@@ -98,7 +98,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
       )}
       <Image
         src={normalizeImageUrl(activeImage.img)}
-        alt={activeImage.alt || 'Product Image'}
+        alt={activeImage.alt || 'Urun Görseli'}
         width={500}
         height={400}
         className='object-cover object-center w-full h-80'

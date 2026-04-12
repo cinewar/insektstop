@@ -64,7 +64,7 @@ async function syncOrderProductPrice(
   });
 
   if (!orderProductWithItems) {
-    throw new Error('Order product not found while syncing price');
+    throw new Error('Fiyat senkronizasyonunda sipariş ürünu bulunamadı');
   }
 
   const nextPrice = orderProductWithItems.products.reduce(
@@ -97,7 +97,7 @@ async function syncOrderTotalPrice(orderId: string): Promise<Order> {
   });
 
   if (!orderWithItems) {
-    throw new Error('Order not found while syncing total price');
+    throw new Error('Toplam fiyat senkronizasyonunda sipariş bulunamadı');
   }
 
   const nextTotalPrice = orderWithItems.orderItems.reduce(
@@ -123,7 +123,7 @@ export async function createPlace(
   try {
     const orderId = formData.get('id');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Order ID is required'} as const;
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
     }
 
     const submittedValues = getPlaceFormValues(formData);
@@ -157,7 +157,7 @@ export async function createPlace(
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to create place, ${getErrorMessage(error)}`,
+      message: `Mekan oluşturma basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -172,12 +172,12 @@ export async function updatePlace(
   try {
     const placeId = formData.get('placeId');
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Place ID is required'} as const;
+      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
     }
 
     const orderId = formData.get('id');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Order ID is required'} as const;
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
     }
 
     const submittedValues = getPlaceFormValues(formData);
@@ -200,7 +200,7 @@ export async function updatePlace(
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to update place, ${getErrorMessage(error)}`,
+      message: `Mekan güncelleme basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -238,7 +238,7 @@ export async function deletePlace(orderId: string, placeId: string) {
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to delete place, ${getErrorMessage(error)}`,
+      message: `Mekan silme basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -254,10 +254,10 @@ export async function createPlaceProduct(
     const orderId = formData.get('orderId');
     const placeId = formData.get('placeId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Order ID is required'} as const;
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
     }
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Place ID is required'} as const;
+      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
     }
 
     const submittedValues = getPlaceProductFormValues(formData);
@@ -280,7 +280,7 @@ export async function createPlaceProduct(
     if (!existingPlace) {
       return {
         ok: false,
-        message: 'Place does not belong to this order',
+        message: 'Mekan bu siparişe ait degil',
       } as const;
     }
 
@@ -317,7 +317,7 @@ export async function createPlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to create place product, ${getErrorMessage(error)}`,
+      message: `Mekan ürünu oluşturma basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -334,13 +334,16 @@ export async function updatePlaceProduct(
     const placeId = formData.get('placeId');
     const orderItemProductId = formData.get('orderItemProductId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Order ID is required'} as const;
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
     }
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Place ID is required'} as const;
+      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
     }
     if (typeof orderItemProductId !== 'string' || !orderItemProductId) {
-      return {ok: false, message: 'Order item product ID is required'} as const;
+      return {
+        ok: false,
+        message: 'Sipariş ürünu kayit kimliği gereklidir',
+      } as const;
     }
 
     const submittedValues = getPlaceProductFormValues(formData);
@@ -367,7 +370,7 @@ export async function updatePlaceProduct(
     if (!existingPlace) {
       return {
         ok: false,
-        message: 'Place does not belong to this order',
+        message: 'Mekan bu siparişe ait degil',
       } as const;
     }
 
@@ -384,7 +387,7 @@ export async function updatePlaceProduct(
     if (!existingOrderItemProduct) {
       return {
         ok: false,
-        message: 'Place product not found',
+        message: 'Mekan ürünu bulunamadı',
       } as const;
     }
 
@@ -441,7 +444,7 @@ export async function updatePlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to update place product, ${getErrorMessage(error)}`,
+      message: `Mekan ürünu güncelleme basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -476,7 +479,7 @@ export async function deletePlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Failed to delete place product, ${getErrorMessage(error)}`,
+      message: `Mekan ürünu silme basarisiz, ${getErrorMessage(error)}`,
     } as const;
   }
 }

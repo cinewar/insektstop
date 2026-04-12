@@ -4,7 +4,7 @@ import {z} from 'zod';
  * Validation rules for place form input.
  */
 export const placeSchema = z.object({
-  place: z.string().min(4, 'Room & Place must be at least 4 characters'),
+  place: z.string().min(4, 'Oda ve mekan en az 4 karakter olmalidir'),
 });
 
 /**
@@ -37,14 +37,14 @@ export function getPlaceFormValues(formData: FormData): PlaceFormValues {
 export const placeProductSchema = z.object({
   orderId: z.string().optional(),
   placeId: z.string().optional(),
-  product: z.string().min(1, 'Product is required'),
-  width: z.string().min(1, 'Width is required'),
-  length: z.string().min(1, 'Length is required'),
+  product: z.string().min(1, 'Urun secimi zorunludur'),
+  width: z.string().min(1, 'Genislik zorunludur'),
+  length: z.string().min(1, 'Uzunluk zorunludur'),
   images: z
     .array(z.instanceof(File))
-    .max(3, 'You can upload up to 3 images')
+    .max(3, 'En fazla 3 görsel yükleyebilirsiniz')
     .refine((files) => files.every((file) => file.size > 0), {
-      message: 'Please select valid image files',
+      message: 'Lütfen geçerli görsel dosyalari seçin',
     }),
 });
 

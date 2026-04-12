@@ -11,9 +11,9 @@ import {Confirmation} from './Confirmation';
 import {notify} from '../lib/notifications';
 
 /**
-  * Defines the SearchDropdownProps type.
-  * Usage: Use SearchDropdownProps to type related values and keep data contracts consistent.
-  */
+ * Defines the SearchDropdownProps type.
+ * Usage: Use SearchDropdownProps to type related values and keep data contracts consistent.
+ */
 type SearchDropdownProps = {
   products?: Product[];
   orderId?: string;
@@ -22,9 +22,9 @@ type SearchDropdownProps = {
 };
 
 /**
-  * Describes behavior for SearchDropdown.
-  * Usage: Call SearchDropdown(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for SearchDropdown.
+ * Usage: Call SearchDropdown(...) where this declaration is needed in the current module flow.
+ */
 export function SearchDropdown({
   products,
   orderId,
@@ -74,14 +74,14 @@ export function SearchDropdown({
       setShowDeleteConfirmation(false);
       notify({
         type: 'success',
-        title: 'Order deleted',
-        message: 'The selected order was removed successfully.',
+        title: 'Sipariş silindi',
+        message: 'Seçilen sipariş başarıyla silindi.',
       });
     } catch {
       notify({
         type: 'error',
-        title: 'Order deletion failed',
-        message: 'Please try again.',
+        title: 'Sipariş silme basarisiz',
+        message: 'Lütfen tekrar deneyin.',
       });
     } finally {
       isDeletingRef.current = false;
@@ -115,7 +115,7 @@ export function SearchDropdown({
           <div className='flex flex-col gap-2'>
             <GlassyButton
               icon={RIGHTARROWSVG}
-              label='View Order'
+              label='Siparişi Gör'
               iconSize={32}
               className='pr-4'
               onClick={() => router.push(`/order/${orderId}`)}
@@ -123,13 +123,13 @@ export function SearchDropdown({
             <div className='flex gap-2 justify-between'>
               <GlassyButton
                 icon={EDITSVG}
-                label='Edit Order'
+                label='Siparişi Düzenle'
                 iconSize={40}
                 onClick={onEditAction}
               />
               <GlassyButton
                 icon={TRASHSVG}
-                label='Delete Order'
+                label='Siparişi Sil'
                 iconSize={40}
                 onClick={handleDelete}
               />
@@ -139,7 +139,7 @@ export function SearchDropdown({
       </div>
       {showDeleteConfirmation && (
         <Confirmation
-          message='Are you sure you want to delete this order?'
+          message='Bu siparişi silmek istediginize emin misiniz?'
           onConfirmAction={handleConfirmDelete}
           onCancelAction={() => setShowDeleteConfirmation(false)}
           isLoading={isDeleting}

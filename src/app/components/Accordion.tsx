@@ -7,9 +7,9 @@ import ActionMenu from './ActionMenu';
 import {GlassyButton} from './GlassyButton';
 
 /**
-  * Defines the AccordionItem type.
-  * Usage: Use AccordionItem to type related values and keep data contracts consistent.
-  */
+ * Defines the AccordionItem type.
+ * Usage: Use AccordionItem to type related values and keep data contracts consistent.
+ */
 export type AccordionItem = {
   id: string;
   title: ReactNode;
@@ -21,9 +21,9 @@ export type AccordionItem = {
 };
 
 /**
-  * Defines the AccordionProps type.
-  * Usage: Use AccordionProps to type related values and keep data contracts consistent.
-  */
+ * Defines the AccordionProps type.
+ * Usage: Use AccordionProps to type related values and keep data contracts consistent.
+ */
 type AccordionProps = {
   items: AccordionItem[];
   className?: string;
@@ -74,7 +74,7 @@ export default function Accordion({
                       defaultValue={
                         typeof item.title === 'string' ? item.title : ''
                       }
-                      placeholder='Section Name'
+                      placeholder='Bolum Adi'
                       className='relative w-full p-1 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
                     border-2 focus:border-primary/50 focus:outline-0 border-gray-300'
                     />

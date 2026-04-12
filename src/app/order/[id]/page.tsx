@@ -33,14 +33,14 @@ export default async function Order({
       <div className='fixed h-28 px-3 pb-0.5 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
         <div className='flex justify-between w-full gap-1 relative text-base font-bold text-dark-text'>
           <div className='flex w-full flex-col'>
-            <span className='text-sm text-end text-tertiary mr-1'>Order</span>
+            <span className='text-sm text-end text-tertiary mr-1'>Sipariş</span>
             <span className='bg-gray text-secondary rounded-full p-1 px-2'>
               {order?.orderName}
             </span>
           </div>
           <div className='flex w-full flex-col'>
             <span className='text-sm text-end text-tertiary mr-1'>
-              Total Price
+              Toplam Fiyat
             </span>
             <span className='bg-gray text-secondary rounded-full p-1 px-2'>
               £{order?.totalPrice.toFixed(2)}

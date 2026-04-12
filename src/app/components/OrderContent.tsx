@@ -113,8 +113,8 @@ export function OrderContent({order}: OrderContentProps) {
     } catch {
       notify({
         type: 'error',
-        title: `Order ${actionType === 'edit' ? 'update' : 'creation'} failed`,
-        message: 'Please try again.',
+        title: `Sipariş ${actionType === 'edit' ? 'güncelleme' : 'oluşturma'} basarisiz`,
+        message: 'Lütfen tekrar deneyin.',
       });
       return;
     }
@@ -124,11 +124,11 @@ export function OrderContent({order}: OrderContentProps) {
     setShowModal(false);
     notify({
       type: 'success',
-      title: `Order ${actionType === 'edit' ? 'updated' : 'created'}`,
+      title: `Sipariş ${actionType === 'edit' ? 'güncellendi' : 'oluşturuldu'}`,
       message:
         actionType === 'edit'
-          ? 'The order details were saved successfully.'
-          : 'A new order was created successfully.',
+          ? 'Sipariş detaylari başarıyla kaydedildi.'
+          : 'Yeni sipariş başarıyla oluşturuldu.',
       duration: 4000,
     });
   }
@@ -161,9 +161,9 @@ export function OrderContent({order}: OrderContentProps) {
       <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
         <div className='flex items-center w-full gap-2 relative'>
           <h1 className='text-2xl min-w-fit font-bold text-dark-text'>
-            Create or
+            Oluştur veya
           </h1>
-          <Search />
+          <Search placeholder='Sipariş Ara' />
           {order && (
             <SearchDropdown
               onEditAction={handleEdit}
@@ -181,18 +181,18 @@ export function OrderContent({order}: OrderContentProps) {
             setShowModal(true);
           }}
         >
-          Create Order
+          Sipariş Oluştur
         </Button>
         {showModal && (
           <Modal onClose={() => setShowModal(false)}>
             {({close}) => (
               <div className='relative'>
-                <h2 className='text-lg font-bold mb-2'>Create an Order</h2>
+                <h2 className='text-lg font-bold mb-2'>Sipariş Oluştur</h2>
                 <form className='flex flex-col gap-1' action={handleAction}>
                   <FormPendingOverlay />
                   <Input
-                    placeholder='Enter your name and Surname'
-                    label='Name & Surname'
+                    placeholder='Adinizi ve soyadınızi girin'
+                    label='Ad Soyad'
                     name='name'
                     value={values.name}
                     onChange={handleChange('name')}
@@ -200,8 +200,8 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.name}
                   />
                   <Input
-                    placeholder='Enter your email'
-                    label='Email'
+                    placeholder='E-posta adresinizi girin'
+                    label='E-posta'
                     name='email'
                     value={values.email}
                     onChange={handleChange('email')}
@@ -209,8 +209,8 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.email}
                   />
                   <Input
-                    placeholder='Enter your phone number'
-                    label='Phone Number'
+                    placeholder='Telefon numaranizi girin'
+                    label='Telefon Numarası'
                     name='phone'
                     inputMode='numeric'
                     pattern='[0-9]*'
@@ -221,9 +221,9 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.phone}
                   />
                   <Textarea
-                    label='Address'
+                    label='Adres'
                     name='address'
-                    placeholder='Enter your address'
+                    placeholder='Adresinizi girin'
                     value={values.address}
                     onChange={handleChange('address')}
                     onBlur={handleBlur('address')}
@@ -231,7 +231,7 @@ export function OrderContent({order}: OrderContentProps) {
                   />
                   <FormActions
                     close={close}
-                    label={modalType === 'create' ? 'Create' : 'Edit'}
+                    label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
                   />
                 </form>
               </div>

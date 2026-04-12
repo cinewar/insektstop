@@ -98,7 +98,7 @@ export function EnlargedImageGalery({
       {hasImages && (
         <Image
           src={normalizeImageUrl(images[currentIndex])}
-          alt={`Image ${currentIndex + 1}`}
+          alt={`Görsel ${currentIndex + 1}`}
           className='max-w-full rounded-[inherit] max-h-full object-contain'
           fill
           sizes='(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw'

@@ -81,7 +81,7 @@ export default function PlaceProductForm({
    */
   async function handleAction(formData: FormData) {
     console.log(
-      'Form submitted with values:',
+      'Form gonderildi, degerler:',
       getPlaceProductFormValues(formData),
     );
     // TODO: Implement create/edit/delete logic based on modalType and provided IDs
@@ -90,55 +90,55 @@ export default function PlaceProductForm({
       if (modalType === 'create') {
         const result = await createPlaceProduct(formData);
         if (!result.ok) {
-          console.error('Error creating place product:', result.message);
+          console.error('Mekan ürünu oluşturma hatasi:', result.message);
           notify({
             type: 'error',
             message: result.message,
-            title: 'Error',
+            title: 'Hata',
           });
           return;
         }
 
         notify({
           type: 'success',
-          message: `${result.data.name} added to place ${placeName} successfully!`,
-          title: 'Success',
+          message: `${result.data.name} ürünu ${placeName} alanina başarıyla eklendi!`,
+          title: 'Başarılı',
         });
         close();
         return;
       } else if (modalType === 'edit') {
         const result = await updatePlaceProduct(formData);
         if (!result.ok) {
-          console.error('Error updating place product:', result.message);
+          console.error('Mekan ürünu güncelleme hatasi:', result.message);
           notify({
             type: 'error',
             message: result.message,
-            title: 'Error',
+            title: 'Hata',
           });
           return;
         }
         notify({
           type: 'success',
-          message: `${result.data.name} updated in place ${placeName} successfully!`,
-          title: 'Success',
+          message: `${result.data.name} ürünu ${placeName} alaninda başarıyla güncellendi!`,
+          title: 'Başarılı',
         });
         close();
         return;
       }
     } catch (error) {
-      console.error('Error handling form action:', error);
+      console.error('Form islemi hatasi:', error);
       notify({
         type: 'error',
-        message: 'An unexpected error occurred',
-        title: 'Error',
+        message: 'Beklenmeyen bir hata olustu',
+        title: 'Hata',
       });
       return;
     }
 
     notify({
       type: 'error',
-      message: 'Only create mode is implemented for this form.',
-      title: 'Not Implemented',
+      message: 'Bu formda yalnizca oluşturma modu uygulanmistir.',
+      title: 'Henuz Uygulanmadi',
     });
   }
 
@@ -231,11 +231,11 @@ export default function PlaceProductForm({
         }
         onBlur={(value) => validateField('product', value)}
         error={errors.product}
-        placeholder='Select a product'
+        placeholder='Bir ürün seçin'
       />
       <Input
-        placeholder='Enter the product width'
-        label='Product Width(m)'
+        placeholder='Urun genişliğini girin'
+        label='Urun Genişliği(m)'
         inputMode='numeric'
         pattern='[0-9]*'
         name='width'
@@ -245,8 +245,8 @@ export default function PlaceProductForm({
         error={errors.width}
       />
       <Input
-        placeholder='Enter the product length'
-        label='Product Length(m)'
+        placeholder='Urun uzunluğunu girin'
+        label='Urun Uzunluğu(m)'
         name='length'
         inputMode='numeric'
         pattern='[0-9]*'
@@ -257,7 +257,7 @@ export default function PlaceProductForm({
       />
 
       <label htmlFor='' className='-mb-2'>
-        Drop Your Images Below
+        Görsellerinizi aşağıya ekleyin
       </label>
       <div
         className='flex justify-between gap-1 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
@@ -284,7 +284,7 @@ export default function PlaceProductForm({
       </div>
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Create' : 'Edit'}
+        label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
       />
     </form>
   );

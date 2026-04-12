@@ -6,9 +6,9 @@ import {CLOSESVG, OKSVG} from '../utils/svg';
 import {Loading} from './Loading';
 
 /**
-  * Defines the ConfirmationProps type.
-  * Usage: Use ConfirmationProps to type related values and keep data contracts consistent.
-  */
+ * Defines the ConfirmationProps type.
+ * Usage: Use ConfirmationProps to type related values and keep data contracts consistent.
+ */
 type ConfirmationProps = {
   title?: string;
   message: string;
@@ -18,11 +18,11 @@ type ConfirmationProps = {
 };
 
 /**
-  * Describes behavior for Confirmation.
-  * Usage: Call Confirmation(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Confirmation.
+ * Usage: Call Confirmation(...) where this declaration is needed in the current module flow.
+ */
 export function Confirmation({
-  title = 'Delete Order',
+  title = 'Siparişi Sil',
   message,
   onConfirmAction,
   onCancelAction,
@@ -41,7 +41,7 @@ export function Confirmation({
             <GlassyButton
               onClick={onCancelAction}
               type='button'
-              label='Cancel'
+              label='İptal'
               icon={CLOSESVG}
               iconSize={32}
               disabled={isLoading}
@@ -50,7 +50,7 @@ export function Confirmation({
             <GlassyButton
               onClick={onConfirmAction}
               type='button'
-              label='OK'
+              label='Tamam'
               icon={OKSVG}
               iconSize={40}
               disabled={isLoading}

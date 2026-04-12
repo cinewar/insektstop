@@ -6,9 +6,9 @@ import Svg from './Svg';
 import {Input} from './Input';
 
 /**
-  * Defines the SearchProps interface.
-  * Usage: Implement or consume SearchProps when exchanging this structured contract.
-  */
+ * Defines the SearchProps interface.
+ * Usage: Implement or consume SearchProps when exchanging this structured contract.
+ */
 interface SearchProps {
   placeholder?: string;
   paramKey?: string;
@@ -16,11 +16,11 @@ interface SearchProps {
 }
 
 /**
-  * Describes behavior for Search.
-  * Usage: Call Search(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Search.
+ * Usage: Call Search(...) where this declaration is needed in the current module flow.
+ */
 export function Search({
-  placeholder = 'Search products...',
+  placeholder = 'Urun ara...',
   paramKey = 'q',
 }: SearchProps) {
   const [query, setQuery] = useQueryState(

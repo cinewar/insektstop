@@ -141,9 +141,9 @@ export default function OrderItemsAccordion({
               rounded-lg'
             >
               <div className='flex px-2 text-secondary font-semibold bg-gray rounded-t-lg'>
-                <span className='flex-3'>Product</span>
-                <span className='flex-1'>Width(m)</span>
-                <span className='flex-1'>Length(m)</span>
+                <span className='flex-3'>Urun</span>
+                <span className='flex-1'>Genislik(m)</span>
+                <span className='flex-1'>Uzunluk(m)</span>
               </div>
               <div className='p-1 flex flex-col gap-2'>
                 <div className='grid grid-cols-5 items-center px-1'>
@@ -157,7 +157,7 @@ export default function OrderItemsAccordion({
                         {
                           id: 'edit',
                           icon: SETSVG,
-                          label: 'Edit',
+                          label: 'Düzenle',
                           iconSize: 40,
                           onClick: () => {
                             setPlaceProductModal({
@@ -177,7 +177,7 @@ export default function OrderItemsAccordion({
                         {
                           id: 'delete',
                           icon: TRASHSVG,
-                          label: 'Delete',
+                          label: 'Sil',
                           iconSize: 40,
                           onClick: () => {
                             setPlaceProductDeleteConfirmation({
@@ -228,7 +228,7 @@ export default function OrderItemsAccordion({
                   className='bg-gray max-w-max py-1 px-3 text-secondary text-base rounded-full
                     font-semibold ml-1'
                 >
-                  price: £{productLink.product.price.toFixed(2)}
+                  fiyat: £{productLink.product.price.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function OrderItemsAccordion({
               <GlassyButton
                 icon={ADDSVG}
                 iconSize={40}
-                label='Add Product'
+                label='Urun Ekle'
                 className='[&>svg]:stroke-4 text-lg w-auto gap-4'
                 onClick={() =>
                   setPlaceProductModal({
@@ -325,8 +325,8 @@ export default function OrderItemsAccordion({
       )}
       {placeProductDeleteConfirmation && (
         <Confirmation
-          title='Delete Place Product'
-          message={`Are you sure you want to delete ${placeProductDeleteConfirmation.productName} from ${placeProductDeleteConfirmation.placeName}?`}
+          title='Mekan Urununu Sil'
+          message={`${placeProductDeleteConfirmation.productName} ürünunu ${placeProductDeleteConfirmation.placeName} alanindan silmek istediginize emin misiniz?`}
           onConfirmAction={() =>
             handleDeletePlaceProduct(
               placeProductDeleteConfirmation.orderItemProductId,
