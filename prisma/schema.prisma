@@ -75,8 +75,6 @@ model OrderItemProduct {
 
   orderProduct OrderProduct @relation(fields: [orderProductRefId], references: [id])
   product      Product      @relation(fields: [productRefId], references: [id])
-
-  @@unique([orderProductRefId, productRefId])
 }
 
 type OrderProductImage {

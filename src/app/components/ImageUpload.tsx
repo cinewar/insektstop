@@ -116,7 +116,7 @@ export function ImageUpload({
   return (
     <div className='relative w-full aspect-square rounded-md bg-gray-200 flex items-center justify-center cursor-pointer'>
       <div
-        className={`relative flex h-12 w-12 items-center justify-center rounded-full ${
+        className={`relative flex h-12 w-12 items-center bg-gray/60 justify-center rounded-full ${
           isMenuOpen ? 'z-200' : 'z-10'
         }`}
       >
@@ -174,19 +174,6 @@ export function ImageUpload({
             },
           ]}
         />
-
-        {/* <button
-          type='button'
-          className='relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray/50'
-          onClick={() => inputRef.current?.click()}
-          aria-label={preview ? 'Edit image' : 'Add image'}
-        >
-          <Svg
-            icon={preview ? EDITSVG : ADDPHOTOSVG}
-            size={30}
-            className='text-primary'
-          />
-        </button> */}
       </div>
 
       {preview && (

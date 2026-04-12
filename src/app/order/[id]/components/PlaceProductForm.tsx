@@ -13,18 +13,14 @@ import {
   PlaceProductField,
   placeProductSchema,
 } from '../schema';
-import {
-  createPlaceProduct,
-  deletePlace,
-  deletePlaceProduct,
-  updatePlaceProduct,
-} from '../action';
+import {createPlaceProduct, updatePlaceProduct} from '../action';
 import {notify} from '@/app/lib/notifications';
+import {normalizeImageUrl} from '@/lib/image-url';
 
 /**
-  * Defines the PlaceProductFormValues type.
-  * Usage: Use PlaceProductFormValues to type related values and keep data contracts consistent.
-  */
+ * Defines the PlaceProductFormValues type.
+ * Usage: Use PlaceProductFormValues to type related values and keep data contracts consistent.
+ */
 type PlaceProductFormValues = {
   product?: string;
   width?: number;
@@ -32,6 +28,7 @@ type PlaceProductFormValues = {
   images?: string[];
   placeId?: string;
   orderId?: string;
+  orderItemProductId?: string;
 };
 
 /**
@@ -44,6 +41,7 @@ interface PlaceProductFormProps {
   placeId?: string;
   products: Product[];
   placeName?: string;
+  orderItemProductId?: string;
   productId?: string;
   productName?: string;
   modalType: 'create' | 'edit' | 'delete';
@@ -57,7 +55,7 @@ export default function PlaceProductForm({
   placeId,
   orderId,
   placeName,
-  productId,
+  orderItemProductId,
   modalType,
   products,
   initialValues,
@@ -69,6 +67,7 @@ export default function PlaceProductForm({
     images: initialValues?.images || ['', '', ''],
     placeId: placeId,
     orderId: orderId,
+    orderItemProductId: initialValues?.orderItemProductId || orderItemProductId,
   });
   const [errors, setErrors] = useState<PlaceProductErrors>({
     product: undefined,
@@ -180,9 +179,9 @@ export default function PlaceProductForm({
   }
 
   /**
-    * Describes behavior for markImageSlotRemoved.
-    * Usage: Call markImageSlotRemoved(...) where this declaration is needed in the current module flow.
-    */
+   * Describes behavior for markImageSlotRemoved.
+   * Usage: Call markImageSlotRemoved(...) where this declaration is needed in the current module flow.
+   */
   function markImageSlotRemoved(index: number) {
     setValues((prev) => {
       const nextImages = [...prev.images];
@@ -201,8 +200,8 @@ export default function PlaceProductForm({
       <input type='hidden' name='orderId' value={orderId} />
       <input
         type='hidden'
-        name='initialProductId'
-        value={productId ?? values.product}
+        name='orderItemProductId'
+        value={values.orderItemProductId}
       />
       {values.images
         .filter((image) => image)
@@ -219,6 +218,9 @@ export default function PlaceProductForm({
         options={products.map((product) => ({
           value: product.id,
           label: product.name,
+          image: product.images?.[0]?.img
+            ? normalizeImageUrl(product.images[0].img)
+            : undefined,
         }))}
         value={values.product}
         onChange={(value) =>
@@ -233,7 +235,7 @@ export default function PlaceProductForm({
       />
       <Input
         placeholder='Enter the product width'
-        label='Product Width'
+        label='Product Width(m)'
         inputMode='numeric'
         pattern='[0-9]*'
         name='width'
@@ -244,7 +246,7 @@ export default function PlaceProductForm({
       />
       <Input
         placeholder='Enter the product length'
-        label='Product Length'
+        label='Product Length(m)'
         name='length'
         inputMode='numeric'
         pattern='[0-9]*'

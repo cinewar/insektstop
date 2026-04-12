@@ -290,19 +290,8 @@ export async function createPlaceProduct(
       placeId,
     );
 
-    await prisma.orderItemProduct.upsert({
-      where: {
-        orderProductRefId_productRefId: {
-          orderProductRefId: placeId,
-          productRefId: submittedValues.product,
-        },
-      },
-      update: {
-        width: Number(submittedValues.width),
-        length: Number(submittedValues.length),
-        ...(uploadedImages.length > 0 ? {images: uploadedImages} : {}),
-      },
-      create: {
+    await prisma.orderItemProduct.create({
+      data: {
         orderProduct: {
           connect: {id: placeId},
         },
@@ -343,15 +332,15 @@ export async function updatePlaceProduct(
   try {
     const orderId = formData.get('orderId');
     const placeId = formData.get('placeId');
-    const initialProductId = formData.get('initialProductId');
+    const orderItemProductId = formData.get('orderItemProductId');
     if (typeof orderId !== 'string' || !orderId) {
       return {ok: false, message: 'Order ID is required'} as const;
     }
     if (typeof placeId !== 'string' || !placeId) {
       return {ok: false, message: 'Place ID is required'} as const;
     }
-    if (typeof initialProductId !== 'string' || !initialProductId) {
-      return {ok: false, message: 'Initial product ID is required'} as const;
+    if (typeof orderItemProductId !== 'string' || !orderItemProductId) {
+      return {ok: false, message: 'Order item product ID is required'} as const;
     }
 
     const submittedValues = getPlaceProductFormValues(formData);
@@ -382,12 +371,10 @@ export async function updatePlaceProduct(
       } as const;
     }
 
-    const existingOrderItemProduct = await prisma.orderItemProduct.findUnique({
+    const existingOrderItemProduct = await prisma.orderItemProduct.findFirst({
       where: {
-        orderProductRefId_productRefId: {
-          orderProductRefId: placeId,
-          productRefId: initialProductId,
-        },
+        id: orderItemProductId,
+        orderProductRefId: placeId,
       },
       select: {
         images: true,
@@ -429,19 +416,12 @@ export async function updatePlaceProduct(
 
     await prisma.orderItemProduct.update({
       where: {
-        orderProductRefId_productRefId: {
-          orderProductRefId: placeId,
-          productRefId: initialProductId,
-        },
+        id: orderItemProductId,
       },
       data: {
-        ...(submittedValues.product !== initialProductId
-          ? {
-              product: {
-                connect: {id: submittedValues.product},
-              },
-            }
-          : {}),
+        product: {
+          connect: {id: submittedValues.product},
+        },
         width: Number(submittedValues.width),
         length: Number(submittedValues.length),
         images: mergedImages,
@@ -473,16 +453,13 @@ export async function updatePlaceProduct(
 export async function deletePlaceProduct(
   orderId: string,
   placeId: string,
-  placeProductId: string,
+  orderItemProductId: string,
   images: {id: number; img: string}[],
 ) {
   try {
     await prisma.orderItemProduct.delete({
       where: {
-        orderProductRefId_productRefId: {
-          orderProductRefId: placeId,
-          productRefId: placeProductId,
-        },
+        id: orderItemProductId,
       },
     });
 

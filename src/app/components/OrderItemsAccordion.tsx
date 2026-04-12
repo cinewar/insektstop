@@ -18,9 +18,9 @@ import {notify} from '../lib/notifications';
 import {Confirmation} from './Confirmation';
 
 /**
-  * Defines the OrderItemsAccordionProps type.
-  * Usage: Use OrderItemsAccordionProps to type related values and keep data contracts consistent.
-  */
+ * Defines the OrderItemsAccordionProps type.
+ * Usage: Use OrderItemsAccordionProps to type related values and keep data contracts consistent.
+ */
 type OrderItemsAccordionProps = {
   orderId: string;
   items: OrderProductWithProducts[];
@@ -42,6 +42,7 @@ export default function OrderItemsAccordion({
     modalType: 'create' | 'edit' | 'delete';
     placeId: string;
     placeName: string;
+    orderItemProductId?: string;
     productId?: string;
     productName?: string;
     width?: number;
@@ -56,7 +57,7 @@ export default function OrderItemsAccordion({
     useState<{
       placeId: string;
       placeName: string;
-      productId: string;
+      orderItemProductId: string;
       productName: string;
       images: string[];
     } | null>(null);
@@ -68,19 +69,19 @@ export default function OrderItemsAccordion({
   ];
 
   /**
-    * Describes behavior for handleImageGallery.
-    * Usage: Call handleImageGallery(...) where this declaration is needed in the current module flow.
-    */
+   * Describes behavior for handleImageGallery.
+   * Usage: Call handleImageGallery(...) where this declaration is needed in the current module flow.
+   */
   function handleImageGallery(images: string[], currentIndex: number) {
     setEnlargedGallery({images, currentIndex});
   }
 
   /**
-    * Describes behavior for handleDeletePlaceProduct.
-    * Usage: Call handleDeletePlaceProduct(...) where this declaration is needed in the current module flow.
-    */
+   * Describes behavior for handleDeletePlaceProduct.
+   * Usage: Call handleDeletePlaceProduct(...) where this declaration is needed in the current module flow.
+   */
   async function handleDeletePlaceProduct(
-    productId: string,
+    orderItemProductId: string,
     placeId: string,
     images: string[],
   ) {
@@ -90,7 +91,7 @@ export default function OrderItemsAccordion({
       await deletePlaceProduct(
         orderId,
         placeId,
-        productId,
+        orderItemProductId,
         images.map((img, index) => ({id: index + 1, img})),
       );
 
@@ -163,6 +164,7 @@ export default function OrderItemsAccordion({
                               modalType: 'edit',
                               placeId: item.id,
                               placeName: item.name,
+                              orderItemProductId: productLink.id,
                               productId: productLink.product.id,
                               width: productLink.width,
                               length: productLink.length,
@@ -181,7 +183,7 @@ export default function OrderItemsAccordion({
                             setPlaceProductDeleteConfirmation({
                               placeId: item.id,
                               placeName: item.name,
-                              productId: productLink.product.id,
+                              orderItemProductId: productLink.id,
                               productName: productLink.product.name,
                               images: productLink.images.map((image) =>
                                 normalizeImageUrl(image.img),
@@ -226,7 +228,7 @@ export default function OrderItemsAccordion({
                   className='bg-gray max-w-max py-1 px-3 text-secondary text-base rounded-full
                     font-semibold ml-1'
                 >
-                  price: ${productLink.product.price.toFixed(2)}
+                  price: £{productLink.product.price.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -294,6 +296,7 @@ export default function OrderItemsAccordion({
                 initialValues={{
                   placeId: placeProductModal.placeId,
                   orderId,
+                  orderItemProductId: placeProductModal.orderItemProductId,
                   product: placeProductModal.productId || '',
                   width: placeProductModal.width,
                   length: placeProductModal.length,
@@ -304,6 +307,7 @@ export default function OrderItemsAccordion({
                 placeId={placeProductModal.placeId}
                 orderId={orderId}
                 placeName={placeProductModal.placeName}
+                orderItemProductId={placeProductModal.orderItemProductId}
                 productId={placeProductModal.productId}
                 productName={placeProductModal.productName}
                 products={products}
@@ -325,7 +329,7 @@ export default function OrderItemsAccordion({
           message={`Are you sure you want to delete ${placeProductDeleteConfirmation.productName} from ${placeProductDeleteConfirmation.placeName}?`}
           onConfirmAction={() =>
             handleDeletePlaceProduct(
-              placeProductDeleteConfirmation.productId,
+              placeProductDeleteConfirmation.orderItemProductId,
               placeProductDeleteConfirmation.placeId,
               placeProductDeleteConfirmation.images,
             )
