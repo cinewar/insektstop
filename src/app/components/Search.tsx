@@ -35,7 +35,7 @@ export function Search({
         onChange={(e) => setQuery(e.target.value || null)}
         type='text'
         placeholder={placeholder}
-        className='relative ml-4 w-full p-2 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
+        className='relative w-full p-2 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
           border-2 focus:border-primary/50 focus:outline-0 border-gray-300'
       />
       <Svg

@@ -1,6 +1,7 @@
 import {prisma} from '@/lib/prisma';
 import OrderItemsAccordion from '../../components/OrderItemsAccordion';
 import {PlaceContent} from './components/PlaceContent';
+import {FinishOrderButton} from './components/FinishOrderButton';
 
 export default async function Order({
   params,
@@ -48,7 +49,7 @@ export default async function Order({
           </div>
         </div>
       </div>
-      <div className='mt-28'>
+      <div className='mt-28 pb-32'>
         <OrderItemsAccordion
           orderId={orderId}
           items={orderItems}
@@ -56,6 +57,7 @@ export default async function Order({
         />
         <PlaceContent orderId={orderId} />
       </div>
+      <FinishOrderButton orderId={orderId} orderName={order?.orderName} />
     </div>
   );
 }

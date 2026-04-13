@@ -234,7 +234,7 @@ export default function OrderItemsAccordion({
             </div>
           ))}
           <div className='flex justify-end'>
-            <span className='max-w-fit bg-gray rounded-full p-1 mt-2'>
+            <span className='max-w-fit bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 mt-2 shadow-lg'>
               <GlassyButton
                 icon={ADDSVG}
                 iconSize={40}

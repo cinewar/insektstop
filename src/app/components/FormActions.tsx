@@ -20,7 +20,7 @@ export function FormActions({close, label}: FormActionsProps) {
 
   return (
     <div className='flex justify-end mt-4'>
-      <div className='flex gap-2 bg-gray rounded-full p-2 text-lg'>
+      <div className='flex gap-2 bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 text-lg shadow-lg'>
         <GlassyButton
           onClick={close}
           type='button'

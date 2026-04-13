@@ -13,12 +13,14 @@ import {
   type OrderField,
 } from '../order/schema';
 import {Search} from './Search';
-import {SearchDropdown} from './SearchDropdown';
 import {Order} from '../../../generated/prisma/client';
 import {FormPendingOverlay} from './FormPendingOverlay';
 import {FormActions} from './FormActions';
 import {notify} from '../lib/notifications';
 import {useRouter} from 'next/navigation';
+import {GlassyButton} from './GlassyButton';
+import {Confirmation} from './Confirmation';
+import {EDITSVG, RIGHTARROWSVG, TRASHSVG} from '../utils/svg';
 
 /**
  * Props for rendering the order create/edit controls with an optional selected order.
@@ -34,6 +36,8 @@ export function OrderContent({order}: OrderContentProps) {
   const router = useRouter();
   const [modalType, setModalType] = useState<'create' | 'edit' | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [errors, setErrors] = useState<OrderErrors>({});
   const [values, setValues] = useState({
     name: '',
@@ -151,8 +155,33 @@ export function OrderContent({order}: OrderContentProps) {
    * Deletes the currently selected order when one is available.
    */
   async function handleDelete() {
+    setShowDeleteConfirmation(true);
+  }
+
+  /**
+   * Confirms and deletes the selected order, then returns to the order search screen.
+   */
+  async function handleConfirmDelete() {
     if (order?.id) {
-      await deleteOrder(order.id);
+      setIsDeleting(true);
+      try {
+        await deleteOrder(order.id);
+        setShowDeleteConfirmation(false);
+        notify({
+          type: 'success',
+          title: 'Sipariş silindi',
+          message: 'Seçilen sipariş başarıyla silindi.',
+        });
+        router.push('/order');
+      } catch {
+        notify({
+          type: 'error',
+          title: 'Sipariş silme basarisiz',
+          message: 'Lütfen tekrar deneyin.',
+        });
+      } finally {
+        setIsDeleting(false);
+      }
     }
   }
 
@@ -160,22 +189,77 @@ export function OrderContent({order}: OrderContentProps) {
     <>
       <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
         <div className='flex items-center w-full gap-2 relative'>
-          <h1 className='text-2xl min-w-fit font-bold text-dark-text'>
+          <h1 className='text-xl min-w-fit font-bold text-dark-text'>
             Oluştur veya
           </h1>
-          <Search placeholder='Sipariş Ara' />
-          {order && (
-            <SearchDropdown
-              onEditAction={handleEdit}
-              onDeleteAction={handleDelete}
-              orderId={order.id}
-            />
-          )}
         </div>
       </div>
-      <div className='flex mx-auto gap-4 mt-32 mb-4 px-4'>
+      <div className='flex flex-col items-center w-full  gap-4 mt-32 mb-4 px-4'>
+        <label className='text-lg font-semibold -mb-3 self-start'>
+          Siparişim Var
+        </label>
+        <Search className='' placeholder='Sipariş Ara' />
+        {order && (
+          <div className='bg-white w-full rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'>
+            <div>
+              <div className='text-sm text-tertiary'>Name & Surname:</div>
+              <div>{order.createrName}</div>
+            </div>
+            <div>
+              <div className='text-sm text-tertiary'>Phone Number:</div>
+              <div>{order.createrPhone}</div>
+            </div>
+            <div>
+              <div className='text-sm text-tertiary'>Address:</div>
+              <div>{order.createrAddress}</div>
+            </div>
+            <div>
+              <div className='text-sm text-tertiary'>Email:</div>
+              <div>{order.createrEmail}</div>
+            </div>
+            <div className='flex flex-col gap-2 bg-gray p-2 rounded-2xl mt-4'>
+              <GlassyButton
+                icon={RIGHTARROWSVG}
+                label='Siparişi Gör'
+                iconSize={32}
+                className='pr-4'
+                onClick={() => router.push(`/order/${order.id}`)}
+              />
+              <div className='flex gap-2 justify-between'>
+                <GlassyButton
+                  icon={EDITSVG}
+                  label='Siparişi Düzenle'
+                  iconSize={40}
+                  onClick={handleEdit}
+                />
+                <GlassyButton
+                  icon={TRASHSVG}
+                  label='Siparişi Sil'
+                  iconSize={40}
+                  onClick={handleDelete}
+                  className='flex-1'
+                />
+              </div>
+            </div>
+          </div>
+
+          // <SearchDropdown
+          //   onEditAction={handleEdit}
+          //   onDeleteAction={handleDelete}
+          //   orderId={order.id}
+          // />
+        )}
+        {showDeleteConfirmation && (
+          <Confirmation
+            message='Bu siparişi silmek istediginize emin misiniz?'
+            onConfirmAction={handleConfirmDelete}
+            onCancelAction={() => setShowDeleteConfirmation(false)}
+            isLoading={isDeleting}
+          />
+        )}
+
         <Button
-          className='shining self-start'
+          className='shining '
           onClick={() => {
             setModalType('create');
             setShowModal(true);

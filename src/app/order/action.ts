@@ -1,6 +1,7 @@
 'use server';
 
 import {randomBytes} from 'crypto';
+import {revalidatePath} from 'next/cache';
 import {prisma} from '@/lib/prisma';
 import {getOrderFormValues, orderSchema} from './schema';
 import {deleteOrderImageFromR2} from './[id]/functions';
@@ -10,7 +11,7 @@ const ORDER_NAME_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 /**
  * Supported order lifecycle actions used in notification content.
  */
-type OrderAction = 'created' | 'updated' | 'deleted';
+type OrderAction = 'created' | 'updated' | 'deleted' | 'completed';
 
 /**
  * Data required to compose and send order notification emails.
@@ -40,6 +41,65 @@ function buildOrderEmailText(payload: OrderNotificationPayload) {
     `Adres: ${payload.createrAddress}`,
     `Toplam Fiyat: ${payload.totalPrice}`,
   ].join('\n');
+}
+
+/**
+ * Builds the plain-text email body for completed order details.
+ */
+function buildCompletedOrderEmailText(order: {
+  orderName: string;
+  orderId: number;
+  createrName: string;
+  createrEmail: string;
+  createrPhone: string;
+  createrAddress: string;
+  totalPrice: number;
+  orderItems: Array<{
+    name: string;
+    price: number;
+    products: Array<{
+      width: number;
+      length: number;
+      product: {name: string; price: number};
+    }>;
+  }>;
+}) {
+  const lines = [
+    'Sipariş tamamlandı. Son detaylar aşağıdadır:',
+    '',
+    `Sipariş Adi: ${order.orderName}`,
+    `Sipariş ID: ${order.orderId}`,
+    `Müşteri: ${order.createrName}`,
+    `E-posta: ${order.createrEmail}`,
+    `Telefon: ${order.createrPhone}`,
+    `Adres: ${order.createrAddress}`,
+    '',
+    'Mekan ve Ürün Detayları:',
+  ];
+
+  if (order.orderItems.length === 0) {
+    lines.push('- Henüz mekan/ürün eklenmedi.');
+  } else {
+    for (const item of order.orderItems) {
+      lines.push(
+        `- Mekan: ${item.name} | Mekan Toplamı: £${item.price.toFixed(2)}`,
+      );
+
+      if (item.products.length === 0) {
+        lines.push('  - Ürün yok');
+        continue;
+      }
+
+      for (const productLink of item.products) {
+        lines.push(
+          `  - ${productLink.product.name} | Ölçü: ${productLink.width}m x ${productLink.length}m | Birim Fiyat: £${productLink.product.price.toFixed(2)}`,
+        );
+      }
+    }
+  }
+
+  lines.push('', `Toplam Fiyat: £${order.totalPrice.toFixed(2)}`);
+  return lines.join('\n');
 }
 
 /**
@@ -226,4 +286,69 @@ export async function deleteOrder(id: string) {
     console.error('Resend bildirimi basarisiz:', error);
   }
   return result;
+}
+
+/**
+ * Sends final order details email to customer when an order is completed.
+ */
+export async function finalizeOrder(id: string) {
+  if (!id) {
+    throw new Error('Tamamlama islemi icin sipariş kimliği gereklidir');
+  }
+
+  const order = await prisma.order.findUnique({
+    where: {id},
+    include: {
+      orderItems: {
+        include: {
+          products: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                  price: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!order) {
+    throw new Error('Sipariş bulunamadı');
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+  const to = order.createrEmail || process.env.RESEND_TO_EMAIL;
+
+  if (!apiKey || !from || !to) {
+    throw new Error('E-posta ayarları eksik');
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject: `Sipariş tamamlandı: ${order.orderName}`,
+      text: buildCompletedOrderEmailText(order),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Son detay e-postası basarisiz: ${response.status} ${errorText}`,
+    );
+  }
+
+  revalidatePath(`/order/${id}`);
+  return {ok: true} as const;
 }
