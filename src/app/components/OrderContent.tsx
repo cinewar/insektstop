@@ -220,7 +220,7 @@ export function OrderContent({order}: OrderContentProps) {
             <div className='flex flex-col gap-2 bg-gray p-2 rounded-2xl mt-4'>
               <GlassyButton
                 icon={RIGHTARROWSVG}
-                label='Siparişi Gör'
+                label='Siparişi Detayı Gör'
                 iconSize={32}
                 className='pr-4'
                 onClick={() => router.push(`/order/${order.id}`)}
@@ -228,13 +228,13 @@ export function OrderContent({order}: OrderContentProps) {
               <div className='flex gap-2 justify-between'>
                 <GlassyButton
                   icon={EDITSVG}
-                  label='Siparişi Düzenle'
+                  label='Düzenle'
                   iconSize={40}
                   onClick={handleEdit}
                 />
                 <GlassyButton
                   icon={TRASHSVG}
-                  label='Siparişi Sil'
+                  label='Sil'
                   iconSize={40}
                   onClick={handleDelete}
                   className='flex-1'
