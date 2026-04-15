@@ -131,6 +131,34 @@ export function MessageModal({
     });
   }, [messageList.length]);
 
+  /** Marks all unread messages as read when modal opens. */
+  useEffect(() => {
+    if (isClosing || !orderId) {
+      return;
+    }
+
+    const markMessagesAsReadOnOpen = async () => {
+      const result = await markOrderMessagesAsRead(orderId);
+      if (!result.ok || result.data.length === 0) {
+        return;
+      }
+
+      const ids = new Set(result.data);
+      setMessageList((prev) =>
+        prev.map((message) =>
+          ids.has(message.id) ? {...message, read: true} : message,
+        ),
+      );
+
+      // Force local unread reset so badge clears even if SSE delivery is delayed.
+      setMessageList((prev) =>
+        prev.map((message) => ({...message, read: true})),
+      );
+    };
+
+    void markMessagesAsReadOnOpen();
+  }, [isClosing, orderId]);
+
   useEffect(() => {
     if (!orderId) {
       return;
