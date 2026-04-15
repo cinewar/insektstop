@@ -263,12 +263,30 @@ export async function deleteOrder(id: string) {
     where: {orderRefId: id},
   });
 
+  // Find all messages for this order (with images)
+  const messages = await prisma.message.findMany({
+    where: {orderRefId: id},
+    select: {image: true},
+  });
+
+  // Collect all message image URLs
+  const messageImageUrls = messages
+    .map((msg) => msg.image?.img)
+    .filter((img): img is string => !!img);
+
+  // Delete all message records
   await prisma.message.deleteMany({
     where: {orderRefId: id},
   });
 
+  // Delete all order-related images (places/products)
   await Promise.allSettled(
     allImages.map((image) => deleteOrderImageFromR2(image.img)),
+  );
+
+  // Delete all message images from R2
+  await Promise.allSettled(
+    messageImageUrls.map((img) => deleteOrderImageFromR2(img)),
   );
 
   const result = await prisma.order.delete({
