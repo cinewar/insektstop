@@ -26,6 +26,7 @@ body {
   --color-gray: #909090;
   --color-red: #ff0004;
   --color-mid-magenta: #992a95;
+  --color-green: #59ff00;
 
   /** Animation for shining effect */
   --animate-shine: shine 2s linear infinite;

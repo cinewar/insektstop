@@ -9,7 +9,11 @@ import {
   placeProductSchema,
   placeSchema,
 } from './schema';
-import {deleteOrderImageFromR2, uploadOrderImagesToR2} from './functions';
+import {
+  deleteOrderImageFromR2,
+  uploadImageToOrderMessagetoR2,
+  uploadOrderImagesToR2,
+} from './functions';
 import {orderMessageEventBus} from '@/lib/message-events';
 
 /**
@@ -18,8 +22,7 @@ import {orderMessageEventBus} from '@/lib/message-events';
 type PlaceActionResult<T> = {ok: true; data: T} | {ok: false; message: string};
 
 /**
- * Describes behavior for getErrorMessage.
- * Usage: Call getErrorMessage(...) where this declaration is needed in the current module flow.
+ * Normalizes unknown thrown values into a readable message for action responses.
  */
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message) {
@@ -43,8 +46,8 @@ function getErrorMessage(error: unknown): string {
 }
 
 /**
- * Describes behavior for syncOrderProductPrice.
- * Usage: Call syncOrderProductPrice(...) where this declaration is needed in the current module flow.
+ * Recalculates and persists the total price of one place (orderProduct)
+ * from the prices of its linked products.
  */
 async function syncOrderProductPrice(
   orderProductId: string,
@@ -82,8 +85,7 @@ async function syncOrderProductPrice(
 }
 
 /**
- * Describes behavior for syncOrderTotalPrice.
- * Usage: Call syncOrderTotalPrice(...) where this declaration is needed in the current module flow.
+ * Recalculates and persists the overall order total from all place prices.
  */
 async function syncOrderTotalPrice(orderId: string): Promise<Order> {
   const orderWithItems = await prisma.order.findUnique({
@@ -207,8 +209,8 @@ export async function updatePlace(
 }
 
 /**
- * Describes behavior for deletePlace.
- * Usage: Call deletePlace(...) where this declaration is needed in the current module flow.
+ * Deletes a place and its related place-products, removes linked images from storage,
+ * then refreshes order totals.
  */
 export async function deletePlace(orderId: string, placeId: string) {
   try {
@@ -245,8 +247,8 @@ export async function deletePlace(orderId: string, placeId: string) {
 }
 
 /**
- * Describes behavior for createPlaceProduct.
- * Usage: Call createPlaceProduct(...) where this declaration is needed in the current module flow.
+ * Creates a place-product row, uploads up to three product images, and updates
+ * both place and order totals.
  */
 export async function createPlaceProduct(
   formData: FormData,
@@ -324,8 +326,8 @@ export async function createPlaceProduct(
 }
 
 /**
- * Describes behavior for updatePlaceProduct.
- * Usage: Call updatePlaceProduct(...) where this declaration is needed in the current module flow.
+ * Updates an existing place-product, preserving selected old images,
+ * deleting removed ones from storage, uploading new ones, and recalculating totals.
  */
 export async function updatePlaceProduct(
   formData: FormData,
@@ -451,8 +453,8 @@ export async function updatePlaceProduct(
 }
 
 /**
- * Describes behavior for deletePlaceProduct.
- * Usage: Call deletePlaceProduct(...) where this declaration is needed in the current module flow.
+ * Deletes one place-product row, removes its images from storage,
+ * and updates place + order totals.
  */
 export async function deletePlaceProduct(
   orderId: string,
@@ -485,6 +487,10 @@ export async function deletePlaceProduct(
   }
 }
 
+/**
+ * Creates a customer message for an order, optionally uploading one image,
+ * then emits a realtime event for active subscribers.
+ */
 export async function sendMessageToOrder(formData: FormData) {
   try {
     const orderId = formData.get('orderId');
@@ -492,8 +498,18 @@ export async function sendMessageToOrder(formData: FormData) {
       return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
     }
     const content = formData.get('content');
-    if (typeof content !== 'string' || !content) {
+    if (typeof content !== 'string') {
       return {ok: false, message: 'Mesaj içeriği gereklidir'} as const;
+    }
+
+    const imageFile = formData.get('image');
+    const uploadedImage =
+      imageFile instanceof File && imageFile.size > 0
+        ? await uploadImageToOrderMessagetoR2(imageFile, orderId)
+        : null;
+
+    if (!content && !uploadedImage) {
+      return {ok: false, message: 'Mesaj veya görsel gereklidir'} as const;
     }
 
     const newMessage = await prisma.message.create({
@@ -502,6 +518,7 @@ export async function sendMessageToOrder(formData: FormData) {
         content,
         creator: 'Customer',
         read: false,
+        ...(uploadedImage ? {image: uploadedImage} : {}),
       },
     });
 
@@ -517,6 +534,10 @@ export async function sendMessageToOrder(formData: FormData) {
   }
 }
 
+/**
+ * Marks all unread messages in an order as read and broadcasts those ids
+ * so connected clients can update UI state instantly.
+ */
 export async function markOrderMessagesAsRead(orderId: string) {
   try {
     if (!orderId) {

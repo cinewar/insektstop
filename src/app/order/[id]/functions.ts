@@ -14,6 +14,11 @@ interface UploadedOrderImage {
   img: string;
 }
 
+interface UploadOrderMessageImage {
+  id: number;
+  img: string;
+}
+
 let r2Client: S3Client | null = null;
 
 /**
@@ -149,4 +154,51 @@ export async function deleteOrderImageFromR2(imageUrl: string) {
       Key: key,
     }),
   );
+}
+
+export async function uploadImageToOrderMessagetoR2(
+  file: File,
+  orderId: string,
+): Promise<UploadOrderMessageImage> {
+  if (!file) {
+    return {id: 1, img: ''};
+  }
+
+  const client = getR2Client();
+  const config = getR2Config();
+
+  const mimeToExt: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/webp': 'webp',
+    'image/bmp': 'bmp',
+    'image/tiff': 'tiff',
+    'image/heic': 'jpg',
+    'image/heif': 'jpg',
+  };
+
+  const nameExt = file.name.includes('.')
+    ? file.name.split('.').pop()?.toLowerCase() || ''
+    : '';
+  const extension =
+    nameExt && nameExt !== 'heic' && nameExt !== 'heif'
+      ? nameExt
+      : (mimeToExt[file.type] ?? nameExt) || 'jpg';
+  const key = `order/${orderId}/message/${randomUUID()}.${extension}`;
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucketName,
+      Key: key,
+      Body: Buffer.from(await file.arrayBuffer()),
+      ContentType: file.type || 'application/octet-stream',
+    }),
+  );
+
+  return {
+    id: 1,
+    img: `${config.publicBaseUrl}/${key}`,
+  };
 }

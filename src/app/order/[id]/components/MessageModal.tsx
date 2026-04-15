@@ -7,11 +7,17 @@ import {Message} from '../../../../../generated/prisma';
 import {Input} from '@/app/components/Input';
 import {GlassyButton} from '@/app/components/GlassyButton';
 import {markOrderMessagesAsRead, sendMessageToOrder} from '../action';
+import Image from 'next/image';
+import {EnlargedImageGalery} from '@/app/components/EnlargedImageGalery';
 
 interface MessageModalProps {
+  /** Closes the modal (with existing close animation flow). */
   onClose: () => void;
+  /** Initial message snapshot when modal is opened. */
   messages?: Message[];
+  /** Order id used by send/read server actions and SSE channel. */
   orderId?: string;
+  /** Pushes local message state changes back to parent for badge/count sync. */
   onMessagesChange?: (messages: Message[]) => void;
 }
 
@@ -21,37 +27,41 @@ export function MessageModal({
   orderId,
   onMessagesChange,
 }: MessageModalProps) {
-  const [value, setValue] = useState('');
+  const [enlargedImageUrl, setEnlargedImageUrl] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [values, setValues] = useState({
+    content: '',
+    image: null as File | null,
+  });
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+  /** Reads selected image file and prepares local preview URL. */
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setValues((prev) => ({...prev, image: file}));
+    setImagePreviewUrl(file ? URL.createObjectURL(file) : null);
+  }
+
+  /** Clears selected upload image and revokes preview object URL. */
+  function clearImage() {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setImagePreviewUrl(null);
+    setValues((prev) => ({...prev, image: null}));
+    if (imageInputRef.current) {
+      imageInputRef.current.value = '';
+    }
+  }
   const [messageList, setMessageList] = useState<Message[]>(messages ?? []);
   const messageListRef = useRef<HTMLDivElement>(null);
   const shouldScrollToLatestRef = useRef(false);
-  const firstUnreadMessageIdRef = useRef<string | null>(
-    messages?.find((message) => !message.read)?.id ?? null,
-  );
-  const hasScrolledToFirstUnreadRef = useRef(false);
+  const hasScrolledOnOpenRef = useRef(false);
 
-  function scrollToMessage(messageId: string, topRatio = 0.36) {
-    const container = messageListRef.current;
-    if (!container) {
-      return;
-    }
-
-    const selector = `[data-message-id="${messageId}"]`;
-    const target = container.querySelector(selector) as HTMLDivElement | null;
-    if (!target) {
-      return;
-    }
-
-    const nextTop = Math.max(
-      target.offsetTop - container.clientHeight * topRatio,
-      0,
-    );
-    container.scrollTo({
-      top: nextTop,
-      behavior: 'smooth',
-    });
-  }
-
+  /** Scroll helper that moves viewport to latest message. */
   function scrollToLatestMessage() {
     const container = messageListRef.current;
     if (!container) {
@@ -73,14 +83,26 @@ export function MessageModal({
     }, 120);
   }
 
+  /** Text input state handler for outgoing message content. */
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
+    setValues((prev) => ({...prev, content: e.target.value}));
   }
   const [isClosing, setIsClosing] = useState(false);
 
+  /** Starts close animation; actual unmount is handled on animation end. */
   function close() {
     setIsClosing(true);
   }
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+    // Only run on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isClosing) {
@@ -91,12 +113,11 @@ export function MessageModal({
   }, [messageList, onMessagesChange, isClosing]);
 
   useLayoutEffect(() => {
-    if (
-      !hasScrolledToFirstUnreadRef.current &&
-      firstUnreadMessageIdRef.current
-    ) {
-      scrollToMessage(firstUnreadMessageIdRef.current);
-      hasScrolledToFirstUnreadRef.current = true;
+    if (!hasScrolledOnOpenRef.current) {
+      requestAnimationFrame(() => {
+        scrollToLatestMessage();
+      });
+      hasScrolledOnOpenRef.current = true;
       return;
     }
 
@@ -178,17 +199,21 @@ export function MessageModal({
     };
   }, [orderId, onMessagesChange]);
 
+  /** Sends text/image message via server action and appends new local message. */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const trimmed = value.trim();
-    if (!trimmed || !orderId) {
+    const trimmed = values.content.trim();
+    if ((!trimmed && !values.image) || !orderId) {
       return;
     }
 
     const formData = new FormData();
     formData.append('orderId', orderId);
     formData.append('content', trimmed);
+    if (values.image) {
+      formData.append('image', values.image);
+    }
 
     const result = await sendMessageToOrder(formData);
     if (!result.ok) {
@@ -204,7 +229,19 @@ export function MessageModal({
       return [...prev, result.data];
     });
 
-    setValue('');
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setImagePreviewUrl(null);
+    setValues({content: '', image: null});
+    if (imageInputRef.current) {
+      imageInputRef.current.value = '';
+    }
+  }
+
+  /** Closes full-screen image gallery modal. */
+  function handleCloseGallery() {
+    setEnlargedImageUrl(null);
   }
 
   return (
@@ -223,18 +260,18 @@ export function MessageModal({
         }
       }}
     >
-      <Svg
-        icon={CLOSESVG}
-        size={24}
-        className='absolute top-3 right-4 cursor-pointer'
-        onClick={close}
-      />
       <div
         className={`relative flex flex-col w-full max-h-[calc(100vh-5rem)] bg-secondary rounded-lg overflow-x-hidden overflow-y-hidden
           shadow-[inset_0_0_10px_rgba(255,71,249,0.45)] px-2 py-6 max-w-md ${
             isClosing ? 'animate-fade-out' : 'animate-fade-in'
           }`}
       >
+        <Svg
+          icon={CLOSESVG}
+          size={24}
+          className='absolute top-1 right-2 cursor-pointer'
+          onClick={close}
+        />
         <div
           ref={messageListRef}
           className='no-scrollbar w-full flex-1 min-h-0 overflow-y-auto 
@@ -245,15 +282,20 @@ export function MessageModal({
               <div
                 key={message.id}
                 data-message-id={message.id}
-                className={`relative min-w-0 text-secondary mb-4 w-3/4 p-3 rounded ${
-                  message.creator === 'Admin'
-                    ? 'self-end bg-dark-text'
-                    : 'self-start bg-primary'
+                className={`relative min-w-0 text-secondary mb-4 w-3/4 rounded ${
+                  message.creator === 'Admin' ? 'self-end' : 'self-start'
+                } ${
+                  message.image?.img
+                    ? 'bg-transparent p-0'
+                    : message.creator === 'Admin'
+                      ? 'bg-dark-text p-3'
+                      : 'bg-primary p-3'
                 }`}
               >
                 <div
-                  className={`absolute shadow-lg border -top-4 bg-gray text-secondary px-2 rounded-full
-                  ${message.creator === 'Admin' ? '-right-1 border-primary ' : '-left-1 border-dark-text '}`}
+                  className={`absolute shadow-lg z-10 -top-4 bg-linear-to-r from-primary to-dark-text text-secondary px-2 rounded-full
+                    text-sm
+                  ${message.creator === 'Admin' ? '-right-1 ' : '-left-1 '}`}
                 >
                   {message.creator}
                 </div>
@@ -268,11 +310,43 @@ export function MessageModal({
                 <p className='text-sm text-secondary wrap-break-word whitespace-pre-wrap'>
                   {message.content}
                 </p>
+                {message.image?.img && (
+                  <div className='relative mt-2 w-full max-h-60 overflow-hidden border border-primary rounded'>
+                    <Image
+                      onClick={() => setEnlargedImageUrl(message.image!.img)}
+                      src={message.image.img}
+                      alt='Attached'
+                      width={400}
+                      height={300}
+                      className='w-full h-auto rounded object-contain'
+                    />
+                  </div>
+                )}
+                <span className='absolute -bottom-1 right-0 text-center text-green'>
+                  {message.read ? '✓✓' : '✓'}
+                </span>
               </div>
             ))}
           <div className='h-16 shrink-0' />
         </div>
-        <div className='absolute bottom-4 left-0 right-0 px-2 flex justify-center'>
+        <div className='absolute bottom-4 left-0 right-0 px-2 flex flex-col gap-1 justify-center'>
+          {imagePreviewUrl && (
+            <div className='relative w-16 h-16 rounded-lg overflow-hidden border border-primary self-end mr-14'>
+              <Image
+                src={imagePreviewUrl}
+                alt='Önizleme'
+                fill
+                className='object-cover'
+              />
+              <button
+                type='button'
+                onClick={clearImage}
+                className='absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs leading-none'
+              >
+                ×
+              </button>
+            </div>
+          )}
           <form
             className='w-full flex items-center gap-1'
             onSubmit={handleSubmit}
@@ -281,9 +355,17 @@ export function MessageModal({
               <Input
                 placeholder='Mesajınızı yazın...'
                 name='content'
-                value={value}
+                value={values.content}
                 onChange={handleChange}
                 className='h-11 rounded-full px-3'
+              />
+              <input
+                type='file'
+                name='image'
+                accept='image/*'
+                hidden
+                ref={imageInputRef}
+                onChange={handleImageChange}
               />
             </div>
             <div
@@ -301,11 +383,18 @@ export function MessageModal({
                 icon={ADDPHOTOSVG}
                 iconSize={32}
                 className='[&>svg]:stroke-4'
+                onClick={() => imageInputRef.current?.click()}
               />
             </div>
           </form>
         </div>
       </div>
+      {enlargedImageUrl && (
+        <EnlargedImageGalery
+          onCloseAction={handleCloseGallery}
+          images={[enlargedImageUrl]}
+        />
+      )}
     </div>
   );
 }
