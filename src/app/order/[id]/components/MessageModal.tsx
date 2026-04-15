@@ -60,6 +60,7 @@ export function MessageModal({
   const messageListRef = useRef<HTMLDivElement>(null);
   const shouldScrollToLatestRef = useRef(false);
   const hasScrolledOnOpenRef = useRef(false);
+  const hasMarkedAsReadRef = useRef(false);
 
   /** Scroll helper that moves viewport to latest message. */
   function scrollToLatestMessage() {
@@ -99,6 +100,9 @@ export function MessageModal({
       if (imagePreviewUrl) {
         URL.revokeObjectURL(imagePreviewUrl);
       }
+      // Reset tracking refs when modal unmounts
+      hasMarkedAsReadRef.current = false;
+      hasScrolledOnOpenRef.current = false;
     };
     // Only run on unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,26 +135,30 @@ export function MessageModal({
     });
   }, [messageList.length]);
 
-  /** Marks all unread messages as read when modal opens. */
+  /** Marks all unread messages as read when modal opens or reopens. */
   useEffect(() => {
-    if (isClosing || !orderId) {
+    if (isClosing || !orderId || hasMarkedAsReadRef.current) {
       return;
     }
 
+    hasMarkedAsReadRef.current = true;
+
     const markMessagesAsReadOnOpen = async () => {
       const result = await markOrderMessagesAsRead(orderId);
-      if (!result.ok || result.data.length === 0) {
+      if (!result.ok) {
         return;
       }
 
-      const ids = new Set(result.data);
-      setMessageList((prev) =>
-        prev.map((message) =>
-          ids.has(message.id) ? {...message, read: true} : message,
-        ),
-      );
+      if (result.data && result.data.length > 0) {
+        const ids = new Set(result.data);
+        setMessageList((prev) =>
+          prev.map((message) =>
+            ids.has(message.id) ? {...message, read: true} : message,
+          ),
+        );
+      }
 
-      // Force local unread reset so badge clears even if SSE delivery is delayed.
+      // Mark all as read in UI
       setMessageList((prev) =>
         prev.map((message) => ({...message, read: true})),
       );
@@ -228,6 +236,7 @@ export function MessageModal({
 
     const pollInterval = setInterval(() => {
       void syncMessagesFromDb();
+      void syncReadState();
     }, 2500);
 
     const stream = new EventSource(`/api/orders/${orderId}/messages/stream`);
