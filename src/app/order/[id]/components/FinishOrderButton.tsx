@@ -49,7 +49,7 @@ export function FinishOrderButton({
             label='Siparişi Bitir'
             icon={OKSVG}
             iconSize={36}
-            className='gap-1 [&>svg]:stroke-green-600 [&>svg]:stroke-4'
+            className='gap-1 [&>svg]:stroke-4'
             onClick={() => setShowConfirmation(true)}
           />
         </div>

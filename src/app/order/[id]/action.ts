@@ -10,6 +10,7 @@ import {
   placeSchema,
 } from './schema';
 import {deleteOrderImageFromR2, uploadOrderImagesToR2} from './functions';
+import {orderMessageEventBus} from '@/lib/message-events';
 
 /**
  * Standard result shape returned by place-related server actions.
@@ -480,6 +481,82 @@ export async function deletePlaceProduct(
     return {
       ok: false,
       message: `Mekan ürünu silme basarisiz, ${getErrorMessage(error)}`,
+    } as const;
+  }
+}
+
+export async function sendMessageToOrder(formData: FormData) {
+  try {
+    const orderId = formData.get('orderId');
+    if (typeof orderId !== 'string' || !orderId) {
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+    }
+    const content = formData.get('content');
+    if (typeof content !== 'string' || !content) {
+      return {ok: false, message: 'Mesaj içeriği gereklidir'} as const;
+    }
+
+    const newMessage = await prisma.message.create({
+      data: {
+        orderRefId: orderId,
+        content,
+        creator: 'Customer',
+        read: false,
+      },
+    });
+
+    orderMessageEventBus.publishMessageCreated(orderId, newMessage);
+
+    revalidatePath(`/order/${orderId}`);
+    return {ok: true, data: newMessage} as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: `Mesaj gönderme başarısız, ${getErrorMessage(error)}`,
+    } as const;
+  }
+}
+
+export async function markOrderMessagesAsRead(orderId: string) {
+  try {
+    if (!orderId) {
+      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+    }
+
+    const unreadMessages = await prisma.message.findMany({
+      where: {
+        orderRefId: orderId,
+        read: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const messageIds = unreadMessages.map((item) => item.id);
+    if (messageIds.length === 0) {
+      return {ok: true, data: [] as string[]} as const;
+    }
+
+    await prisma.message.updateMany({
+      where: {
+        id: {
+          in: messageIds,
+        },
+      },
+      data: {
+        read: true,
+      },
+    });
+
+    orderMessageEventBus.publishMessagesRead(orderId, messageIds);
+
+    revalidatePath(`/order/${orderId}`);
+    return {ok: true, data: messageIds} as const;
+  } catch (error) {
+    return {
+      ok: false,
+      message: `Mesajlar okundu olarak işaretlenemedi, ${getErrorMessage(error)}`,
     } as const;
   }
 }

@@ -7,9 +7,9 @@ const loadSearchParams = createLoader({
 });
 
 /**
-  * Defines the ProductsProps type.
-  * Usage: Use ProductsProps to type related values and keep data contracts consistent.
-  */
+ * Defines the ProductsProps type.
+ * Usage: Use ProductsProps to type related values and keep data contracts consistent.
+ */
 type ProductsProps = {
   searchParams: SearchParams;
 };

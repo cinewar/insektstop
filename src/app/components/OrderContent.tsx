@@ -231,6 +231,7 @@ export function OrderContent({order}: OrderContentProps) {
                   label='Düzenle'
                   iconSize={40}
                   onClick={handleEdit}
+                  className='flex-1'
                 />
                 <GlassyButton
                   icon={TRASHSVG}

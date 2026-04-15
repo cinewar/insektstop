@@ -51,8 +51,31 @@ model Order {
   createrEmail String
   createrPhone String
   createrAddress String
+  messages Message[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+}
+
+enum CreatorType {
+  Customer
+  Admin
+}
+
+type MessageImage {
+  id  Int
+  img String
+}
+
+model Message {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  orderRefId String       @db.ObjectId
+  image     MessageImage?
+  creator   CreatorType  @default(Customer)
+  content   String?
+  read      Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  order     Order        @relation(fields: [orderRefId], references: [id])
 }
 
 model OrderProduct {

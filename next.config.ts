@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '50mb',
     },
   },
+  devIndicators: false,
   images: {
     unoptimized: true,
     remotePatterns: [

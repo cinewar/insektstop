@@ -27,6 +27,7 @@ export {default as ADDSVG} from '@/assets/add.svg';
 export {default as ADDPHOTOSVG} from '@/assets/add-photo.svg';
 export {default as LEFTSVG} from '@/assets/left.svg';
 export {default as RIGHTSVG} from '@/assets/right.svg';
+export {default as SENDSVG} from '@/assets/send.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';

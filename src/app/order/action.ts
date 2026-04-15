@@ -263,6 +263,10 @@ export async function deleteOrder(id: string) {
     where: {orderRefId: id},
   });
 
+  await prisma.message.deleteMany({
+    where: {orderRefId: id},
+  });
+
   await Promise.allSettled(
     allImages.map((image) => deleteOrderImageFromR2(image.img)),
   );

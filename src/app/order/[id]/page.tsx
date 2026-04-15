@@ -2,6 +2,7 @@ import {prisma} from '@/lib/prisma';
 import OrderItemsAccordion from '../../components/OrderItemsAccordion';
 import {PlaceContent} from './components/PlaceContent';
 import {FinishOrderButton} from './components/FinishOrderButton';
+import {MessageButton} from './components/MessageButton';
 
 export default async function Order({
   params,
@@ -24,10 +25,12 @@ export default async function Order({
           },
         },
       },
+      messages: true,
     },
   });
 
   const orderItems = order?.orderItems ?? [];
+  const messages = order?.messages ?? [];
 
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
@@ -55,7 +58,7 @@ export default async function Order({
           items={orderItems}
           products={products}
         />
-        <PlaceContent orderId={orderId} />
+        <PlaceContent messages={order?.messages ?? []} orderId={orderId} />
       </div>
       <FinishOrderButton orderId={orderId} orderName={order?.orderName} />
     </div>
