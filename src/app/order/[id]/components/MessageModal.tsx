@@ -155,7 +155,52 @@ export function MessageModal({
       );
     };
 
+    const syncMessagesFromDb = async () => {
+      try {
+        const response = await fetch(`/api/orders/${orderId}/messages`, {
+          cache: 'no-store',
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          ok: boolean;
+          data?: Array<Message & {createdAt: string}>;
+        };
+
+        if (!payload.ok || !payload.data) {
+          return;
+        }
+
+        const normalized = payload.data.map((message) => ({
+          ...message,
+          createdAt: new Date(message.createdAt),
+        }));
+
+        setMessageList((prev) => {
+          const hasNewMessage = normalized.some(
+            (message) => !prev.some((existing) => existing.id === message.id),
+          );
+
+          if (hasNewMessage) {
+            shouldScrollToLatestRef.current = true;
+          }
+
+          return normalized;
+        });
+      } catch {
+        // Polling fallback is best-effort; ignore intermittent network errors.
+      }
+    };
+
     void syncReadState();
+    void syncMessagesFromDb();
+
+    const pollInterval = setInterval(() => {
+      void syncMessagesFromDb();
+    }, 2500);
 
     const stream = new EventSource(`/api/orders/${orderId}/messages/stream`);
 
@@ -193,6 +238,7 @@ export function MessageModal({
     stream.addEventListener('message-read', handleMessageRead);
 
     return () => {
+      clearInterval(pollInterval);
       stream.removeEventListener('message-created', handleMessageCreated);
       stream.removeEventListener('message-read', handleMessageRead);
       stream.close();
