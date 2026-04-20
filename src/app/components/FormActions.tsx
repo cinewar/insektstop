@@ -1,5 +1,5 @@
 import {GlassyButton} from '@/app/components/GlassyButton';
-import {CLOSESVG, OKSVG} from '@/app/utils/svg';
+import {CLOSESVG, LOGINSVG, OKSVG} from '@/app/utils/svg';
 import {useFormStatus} from 'react-dom';
 
 /**
@@ -9,13 +9,14 @@ import {useFormStatus} from 'react-dom';
 interface FormActionsProps {
   close?: () => void;
   label: string;
+  login?: boolean;
 }
 
 /**
  * Describes behavior for FormActions.
  * Usage: Call FormActions(...) where this declaration is needed in the current module flow.
  */
-export function FormActions({close, label}: FormActionsProps) {
+export function FormActions({close, label, login}: FormActionsProps) {
   const {pending} = useFormStatus();
 
   return (
@@ -34,11 +35,11 @@ export function FormActions({close, label}: FormActionsProps) {
         )}
         <GlassyButton
           label={label}
-          icon={OKSVG}
+          icon={login ? LOGINSVG : OKSVG}
           iconSize={40}
           type='submit'
           disabled={pending}
-          className='[&>svg]:stroke-4 gap-4'
+          className={login ? 'gap-4' : '[&>svg]:stroke-4 gap-4'}
         />
       </div>
     </div>

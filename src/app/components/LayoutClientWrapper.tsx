@@ -35,6 +35,7 @@ export default function LayoutClientWrapper({
   async function handleAction(formData: FormData) {
     try {
       const result = await login(formData);
+      console.log('Login result:', result);
       if (result.error) {
         notify({
           type: 'error',
@@ -168,7 +169,7 @@ export default function LayoutClientWrapper({
               >
                 Şifremi Unuttum
               </button>
-              <FormActions close={closeLogin} label='Giriş' />
+              <FormActions login close={closeLogin} label='Giriş' />
             </form>
           </div>
         </Modal>

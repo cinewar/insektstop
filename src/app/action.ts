@@ -3,6 +3,8 @@ import {prisma} from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import {z} from 'zod';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import {cookies} from 'next/headers';
 
 type ResetPasswordPayload = {
   email: string;
@@ -55,7 +57,21 @@ export async function login(formData: FormData) {
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return {error: 'Invalid password'};
 
-  // Continue with login logic (e.g., set session)
+  // Create JWT session
+  const payload = {id: user.id, email: user.email};
+  const secret = process.env.JWT_SECRET || 'insecure_secret';
+  const token = jwt.sign(payload, secret, {expiresIn: '2h'});
+
+  // Set cookie (httpOnly, secure in production)
+  const cookieStore = await cookies();
+  cookieStore.set('session', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 2, // 2 hours
+    sameSite: 'lax',
+  });
+
   return {success: true, user: {id: user.id, email: user.email}};
 }
 
