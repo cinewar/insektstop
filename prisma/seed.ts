@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import bcrypt from 'bcrypt';
 import {PrismaClient} from '../generated/prisma/client';
 import productsJson from '../src/lib/products.json';
 
@@ -31,9 +32,9 @@ const cloudflareImages = [
 ];
 
 /**
-  * Describes behavior for buildProductImages.
-  * Usage: Call buildProductImages(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for buildProductImages.
+ * Usage: Call buildProductImages(...) where this declaration is needed in the current module flow.
+ */
 function buildProductImages(productIndex: number) {
   const startIndex = productIndex % cloudflareImages.length;
   const rotated = [
@@ -48,10 +49,25 @@ function buildProductImages(productIndex: number) {
 }
 
 /**
-  * Describes behavior for main.
-  * Usage: Call main(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for main.
+ * Usage: Call main(...) where this declaration is needed in the current module flow.
+ */
 async function main() {
+  // Add user with hashed password
+  const password = '159823';
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await prisma.user.upsert({
+    where: {email: 'sevinc65semih@gmail.com'},
+    update: {
+      name: 'semih',
+      password: hashedPassword,
+    },
+    create: {
+      name: 'semih',
+      email: 'sevinc65semih@gmail.com',
+      password: hashedPassword,
+    },
+  });
   const products = productsJson.map((product, index) => ({
     productId: product.id,
     name: product.name,

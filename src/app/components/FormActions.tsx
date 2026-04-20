@@ -7,7 +7,7 @@ import {useFormStatus} from 'react-dom';
  * Usage: Implement or consume FormActionsProps when exchanging this structured contract.
  */
 interface FormActionsProps {
-  close: () => void;
+  close?: () => void;
   label: string;
 }
 
@@ -21,15 +21,17 @@ export function FormActions({close, label}: FormActionsProps) {
   return (
     <div className='flex justify-end mt-4'>
       <div className='flex gap-2 bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 text-lg shadow-lg'>
-        <GlassyButton
-          onClick={close}
-          type='button'
-          label='İptal'
-          icon={CLOSESVG}
-          iconSize={32}
-          disabled={pending}
-          className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-4'
-        />
+        {close && (
+          <GlassyButton
+            onClick={close}
+            type='button'
+            label='İptal'
+            icon={CLOSESVG}
+            iconSize={32}
+            disabled={pending}
+            className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-4'
+          />
+        )}
         <GlassyButton
           label={label}
           icon={OKSVG}
