@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export async function getSessionUser() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('session')?.value;
+  const token = cookieStore.get('insektstop')?.value;
   if (!token) return null;
   try {
     const secret = process.env.JWT_SECRET || 'insecure_secret';

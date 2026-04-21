@@ -3,6 +3,7 @@ import {Geist, Geist_Mono} from 'next/font/google';
 import {NuqsAdapter} from 'nuqs/adapters/next/app';
 import './globals.css';
 import {Header} from './components/Header';
+import ShowHeader from './components/ShowHeader';
 import LayoutClientWrapper from './components/LayoutClientWrapper';
 import {ContactButtons} from './components/ContactButtons';
 import {Notification} from './components/Notification';
@@ -35,7 +36,9 @@ export default function RootLayout({
         <NuqsAdapter>
           <Notification />
           <ContactButtons />
-          <Header />
+          <ShowHeader>
+            <Header />
+          </ShowHeader>
           <LayoutClientWrapper>{children}</LayoutClientWrapper>
         </NuqsAdapter>
       </body>

@@ -64,7 +64,7 @@ export async function login(formData: FormData) {
 
   // Set cookie (httpOnly, secure in production)
   const cookieStore = await cookies();
-  cookieStore.set('session', token, {
+  cookieStore.set('insektstop', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/',

@@ -68,7 +68,7 @@ export default function LayoutClientWrapper({
         title: 'Giriş Başarılı',
         message: 'Başarıyla giriş yaptınız.',
       });
-      router.push('/products');
+      router.push('/admin');
       closeLogin();
     } else {
       notify({
@@ -198,17 +198,7 @@ export default function LayoutClientWrapper({
               >
                 Şifremi Unuttum
               </button>
-              <FormActions
-                login
-                close={closeLogin}
-                label='Giriş'
-                disabled={
-                  !values.email ||
-                  !values.password ||
-                  !!errors.email ||
-                  !!errors.password
-                }
-              />
+              <FormActions login close={closeLogin} label='Giriş' />
             </form>
           </div>
         </Modal>
@@ -230,11 +220,7 @@ export default function LayoutClientWrapper({
                 onBlur={handleForgotBlur('email')}
                 error={forgotErrors.email}
               />
-              <FormActions
-                close={closeForgotPassword}
-                label='Gönder'
-                disabled={!forgotValues.email || !!forgotErrors.email}
-              />
+              <FormActions close={closeForgotPassword} label='Gönder' />
             </form>
           </div>
         </Modal>
