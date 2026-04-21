@@ -10,13 +10,14 @@ interface FormActionsProps {
   close?: () => void;
   label: string;
   login?: boolean;
+  disabled?: boolean;
 }
 
 /**
  * Describes behavior for FormActions.
  * Usage: Call FormActions(...) where this declaration is needed in the current module flow.
  */
-export function FormActions({close, label, login}: FormActionsProps) {
+export function FormActions({close, label, login, disabled}: FormActionsProps) {
   const {pending} = useFormStatus();
 
   return (
@@ -38,7 +39,7 @@ export function FormActions({close, label, login}: FormActionsProps) {
           icon={login ? LOGINSVG : OKSVG}
           iconSize={40}
           type='submit'
-          disabled={pending}
+          disabled={pending || disabled}
           className={login ? 'gap-4' : '[&>svg]:stroke-4 gap-4'}
         />
       </div>

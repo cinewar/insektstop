@@ -7,6 +7,11 @@ import {Input} from '../../components/Input';
 import {resetPassword} from '@/app/action';
 import {notify} from '@/app/lib/notifications';
 import {useRouter} from 'next/navigation';
+import {
+  ChangePasswordField,
+  changePasswordSchema,
+  getChangePasswordFormValues,
+} from '../schema';
 
 export function ChangePassword() {
   const router = useRouter();
@@ -23,79 +28,53 @@ export function ChangePassword() {
     confirmPassword?: string;
   }>({});
 
-  function handleChange(
-    field: 'email' | 'verificationCode' | 'newPassword' | 'confirmPassword',
-  ) {
+  function handleChange(field: ChangePasswordField) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       setValues((prev) => ({...prev, [field]: e.target.value}));
     };
   }
 
-  function validateField(
-    field: 'email' | 'verificationCode' | 'newPassword' | 'confirmPassword',
-    value: string,
-  ) {
-    let error: string | undefined;
-    if (field === 'email') {
-      if (!value) {
-        error = 'E-posta gereklidir.';
-      } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
-        error = 'Geçerli bir e-posta girin.';
-      }
-    } else if (field === 'newPassword') {
-      if (value.length < 6) {
-        error = 'Şifre en az 6 karakter olmalıdır.';
-      }
-    } else if (field === 'confirmPassword') {
-      if (value !== values.newPassword) {
-        error = 'Şifreler eşleşmiyor.';
-      }
-    }
-    setErrors((prev) => ({...prev, [field]: error}));
+  function validateFields(field: ChangePasswordField, value: string) {
+    const result = changePasswordSchema.shape[field].safeParse(value);
+    setErrors((prev) => ({
+      ...prev,
+      [field]: result.success ? undefined : result.error.issues[0].message,
+    }));
   }
 
-  function handleBlur(
-    field: 'email' | 'verificationCode' | 'newPassword' | 'confirmPassword',
-  ) {
+  function handleBlur(field: ChangePasswordField) {
     return (e: React.FocusEvent<HTMLInputElement>) => {
-      validateField(field, e.target.value);
+      validateFields(field, e.target.value);
     };
   }
 
   async function handleAction(formData: FormData) {
-    const submittedValues = {
-      email: formData.get('email') as string,
-      verificationCode: formData.get('verificationCode') as string,
-      newPassword: formData.get('newPassword') as string,
-      confirmPassword: formData.get('confirmPassword') as string,
-    };
+    const submittedValues = getChangePasswordFormValues(formData);
+    const validationResult = changePasswordSchema.safeParse(submittedValues);
 
-    // Validate all fields before submitting
-    validateField('email', submittedValues.email);
-    validateField('verificationCode', submittedValues.verificationCode);
-    validateField('newPassword', submittedValues.newPassword);
-    validateField('confirmPassword', submittedValues.confirmPassword);
-
-    // Check if there are any validation errors
-    if (Object.values(errors).some((error) => error !== undefined)) {
+    if (!validationResult.success) {
+      const fieldErrors: Partial<Record<ChangePasswordField, string>> = {};
+      validationResult.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as ChangePasswordField;
+        fieldErrors[fieldName] = issue.message;
+      });
+      setErrors(fieldErrors);
       return;
     }
-    try {
-      await resetPassword(formData);
+
+    const result = await resetPassword(formData);
+    if (result.success) {
       notify({
         type: 'success',
         title: 'Şifre Değiştirildi',
         message: 'Şifreniz başarıyla değiştirildi. Lütfen tekrar giriş yapın.',
       });
       router.push('/');
-    } catch (error) {
+    } else {
       notify({
         type: 'error',
         title: 'Hata',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Bir hata oluştu. Lütfen tekrar deneyin.',
+        message: 'Bir hata oluştu. Lütfen tekrar deneyin.',
       });
     }
   }

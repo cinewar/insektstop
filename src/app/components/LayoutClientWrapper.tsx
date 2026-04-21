@@ -6,7 +6,18 @@ import {FormPendingOverlay} from './FormPendingOverlay';
 import {Input} from './Input';
 import {FormActions} from './FormActions';
 import {notify} from '../lib/notifications';
-import {email} from 'zod';
+import {
+  loginSchema,
+  getLoginFormValues,
+  LoginField,
+  LoginErrors,
+} from './loginSchema';
+import {
+  resetPasswordSchema,
+  getResetPasswordFormValues,
+  ResetPasswordField,
+  ResetPasswordErrors,
+} from './resetPasswordSchema';
 import {login, sendPasswordResetEmail} from '../action';
 import {useRouter} from 'next/navigation';
 
@@ -19,11 +30,16 @@ export default function LayoutClientWrapper({
 
   const [showLogin, setShowLogin] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
-  const [forgotValues, setForgotValues] = useState({email: ''});
-  const [forgotErrors, setForgotErrors] = useState<{email?: string}>({});
+  const [forgotValues, setForgotValues] = useState<{email: string}>({
+    email: '',
+  });
+  const [forgotErrors, setForgotErrors] = useState<ResetPasswordErrors>({});
 
-  const [values, setValues] = useState({email: '', password: ''});
-  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
+  const [values, setValues] = useState<{email: string; password: string}>({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState<LoginErrors>({});
   const openLogin = () => setShowLogin(true);
   const closeLogin = () => setShowLogin(false);
   const openForgotPassword = () => {
@@ -33,102 +49,115 @@ export default function LayoutClientWrapper({
   const closeForgotPassword = () => setForgotPassword(false);
 
   async function handleAction(formData: FormData) {
-    try {
-      const result = await login(formData);
-      console.log('Login result:', result);
-      if (result.error) {
-        notify({
-          type: 'error',
-          title: 'Giriş Başarısız',
-          message: result.error,
-        });
-        return;
+    const submittedValues = getLoginFormValues(formData);
+    const validateResult = loginSchema.safeParse(submittedValues);
+    if (!validateResult.success) {
+      const fieldErrors: LoginErrors = {};
+      for (const issue of validateResult.error.issues) {
+        const field = issue.path[0] as LoginField;
+        fieldErrors[field] = issue.message;
       }
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
+    const result = await login(formData);
+    if (result.success) {
+      notify({
+        type: 'success',
+        title: 'Giriş Başarılı',
+        message: 'Başarıyla giriş yaptınız.',
+      });
       router.push('/products');
-    } catch (error) {
+      closeLogin();
+    } else {
       notify({
         type: 'error',
         title: 'Giriş Başarısız',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.',
+        message: 'Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.',
       });
+      closeLogin();
     }
-
-    closeLogin();
   }
 
-  function handleChange(field: 'email' | 'password') {
+  function handleChange(field: LoginField) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((prev) => ({...prev, [field]: e.target.value}));
-      setErrors((prev) => ({...prev, [field]: undefined}));
+      const value = e.target.value;
+      setValues((prev) => ({...prev, [field]: value}));
+      // Validate field
+      const result = loginSchema.shape[field].safeParse(value);
+      setErrors((prev) => ({
+        ...prev,
+        [field]: result.success ? undefined : result.error.issues[0].message,
+      }));
     };
   }
 
-  function handleBlur(field: 'email' | 'password') {
+  function handleBlur(field: LoginField) {
     return (e: React.FocusEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      if (field === 'email') {
-        const result = email().safeParse(value);
-        setErrors((prev) => ({
-          ...prev,
-          email: result.success
-            ? undefined
-            : 'Geçerli bir e-posta adresi girin',
-        }));
-      } else if (field === 'password') {
-        setErrors((prev) => ({
-          ...prev,
-          password: value ? undefined : 'Şifre gereklidir',
-        }));
-      }
+      const result = loginSchema.shape[field].safeParse(value);
+      setErrors((prev) => ({
+        ...prev,
+        [field]: result.success ? undefined : result.error.issues[0].message,
+      }));
     };
   }
 
-  function handleForgotChange(field: 'email') {
+  function handleForgotChange(field: ResetPasswordField) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForgotValues((prev) => ({...prev, [field]: e.target.value}));
-      setForgotErrors((prev) => ({...prev, [field]: undefined}));
+      const value = e.target.value;
+      setForgotValues((prev) => ({...prev, [field]: value}));
+      // Validate field
+      const result = resetPasswordSchema.shape[field].safeParse(value);
+      setForgotErrors((prev) => ({
+        ...prev,
+        [field]: result.success ? undefined : result.error.issues[0].message,
+      }));
     };
   }
 
-  function handleForgotBlur(field: 'email') {
+  function handleForgotBlur(field: ResetPasswordField) {
     return (e: React.FocusEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      if (field === 'email') {
-        const result = email().safeParse(value);
-        setForgotErrors((prev) => ({
-          ...prev,
-          email: result.success
-            ? undefined
-            : 'Geçerli bir e-posta adresi girin',
-        }));
-      }
+      const result = resetPasswordSchema.shape[field].safeParse(value);
+      setForgotErrors((prev) => ({
+        ...prev,
+        [field]: result.success ? undefined : result.error.issues[0].message,
+      }));
     };
   }
 
   async function handleForgotPassword(formData: FormData) {
-    try {
-      await sendPasswordResetEmail(formData);
+    const submittedValues = getResetPasswordFormValues(formData);
+    const validateResult = resetPasswordSchema.safeParse(submittedValues);
+    if (!validateResult.success) {
+      const fieldErrors: ResetPasswordErrors = {};
+      for (const issue of validateResult.error.issues) {
+        const field = issue.path[0] as ResetPasswordField;
+        fieldErrors[field] = issue.message;
+      }
+      setForgotErrors(fieldErrors);
+      return;
+    }
+    setForgotErrors({});
+    const result = await sendPasswordResetEmail(formData);
+    if (result.success) {
       notify({
         type: 'success',
         title: 'Şifre Sıfırlama Talebi Gönderildi',
         message:
           'Eğer bu e-posta adresi kayıtlıysa, şifre sıfırlama talimatları gönderilecektir.',
       });
-    } catch (error) {
+      closeForgotPassword();
+      router.push('/changepassword');
+    } else {
       notify({
         type: 'error',
         title: 'Şifre Sıfırlama Talebi Gönderilemedi',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Bir hata oluştu. Lütfen tekrar deneyin.',
+        message: 'Bir hata oluştu. Lütfen tekrar deneyin.',
       });
-    } finally {
       closeForgotPassword();
-      router.push('/changepassword');
     }
   }
 
@@ -169,7 +198,17 @@ export default function LayoutClientWrapper({
               >
                 Şifremi Unuttum
               </button>
-              <FormActions login close={closeLogin} label='Giriş' />
+              <FormActions
+                login
+                close={closeLogin}
+                label='Giriş'
+                disabled={
+                  !values.email ||
+                  !values.password ||
+                  !!errors.email ||
+                  !!errors.password
+                }
+              />
             </form>
           </div>
         </Modal>
@@ -191,7 +230,11 @@ export default function LayoutClientWrapper({
                 onBlur={handleForgotBlur('email')}
                 error={forgotErrors.email}
               />
-              <FormActions close={closeForgotPassword} label='Gönder' />
+              <FormActions
+                close={closeForgotPassword}
+                label='Gönder'
+                disabled={!forgotValues.email || !!forgotErrors.email}
+              />
             </form>
           </div>
         </Modal>

@@ -90,6 +90,10 @@ export async function sendPasswordResetEmail(formData: FormData) {
     return {error: 'User not found'};
   }
 
+  if (user.email !== comingEmail) {
+    return {error: 'Email does not match our records'};
+  }
+
   // Generate a six-digit numeric code for validation
   function generateSixDigitCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
