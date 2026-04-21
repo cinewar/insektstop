@@ -142,10 +142,13 @@ export async function resetPassword(formData: FormData) {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   // Update the user's password and clear the reset token
-  await prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: {email},
     data: {password: hashedPassword, resetToken: null},
   });
 
+  if (!updatedUser) {
+    return {error: 'Failed to reset password'};
+  }
   return {success: true, message: 'Password has been reset successfully'};
 }
