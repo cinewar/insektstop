@@ -30,6 +30,8 @@ export {default as RIGHTSVG} from '@/assets/right.svg';
 export {default as SENDSVG} from '@/assets/send.svg';
 export {default as LOGINSVG} from '@/assets/login.svg';
 export {default as LOGOUTSVG} from '@/assets/logout.svg';
+export {default as USERSVG} from '@/assets/user.svg';
+export {default as ORDERSVG} from '@/assets/order.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';

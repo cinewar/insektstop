@@ -1,16 +1,17 @@
 'use client';
 
+import {GlassyButton} from '@/app/components/GlassyButton';
 import Svg from '@/app/components/Svg';
-import {HOMESVG} from '@/app/utils/svg';
+import {HOMESVG, ORDERSVG, PRODUCTSSVG, USERSVG} from '@/app/utils/svg';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 export function AdminHeader() {
   const pathName = usePathname();
   const adminLinks = [
-    {href: '/admin', label: 'Admin', icon: HOMESVG},
-    {href: '/admin/orders', label: 'Siparişler', icon: HOMESVG},
-    {href: '/admin/products', label: 'Ürünler', icon: HOMESVG},
+    {href: '/admin', label: 'Admin', icon: USERSVG},
+    {href: '/admin/orders', label: 'Siparişler', icon: ORDERSVG},
+    {href: '/admin/products', label: 'Ürünler', icon: PRODUCTSSVG},
   ];
   return (
     <header
@@ -22,16 +23,19 @@ export function AdminHeader() {
           key={link.href}
           href={link.href}
           className={`text-base flex flex-col items-center justify-center w-full ${
-            pathName === link.href
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-dark-text'
+            pathName === link.href ? 'text-primary' : 'text-dark-text'
           }`}
         >
-          <Svg
-            icon={link.icon}
-            className={`${pathName === link.href ? '[*>svg]:fill-primary' : '[*>svg]:fill-dark-text'}`}
-            size={40}
-          />
+          <div
+            className='pointer-events-auto bg-gray/90 backdrop-blur-sm 
+                    border border-white/30 rounded-full p-0.5 shadow-lg'
+          >
+            <GlassyButton
+              icon={link.icon}
+              iconSize={36}
+              className={`gap-1 ${pathName === link.href ? '[&>svg]:fill-primary' : '[&>svg]:fill-dark-text'}`}
+            />
+          </div>
           {link.label}
         </Link>
       ))}

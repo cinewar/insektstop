@@ -3,10 +3,9 @@
 import {GlassyButton} from '../../components/GlassyButton';
 import {EDITSVG, LOGOUTSVG} from '../../utils/svg';
 import {User as UserType} from '../../../../generated/prisma';
-import {logout} from '../action';
+import {logout, updateUser} from '../action';
 import {useState} from 'react';
 import {Modal} from '@/app/components/Modal';
-import {EditUserForm} from './EditUserForm';
 import {FormPendingOverlay} from '@/app/components/FormPendingOverlay';
 import {Input} from '@/app/components/Input';
 import {notify} from '@/app/lib/notifications';
@@ -26,10 +25,10 @@ export function User({user}: UserProps) {
   const [openModal, setOpenModal] = useState(false);
   const [errors, setErrors] = useState<UserErrors>({});
   const [values, setValues] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
+    name: user.name || '',
+    email: user.email || '',
+    phone: user.phone || '',
+    address: user.address || '',
   });
 
   /**
@@ -86,20 +85,25 @@ export function User({user}: UserProps) {
       return;
     }
 
-    // const result = await updateOrder(formData);
+    const result = await updateUser(formData);
+
+    if (!result.ok) {
+      notify({
+        type: 'error',
+        title: 'Hata',
+        message: result.message,
+      });
+      return;
+    }
 
     setErrors({});
     setValues(submittedValues);
     setOpenModal(false);
-    // notify({
-    //   type: 'success',
-    //   title: `Sipariş ${actionType === 'edit' ? 'güncellendi' : 'oluşturuldu'}`,
-    //   message:
-    //     actionType === 'edit'
-    //       ? 'Sipariş detaylari başarıyla kaydedildi.'
-    //       : 'Yeni sipariş başarıyla oluşturuldu.',
-    //   duration: 4000,
-    // });
+    notify({
+      type: 'success',
+      title: `Kullanıcı başarıyla güncellendi`,
+      message: 'Kullanıcı detaylari başarıyla kaydedildi.',
+    });
   }
   return (
     <>
@@ -148,6 +152,7 @@ export function User({user}: UserProps) {
               <h2 className='text-lg font-bold mb-2'>Admin Düzenle</h2>
               <form className='flex flex-col gap-1' action={handleAction}>
                 <FormPendingOverlay />
+                <input name='id' hidden defaultValue={user.id} />
                 <Input
                   placeholder='Adinizi ve soyadınızi girin'
                   label='Ad Soyad'

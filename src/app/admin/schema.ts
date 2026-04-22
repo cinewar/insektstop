@@ -1,6 +1,7 @@
 import {z} from 'zod';
 
 export const userSchema = z.object({
+  id: z.string().min(1, 'Kullanıcı ID gerekli'),
   name: z.string().min(2, 'Ad en az 2 karakter olmalidir'),
   email: z.string().email('Geçerli bir e-posta adresi girin'),
   phone: z
@@ -32,6 +33,7 @@ export type UserErrors = Partial<Record<UserField, string>>;
  */
 export function getUserFormValues(formData: FormData): UserFormValues {
   return {
+    id: (formData.get('id') as string) ?? '',
     name: (formData.get('name') as string) ?? '',
     email: (formData.get('email') as string) ?? '',
     phone: ((formData.get('phone') as string) ?? '').replace(/\D/g, ''),
