@@ -8,7 +8,7 @@ import {ReactNode, useState} from 'react';
  */
 export type AccordionItem = {
   id: string;
-  title: ReactNode;
+  title: ReactNode | ((isOpen: boolean) => ReactNode);
   processStatus?: 'pending' | 'processing' | 'completed' | 'cancelled';
   content: ReactNode;
   onAdd?: () => void;
@@ -68,7 +68,9 @@ export default function NewAccordion({
               onClick={() => handleToggle(item.id)}
               className={`relative flex justify-between p-2 items-center ${isOpen ? 'shadow-md rounded-lg' : ''}`}
             >
-              {item.title}
+              {typeof item.title === 'function'
+                ? item.title(isOpen)
+                : item.title}
             </div>
 
             {isOpen && (

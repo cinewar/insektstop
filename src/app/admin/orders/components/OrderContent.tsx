@@ -124,10 +124,10 @@ export function OrderContent({orders}: OrderContentProps) {
   const accordionItems = orders.map((order) => ({
     id: order.id,
     isOpen: false,
-    title: (
+    title: (isOpen: boolean) => (
       <Title
         order={order}
-        isOpen={false}
+        isOpen={isOpen}
         setIsEdit={() => {}}
         item={{onEdit: () => {}, onDelete: () => {}}}
       />
