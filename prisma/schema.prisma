@@ -44,12 +44,21 @@ type ProductImage {
   img String
 }
 
+
+enum ProcessStatus {
+  pending
+  in_progress
+  completed
+  cancelled
+}
+
 model Order {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
   orderId      Int            @unique
   orderName    String
   orderItems   OrderProduct[]
   totalPrice   Float
+  processStatus ProcessStatus?
   createrName  String
   createrEmail String
   createrPhone String
