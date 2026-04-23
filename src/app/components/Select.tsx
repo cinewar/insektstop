@@ -34,7 +34,6 @@ export function Select({
   error,
   name,
 }: SelectProps) {
-  console.log(error, 'error');
   const [isOpen, setIsOpen] = useState(false);
   const [internalOptions, setInternalOptions] = useState(options);
   const [searchTerm, setSearchTerm] = useState('');

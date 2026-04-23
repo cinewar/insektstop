@@ -80,10 +80,6 @@ export default function PlaceProductForm({
    * Receives submitted FormData and maps values for backend actions.
    */
   async function handleAction(formData: FormData) {
-    console.log(
-      'Form gonderildi, degerler:',
-      getPlaceProductFormValues(formData),
-    );
     // TODO: Implement create/edit/delete logic based on modalType and provided IDs
     // For example:
     try {

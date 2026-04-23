@@ -30,7 +30,7 @@ export function Confirmation({
 }: ConfirmationProps) {
   return (
     <Modal onClose={onCancelAction}>
-      <div className='relative p-2'>
+      <div className='relative p-2' onClick={(e) => e.stopPropagation()}>
         {isLoading && (
           <Loading className='absolute inset-0 z-50 rounded-lg bg-secondary/75' />
         )}

@@ -8,7 +8,7 @@ import {VideoPlayer} from './components/Video';
 export default async function Home() {
   const products = await prisma.product.findMany();
   return (
-    <div className='min-h-screen flex flex-col bg-secondary'>
+    <div className='flex flex-col bg-secondary'>
       <Hero />
       <Cards products={products} />
       <Contributers />

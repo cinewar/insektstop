@@ -60,10 +60,6 @@ async function main() {
 
     seededOrders += 1;
   }
-
-  console.log(
-    `Message backfill completed. Orders updated: ${seededOrders}, messages created: ${seededMessages}`,
-  );
 }
 
 main()

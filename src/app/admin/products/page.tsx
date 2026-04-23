@@ -1,7 +1,7 @@
 export default function AdminProductsPage() {
   return (
     <>
-      <div>Admin Products Page</div>
+      <div className='min-h-600'>Admin Products Page</div>
     </>
   );
 }

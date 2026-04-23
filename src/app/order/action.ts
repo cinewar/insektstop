@@ -167,6 +167,7 @@ export async function createOrder(formData: FormData) {
       createrEmail: submittedValues.email,
       createrPhone: submittedValues.phone,
       createrAddress: submittedValues.address,
+      processStatus: 'pending',
     },
   });
 

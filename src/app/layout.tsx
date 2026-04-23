@@ -31,15 +31,17 @@ export default function RootLayout({
   return (
     <html lang='tr'>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen max-w-120 relative mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen  `}
       >
         <NuqsAdapter>
-          <Notification />
-          <ContactButtons />
-          <ShowHeader>
-            <Header />
-          </ShowHeader>
-          <LayoutClientWrapper>{children}</LayoutClientWrapper>
+          <div className='max-w-120 relative mx-auto'>
+            <Notification />
+            <ContactButtons />
+            <ShowHeader>
+              <Header />
+            </ShowHeader>
+            <LayoutClientWrapper>{children}</LayoutClientWrapper>
+          </div>
         </NuqsAdapter>
       </body>
     </html>

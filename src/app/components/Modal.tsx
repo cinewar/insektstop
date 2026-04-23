@@ -3,9 +3,9 @@ import Svg from './Svg';
 import {CLOSESVG} from '../utils/svg';
 
 /**
-  * Defines the ModalProps type.
-  * Usage: Use ModalProps to type related values and keep data contracts consistent.
-  */
+ * Defines the ModalProps type.
+ * Usage: Use ModalProps to type related values and keep data contracts consistent.
+ */
 type ModalProps = {
   children:
     | React.ReactNode
@@ -14,9 +14,9 @@ type ModalProps = {
 };
 
 /**
-  * Describes behavior for Modal.
-  * Usage: Call Modal(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Modal.
+ * Usage: Call Modal(...) where this declaration is needed in the current module flow.
+ */
 export function Modal({children, onClose}: ModalProps) {
   const [isClosing, setIsClosing] = useState(false);
 
@@ -30,6 +30,7 @@ export function Modal({children, onClose}: ModalProps) {
         isClosing ? 'animate-fade-out' : 'animate-fade-in'
       }`}
       onClick={(e) => {
+        e.stopPropagation();
         if (e.target === e.currentTarget) {
           close();
         }

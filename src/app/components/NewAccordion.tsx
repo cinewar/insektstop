@@ -9,7 +9,7 @@ import {ReactNode, useState} from 'react';
 export type AccordionItem = {
   id: string;
   title: ReactNode | ((isOpen: boolean) => ReactNode);
-  processStatus?: 'pending' | 'processing' | 'completed' | 'cancelled';
+  processStatus?: 'pending' | 'in_progress' | 'completed' | 'cancelled';
   content: ReactNode;
   onAdd?: () => void;
   onEdit?: () => void;
@@ -42,11 +42,11 @@ export default function NewAccordion({
     setIsEdit(false);
   };
 
-  const statusColorShade = {
-    pending: 'shadow-[0_0_10px_rgba(255,71,249,0.45)]',
-    processing: 'shadow-[0_0_10px_rgba(255,71,249,0.45)]',
-    completed: 'shadow-[0_0_10px_rgba(255,71,249,0.45)]',
-    cancelled: 'shadow-[0_0_10px_rgba(255,71,249,0.45)]',
+  const statusShadow = {
+    pending: 'border-1 border-orange-500', // yellow
+    in_progress: 'border-1 border-blue-500', // blue
+    completed: 'border-1 border-green-500', // green
+    cancelled: 'border-1 border-red-500', // red
   };
 
   return (
@@ -57,12 +57,11 @@ export default function NewAccordion({
         return (
           <div
             key={item.id}
-            className={`${
-              item.processStatus
-                ? statusColorShade[item.processStatus]
-                : 'shadow-custom'
-            } p-1 rounded-lg  ${itemClassName} 
-              ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}`}
+            className={`
+              shadow-md border ${item.processStatus ? statusShadow[item.processStatus] : ''}
+              p-1 rounded-lg  ${itemClassName} 
+              ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}
+            `}
           >
             <div
               onClick={() => handleToggle(item.id)}
