@@ -15,9 +15,5 @@ export function AccordionWrapper({items}: AccordionWrapperProps) {
     onEdit: item.onEdit,
     onDelete: item.onDelete,
   }));
-  return (
-    <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
-      <NewAccordion items={accordionItems} />
-    </div>
-  );
+  return <NewAccordion items={accordionItems} />;
 }

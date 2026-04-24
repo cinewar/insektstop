@@ -1,7 +1,7 @@
 import {prisma} from '@/lib/prisma';
 import {getSessionUser} from '../lib/session';
-import {AdminHeader} from './components/AdminHeader';
 import {redirect} from 'next/navigation';
+import {AdminLayoutWrapper} from './components/AdminLayoutWrapper';
 
 export default async function AdminLayout({
   children,
@@ -17,10 +17,5 @@ export default async function AdminLayout({
   if (!user || !adminUser || adminUser.email !== user.email) {
     redirect('/'); // Admin değilse ana sayfaya yönlendir
   }
-  return (
-    <div className='min-h-screen bg-secondary'>
-      <AdminHeader />
-      {children}
-    </div>
-  );
+  return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>;
 }

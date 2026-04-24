@@ -51,7 +51,7 @@ export default function NewAccordion({
           <div
             key={item.id}
             className={`
-              shadow-md p-1 rounded-lg  ${itemClassName} 
+              shadow-[0_0_4px_rgba(0,0,0,0.25)] p-1 rounded-lg  ${itemClassName} 
               ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}
             `}
           >

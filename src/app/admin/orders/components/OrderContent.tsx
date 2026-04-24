@@ -6,7 +6,6 @@ import {
   CLEARSORTINGSVG,
   CLOSESVG,
   DOWNSVG,
-  EDITSVG,
   EMAILSVG,
   HOURSGLASSESVG,
   INPROGRESSSVG,
@@ -15,7 +14,6 @@ import {
   PHONESVG,
   RIGHTARROWSVG,
   SORTINGSVG,
-  TRASHSVG,
   WHATSUPSVG,
 } from '@/app/utils/svg';
 import ActionMenu from '@/app/components/ActionMenu';
@@ -23,11 +21,11 @@ import Svg from '@/app/components/Svg';
 import {useState} from 'react';
 import {GlassyButton} from '@/app/components/GlassyButton';
 import {Confirmation} from '@/app/components/Confirmation';
-import {prisma} from '@/lib/prisma';
 import {updateStatus} from '../action';
 import {notify} from '@/app/lib/notifications';
 import {Search} from '@/app/components/Search';
 import {parseAsString, useQueryState} from 'nuqs';
+import {useRouter} from 'next/navigation';
 
 interface OrderContentProps {
   orders: Order[];
@@ -185,6 +183,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
 };
 
 const Content: React.FC<{order: Order}> = ({order}) => {
+  const router = useRouter();
   const handleEmailClick = (emailAddress: string) => {
     const subject = encodeURIComponent('Merhaba');
     const body = encodeURIComponent(
@@ -301,7 +300,7 @@ const Content: React.FC<{order: Order}> = ({order}) => {
             label='Siparişi Detayı Gör'
             iconSize={28}
             className='pr-4 gap-4'
-            // onClick={() => router.push(`/order/${order.id}`)}
+            onClick={() => router.push(`/admin/orders/${order.id}`)}
           />
         </div>
       </div>
@@ -348,8 +347,8 @@ export function OrderContent({orders}: OrderContentProps) {
     }));
 
   return (
-    <>
-      <div className='flex items-center gap-1 px-6 py-2'>
+    <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
+      <div className='flex items-center gap-1 py-2'>
         <div className='w-full'>
           <Search placeholder='Siparişlerde Ara...' className='mb-4' />
         </div>
@@ -359,8 +358,7 @@ export function OrderContent({orders}: OrderContentProps) {
         >
           <ActionMenu
             triggerIcon={SORTINGSVG}
-            className={`rounded-full glassy-bg p-1 shadow-custom transition
-                    hover:scale-101 active:scale-95 ${sortingIconColors[(sort ?? 'wipe') as keyof typeof sortingIconColors]} `}
+            className={`rounded-full glassy-bg p-1 shadow-custom ${sortingIconColors[(sort ?? 'wipe') as keyof typeof sortingIconColors]} `}
             actions={[
               {
                 id: 'pending',
@@ -407,6 +405,6 @@ export function OrderContent({orders}: OrderContentProps) {
         </div>
       </div>
       <AccordionWrapper items={accordionItems} />
-    </>
+    </div>
   );
 }
