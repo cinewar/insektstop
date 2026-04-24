@@ -3,6 +3,7 @@
 import {AccordionWrapper} from '@/app/components/AccordionWrapper';
 import {Order, ProcessStatus} from '../../../../../generated/prisma';
 import {
+  CLEARSORTINGSVG,
   CLOSESVG,
   DOWNSVG,
   EDITSVG,
@@ -13,6 +14,7 @@ import {
   OKSVG,
   PHONESVG,
   RIGHTARROWSVG,
+  SORTINGSVG,
   TRASHSVG,
   WHATSUPSVG,
 } from '@/app/utils/svg';
@@ -24,6 +26,8 @@ import {Confirmation} from '@/app/components/Confirmation';
 import {prisma} from '@/lib/prisma';
 import {updateStatus} from '../action';
 import {notify} from '@/app/lib/notifications';
+import {Search} from '@/app/components/Search';
+import {parseAsString, useQueryState} from 'nuqs';
 
 interface OrderContentProps {
   orders: Order[];
@@ -34,6 +38,21 @@ type TitleProps = {
   isOpen: boolean;
   setIsEdit: () => void;
   item: {onEdit?: () => void; onDelete?: () => void};
+};
+
+const statusBg = {
+  pending: 'bg-[#FFA500]', // yellow
+  in_progress: 'bg-[#006AFF]', // blue
+  completed: 'bg-[#59FF00]', // green
+  cancelled: 'bg-red', // red
+};
+
+const sortingIconColors = {
+  pending: '[&>svg]:fill-[#FFA500]',
+  in_progress: '[&>svg]:fill-[#006AFF]',
+  completed: '[&>svg]:fill-[#59FF00]',
+  cancelled: '[&>svg]:fill-red',
+  wipe: '[&>svg]:stroke-primary',
 };
 
 const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
@@ -93,12 +112,14 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
           <div className='font-bold text-dark-text'>{order.orderName}</div>
           <div className='flex items-end gap-3'>
             <div className='text-base text-tertiary'>{order.createrName}</div>
-            <span className='bg-tertiary text-center px-2 min-w-8 rounded-full text-base font-semibold text-white'>
+            <span
+              className={`${order.processStatus ? statusBg[order.processStatus] : 'bg-tertiary'} text-center px-2 min-w-8 rounded-full text-base font-semibold text-white`}
+            >
               £{order.totalPrice}
             </span>
           </div>
         </div>
-        <div className='flex'>
+        <div className='flex items-center'>
           {!isOpen && (
             <div>
               <ActionMenu
@@ -164,6 +185,38 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
 };
 
 const Content: React.FC<{order: Order}> = ({order}) => {
+  const handleEmailClick = (emailAddress: string) => {
+    const subject = encodeURIComponent('Merhaba');
+    const body = encodeURIComponent(
+      'Insektstop icin sizinle iletişime gecmek istiyorum.',
+    );
+
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}&su=${subject}&body=${body}`,
+      '_blank',
+    );
+  };
+
+  const handleWhatsAppClick = (whatsAppNumber: string) => {
+    const message = encodeURIComponent(
+      'Merhaba, Insektstop icin sizinle iletişime gecmek istiyorum.',
+    );
+
+    window.open(`https://wa.me/${whatsAppNumber}?text=${message}`, '_blank');
+  };
+
+  const handlePhoneClick = (phoneNumber: string) => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleMapClick = (address: string) => {
+    const query = encodeURIComponent(address);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${query}`,
+      '_blank',
+    );
+  };
+
   return (
     <div
       key={order.id}
@@ -185,8 +238,18 @@ const Content: React.FC<{order: Order}> = ({order}) => {
               className='pointer-events-auto flex gap-1 bg-gray/90 backdrop-blur-sm 
                     border border-white/30 rounded-full p-0.5 shadow-lg'
             >
-              <GlassyButton icon={PHONESVG} iconSize={36} className='' />
-              <GlassyButton icon={WHATSUPSVG} iconSize={36} className='' />
+              <GlassyButton
+                icon={PHONESVG}
+                iconSize={36}
+                className=''
+                onClick={() => handlePhoneClick(order.createrPhone)}
+              />
+              <GlassyButton
+                icon={WHATSUPSVG}
+                iconSize={36}
+                className=''
+                onClick={() => handleWhatsAppClick(order.createrPhone)}
+              />
             </div>
           </div>
         </div>
@@ -204,6 +267,7 @@ const Content: React.FC<{order: Order}> = ({order}) => {
                 icon={MAPSVG}
                 iconSize={36}
                 className='[&>svg]:fill-red'
+                onClick={() => handleMapClick(order.createrAddress)}
               />
             </div>
           </div>
@@ -218,7 +282,12 @@ const Content: React.FC<{order: Order}> = ({order}) => {
               className='pointer-events-auto flex gap-1 bg-gray/90 backdrop-blur-sm 
                     border border-white/30 rounded-full p-0.5 shadow-lg'
             >
-              <GlassyButton icon={EMAILSVG} iconSize={36} className='' />
+              <GlassyButton
+                icon={EMAILSVG}
+                iconSize={36}
+                className=''
+                onClick={() => handleEmailClick(order.createrEmail)}
+              />
             </div>
           </div>
         </div>
@@ -241,24 +310,103 @@ const Content: React.FC<{order: Order}> = ({order}) => {
 };
 
 export function OrderContent({orders}: OrderContentProps) {
-  const accordionItems = orders.map((order) => ({
-    id: order.id,
-    isOpen: false,
-    processStatus: order.processStatus ?? undefined,
-    title: (isOpen: boolean) => (
-      <Title
-        order={order}
-        isOpen={isOpen}
-        setIsEdit={() => {}}
-        item={{onEdit: () => {}, onDelete: () => {}}}
-      />
-    ),
-    content: <Content order={order} />,
-  }));
+  const [query] = useQueryState(
+    'q',
+    parseAsString.withOptions({shallow: false}),
+  );
+  const [sort, setSort] = useQueryState(
+    'sort',
+    parseAsString.withOptions({shallow: false}),
+  );
+  console.log('Orders in OrderContent:', sort);
+  const accordionItems = orders
+    .filter((order) => {
+      if (!sort) return true;
+      return order.processStatus === sort;
+    })
+    .filter((order) => {
+      if (!query) return true;
+      const lowerQuery = query.toLowerCase();
+      return (
+        order.orderName.toLowerCase().includes(lowerQuery) ||
+        order.createrName.toLowerCase().includes(lowerQuery)
+      );
+    })
+    .map((order) => ({
+      id: order.id,
+      isOpen: false,
+      processStatus: order.processStatus ?? undefined,
+      title: (isOpen: boolean) => (
+        <Title
+          order={order}
+          isOpen={isOpen}
+          setIsEdit={() => {}}
+          item={{onEdit: () => {}, onDelete: () => {}}}
+        />
+      ),
+      content: <Content order={order} />,
+    }));
 
   return (
-    <div className=''>
+    <>
+      <div className='flex items-center gap-1 px-6 py-2'>
+        <div className='w-full'>
+          <Search placeholder='Siparişlerde Ara...' className='mb-4' />
+        </div>
+        <div
+          className='pointer-events-auto flex gap-1 bg-gray/90 backdrop-blur-sm 
+                    border border-white/30 rounded-full p-0.5 shadow-lg z-2'
+        >
+          <ActionMenu
+            triggerIcon={SORTINGSVG}
+            className={`rounded-full glassy-bg p-1 shadow-custom transition
+                    hover:scale-101 active:scale-95 ${sortingIconColors[(sort ?? 'wipe') as keyof typeof sortingIconColors]} `}
+            actions={[
+              {
+                id: 'pending',
+                label: 'Beklemede',
+                icon: HOURSGLASSESVG,
+                iconSize: 40,
+                className: '[&>svg]:fill-[#FFA500] ',
+                onClick: () => setSort('pending'),
+              },
+              {
+                label: 'İşleniyor',
+                id: 'in_progress',
+                icon: INPROGRESSSVG,
+                iconSize: 40,
+                className: '[&>svg]:stroke-[#006AFF]',
+                onClick: () => setSort('in_progress'),
+              },
+              {
+                label: 'Tamamlandı',
+                id: 'completed',
+                icon: OKSVG,
+                iconSize: 40,
+                onClick: () => setSort('completed'),
+                className: '[&>svg]:stroke-3',
+              },
+              {
+                label: 'İptal',
+                id: 'cancelled',
+                icon: CLOSESVG,
+                iconSize: 40,
+                onClick: () => setSort('cancelled'),
+                className: '[&>svg]:stroke-red',
+              },
+              {
+                label: 'Temizle',
+                id: 'wipe',
+                icon: CLEARSORTINGSVG,
+                iconSize: 40,
+                onClick: () => setSort(null),
+                className: '[&>svg]:stroke-red',
+              },
+            ]}
+          />
+        </div>
+      </div>
       <AccordionWrapper items={accordionItems} />
-    </div>
+    </>
   );
 }

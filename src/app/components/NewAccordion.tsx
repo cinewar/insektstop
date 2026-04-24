@@ -42,13 +42,6 @@ export default function NewAccordion({
     setIsEdit(false);
   };
 
-  const statusShadow = {
-    pending: 'border-1 border-orange-500', // yellow
-    in_progress: 'border-1 border-blue-500', // blue
-    completed: 'border-1 border-green-500', // green
-    cancelled: 'border-1 border-red-500', // red
-  };
-
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {items.map((item) => {
@@ -58,8 +51,7 @@ export default function NewAccordion({
           <div
             key={item.id}
             className={`
-              shadow-md border ${item.processStatus ? statusShadow[item.processStatus] : ''}
-              p-1 rounded-lg  ${itemClassName} 
+              shadow-md p-1 rounded-lg  ${itemClassName} 
               ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}
             `}
           >

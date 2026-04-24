@@ -141,7 +141,7 @@ export default function ActionMenu({
       />
       <div
         ref={panelRef}
-        className={`flex flex-col p-1 pt-8 gap-2 absolute z-310
+        className={`flex flex-col p-1 pt-8 gap-1 absolute z-310
         shadow-custom bg-gray backdrop-blur-sm 
         ${isOpen ? 'animate-fade-in scale-100' : isClosing ? 'animate-fade-out scale-95' : ''} 
         transition-all duration-200 ease-out 
