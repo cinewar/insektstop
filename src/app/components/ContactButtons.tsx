@@ -27,12 +27,16 @@ export function ContactButtons() {
   useEffect(() => {
     function handleScroll() {
       const scrollPosition = window.innerHeight + window.scrollY;
-      const threshold = document.body.offsetHeight - 40; // 120px from bottom
+      const threshold = document.documentElement.offsetHeight - 120;
       setAboveFooter(scrollPosition >= threshold);
     }
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
     handleScroll(); // check on mount
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   const [openMenu, setOpenMenu] = useState(false);
