@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {GlassyButton} from './GlassyButton';
 import {
   CLOSESVG,
@@ -10,12 +10,31 @@ import {
   WHATSUPSVG,
 } from '../utils/svg';
 import Svg from './Svg';
+import {usePathname} from 'next/navigation';
 
 /**
  * Describes behavior for ContactButtons.
  * Usage: Call ContactButtons(...) where this declaration is needed in the current module flow.
  */
 export function ContactButtons() {
+  const path = usePathname();
+  const pathParts = path.split('/').filter(Boolean);
+  const isOrderDetailPage =
+    pathParts.length === 2 && pathParts[0] === 'order' && pathParts[1] !== null;
+
+  const [aboveFooter, setAboveFooter] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.body.offsetHeight - 40; // 120px from bottom
+      setAboveFooter(scrollPosition >= threshold);
+    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // check on mount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const [openMenu, setOpenMenu] = useState(false);
 
   const emailAddress = 'sevinc65semih@gmail.com';
@@ -49,8 +68,15 @@ export function ContactButtons() {
     setOpenMenu(false);
   };
 
+  if (path.startsWith('/admin')) {
+    return null; // Sipariş detay sayfasında iletişim butonlarını gösterme
+  }
+
   return (
-    <div className='fixed sm:hidden right-4 bottom-4 z-40'>
+    <div
+      className={`fixed sm:hidden right-4 z-40 bottom-4 transition-transform duration-300
+        ${aboveFooter && isOrderDetailPage ? '-translate-y-18' : ''}`}
+    >
       <ul
         id='quick-contact-menu'
         aria-label='Hizli iletişim menusu'

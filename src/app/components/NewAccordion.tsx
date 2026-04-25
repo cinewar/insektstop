@@ -10,7 +10,7 @@ export type AccordionItem = {
   id: string;
   title: ReactNode | ((isOpen: boolean) => ReactNode);
   processStatus?: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  content: ReactNode;
+  content: ReactNode | ((enlargedGallery: boolean) => ReactNode);
   onAdd?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -68,7 +68,9 @@ export default function NewAccordion({
               <div
                 className={`px-1 pb-3 text-sm text-dark-text border-t border-gray-100 ${contentClassName}`}
               >
-                {item.content}
+                {typeof item.content === 'function'
+                  ? item.content(isOpen)
+                  : item.content}
               </div>
             )}
           </div>

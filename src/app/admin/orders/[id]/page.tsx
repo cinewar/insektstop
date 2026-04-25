@@ -2,6 +2,9 @@ import {GlassyButton} from '@/app/components/GlassyButton';
 import {BACKSVG, HOMESVG} from '@/app/utils/svg';
 import {prisma} from '@/lib/prisma';
 import Link from 'next/link';
+import {AdminPlaceContent} from './components/PlaceContent';
+import {OrderItemProduct, OrderProduct} from '../../../../../generated/prisma';
+import {OrderProductWithProducts} from '@/lib/prisma-types';
 
 export default async function AdminOrderPlaces({
   params,
@@ -28,7 +31,11 @@ export default async function AdminOrderPlaces({
     },
   });
 
-  console.log('Order Details:', order);
+  const orderItems = order?.orderItems ?? [];
+
+  console.log('Fetched Order:', order);
+  const accordionItems: OrderProductWithProducts[] = orderItems;
+
   return (
     <>
       <header
@@ -65,7 +72,7 @@ export default async function AdminOrderPlaces({
         </div>
       </header>
       <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
-        Order Products Page
+        <AdminPlaceContent items={accordionItems} />
       </div>
     </>
   );

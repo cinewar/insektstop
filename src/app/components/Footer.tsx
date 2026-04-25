@@ -12,8 +12,8 @@ export function Footer({openLogin}: {openLogin?: () => void}) {
   const sessionUser = useSessionUserStore((state) => state.sessionUser);
   const router = useRouter();
   return (
-    <footer className='w-full text-center py-4 bg-dark-text text-primary mt-auto'>
-      <ul className='flex justify-start gap-1 pl-4 mb-2'>
+    <footer className='w-full text-center py-2 bg-dark-text text-primary mt-auto'>
+      <ul className='flex justify-start gap-1 pl-4'>
         <li>
           <Link href='/' className='hover:underline'>
             <Svg icon={HOMESVG} size={32} />

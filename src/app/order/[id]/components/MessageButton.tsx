@@ -2,6 +2,8 @@
 
 import {EMAILSVG} from '@/app/utils/svg';
 import {GlassyButton} from '@/app/components/GlassyButton';
+import {useEffect, useState} from 'react';
+import {usePathname} from 'next/navigation';
 
 type MessageButtonProps = {
   count?: number;
@@ -9,6 +11,24 @@ type MessageButtonProps = {
 };
 
 export function MessageButton({count = 0, onClickAction}: MessageButtonProps) {
+  const path = usePathname();
+  const pathParts = path.split('/').filter(Boolean);
+  const isOrderDetailPage =
+    pathParts.length === 2 && pathParts[0] === 'order' && pathParts[1] !== null;
+
+  const [aboveFooter, setAboveFooter] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.body.offsetHeight - 40; // 120px from bottom
+      setAboveFooter(scrollPosition >= threshold);
+    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // check on mount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   function handleClick() {
     if (onClickAction) {
       onClickAction();
@@ -25,7 +45,10 @@ export function MessageButton({count = 0, onClickAction}: MessageButtonProps) {
   }
 
   return (
-    <div className='fixed left-4 bottom-4 z-40'>
+    <div
+      className={`fixed left-4 bottom-4 z-40 transition-transform duration-300 
+                ${aboveFooter && isOrderDetailPage ? '-translate-y-16' : ''}`}
+    >
       <div className='relative'>
         <GlassyButton
           icon={EMAILSVG}
