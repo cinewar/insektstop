@@ -134,6 +134,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
                     id: 'in_progress',
                     icon: INPROGRESSSVG,
                     iconSize: 40,
+                    className: '[&>svg]:stroke-[#006AFF]',
                     onClick: () => handleStatusChange('in_progress'),
                   },
                   {

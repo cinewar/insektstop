@@ -101,7 +101,7 @@ function NotificationCard({notification}: {notification: NotificationItem}) {
           onClick={() => removeNotification(notification.id)}
           icon={CLOSESVG}
           size={28}
-          className='absolute top-2 right-3 stroke-primary'
+          className='absolute bg-gray rounded-full top-2 right-3 stroke-white'
         />
       </div>
     </div>

@@ -13,7 +13,6 @@ export function AdminLayoutWrapper({children}: {children: React.ReactNode}) {
     pathParts[0] === 'admin' &&
     pathParts[1] === 'orders' &&
     pathParts[2] !== null;
-  console.log('Current Path:', path);
 
   return (
     <div className='min-h-screen bg-secondary'>
