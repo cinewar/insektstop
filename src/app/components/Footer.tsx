@@ -1,10 +1,14 @@
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import {useSessionUserStore} from './LayoutClientWrapper';
 
 /**
  * Describes behavior for Footer.
  * Usage: Call Footer(...) where this declaration is needed in the current module flow.
  */
 export function Footer({openLogin}: {openLogin?: () => void}) {
+  const sessionUser = useSessionUserStore((state) => state.sessionUser);
+  const router = useRouter();
   return (
     <footer className='w-full text-center py-4 bg-dark-text text-primary mt-auto'>
       <ul className='flex justify-between px-12 mb-2'>
@@ -32,7 +36,13 @@ export function Footer({openLogin}: {openLogin?: () => void}) {
           <li>
             <button
               className='hover:underline text-primary'
-              onClick={openLogin}
+              onClick={() => {
+                if (sessionUser) {
+                  router.push('/admin');
+                  return;
+                } // Eğer kullanıcı zaten giriş yapmışsa admin sayfasına yönlendir
+                openLogin();
+              }}
             >
               Admin
             </button>

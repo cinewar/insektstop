@@ -7,6 +7,8 @@ import ShowHeader from './components/ShowHeader';
 import LayoutClientWrapper from './components/LayoutClientWrapper';
 import {ContactButtons} from './components/ContactButtons';
 import {Notification} from './components/Notification';
+import {getSessionUser} from './lib/session';
+import {JwtPayload} from 'jsonwebtoken';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,11 +25,15 @@ export const metadata: Metadata = {
   description: 'Insektstop resmi web uygulamasi',
 };
 
-export default function RootLayout({
+export type SessionUser = string | JwtPayload | null;
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const sessionUser: SessionUser = await getSessionUser();
+
   return (
     <html lang='tr'>
       <body
@@ -40,7 +46,9 @@ export default function RootLayout({
             <ShowHeader>
               <Header />
             </ShowHeader>
-            <LayoutClientWrapper>{children}</LayoutClientWrapper>
+            <LayoutClientWrapper sessionUser={sessionUser}>
+              {children}
+            </LayoutClientWrapper>
           </div>
         </NuqsAdapter>
       </body>

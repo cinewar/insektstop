@@ -20,12 +20,34 @@ import {
 } from './resetPasswordSchema';
 import {login, sendPasswordResetEmail} from '../action';
 import {useRouter} from 'next/navigation';
+import {SessionUser} from '../layout';
+import {useEffect} from 'react';
+import {create} from 'zustand';
+
+interface SessionUserState {
+  sessionUser: SessionUser;
+  setSessionUser: (user: SessionUser) => void;
+  removeSessionUser: () => void;
+}
+
+export const useSessionUserStore = create<SessionUserState>((set) => ({
+  sessionUser: null,
+  setSessionUser: (user) => set({sessionUser: user}),
+  removeSessionUser: () => set({sessionUser: null}),
+}));
 
 export default function LayoutClientWrapper({
   children,
+  sessionUser,
 }: {
   children: React.ReactNode;
+  sessionUser: SessionUser;
 }) {
+  // Hydrate Zustand store with sessionUser from server
+  const setSessionUser = useSessionUserStore((state) => state.setSessionUser);
+  useEffect(() => {
+    setSessionUser(sessionUser);
+  }, [sessionUser, setSessionUser]);
   const router = useRouter();
 
   const [showLogin, setShowLogin] = useState(false);
