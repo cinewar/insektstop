@@ -3,14 +3,21 @@
 import {AccordionWrapper} from '@/app/components/AccordionWrapper';
 import {EnlargedImageGalery} from '@/app/components/EnlargedImageGalery';
 import Svg from '@/app/components/Svg';
+import {MessageButton} from '@/app/order/[id]/components/MessageButton';
 import {DOWNSVG} from '@/app/utils/svg';
 import {normalizeImageUrl} from '@/lib/image-url';
 import {OrderProductWithProducts} from '@/lib/prisma-types';
 import Image from 'next/image';
-import {useState} from 'react';
+import {useState, useEffect, useCallback, useRef} from 'react';
+import {Message} from '../../../../../../generated/prisma';
+import {MessageModal} from '@/app/order/[id]/components/MessageModal';
+import {usePathname} from 'next/navigation';
+import {getMessages} from '../action';
 
 interface PlaceContentProps {
   items: OrderProductWithProducts[];
+  orderId: string;
+  messages: Message[];
 }
 
 type TitleProps = {
@@ -112,7 +119,75 @@ const Content = ({
   );
 };
 
-export function AdminPlaceContent({items}: PlaceContentProps) {
+export function AdminPlaceContent({
+  items,
+  orderId,
+  messages: initialMessages,
+}: PlaceContentProps) {
+  const path = usePathname();
+  const [showMessages, setShowMessages] = useState(false);
+  const [messageList, setMessageList] = useState<Message[]>(initialMessages);
+  const evtSourceRef = useRef<EventSource | null>(null);
+
+  // Fetch messages from API
+  const syncMessagesFromDb = useCallback(async () => {
+    if (!orderId) return;
+    try {
+      const response = await getMessages(orderId);
+      if (!response.ok) return;
+      const payload = response.data as Array<Message & {createdAt: string}>;
+
+      const normalized = payload.map((message) => ({
+        ...message,
+        createdAt: new Date(message.createdAt),
+      }));
+      setMessageList(() => {
+        return normalized;
+      });
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Failed to sync order messages from the server.', error);
+      }
+    }
+  }, [orderId]);
+
+  // SSE subscription for real-time updates
+  useEffect(() => {
+    if (!orderId) return;
+    // Only one EventSource per component
+    if (evtSourceRef.current) {
+      evtSourceRef.current.close();
+    }
+    const evtSource = new EventSource(`/api/sse`);
+    evtSource.addEventListener('message', () => {
+      void syncMessagesFromDb();
+    });
+    evtSourceRef.current = evtSource;
+    return () => {
+      evtSource.removeEventListener('message', () => void 0);
+      evtSource.close();
+      evtSourceRef.current = null;
+    };
+  }, [orderId, syncMessagesFromDb]);
+
+  // Also sync on mount
+  useEffect(() => {
+    syncMessagesFromDb();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const unreadMessageCount = messageList.filter((message) => {
+    if (path.includes('admin')) {
+      return message.creator === 'Customer' && !message.read;
+    } else {
+      return message.creator === 'Admin' && !message.read;
+    }
+  }).length;
+
+  function handleOpenMessages() {
+    setShowMessages(true);
+  }
+
   const [enlargedGallery, setEnlargedGallery] = useState<{
     images: string[];
     currentIndex: number;
@@ -128,10 +203,9 @@ export function AdminPlaceContent({items}: PlaceContentProps) {
       <Content orderItem={item} handleEnlargedGallery={handleEnlargedGallery} />
     ),
   }));
-  console.log('Accordion Items:', accordionItems);
   return (
     <>
-      <div className='flex w-full flex-col'>
+      <div className='flex w-full flex-col pb-20'>
         <AccordionWrapper items={accordionItems} />
       </div>
       {enlargedGallery && (
@@ -139,6 +213,20 @@ export function AdminPlaceContent({items}: PlaceContentProps) {
           images={enlargedGallery.images}
           onCloseAction={() => setEnlargedGallery(null)}
           currentIndex={enlargedGallery.currentIndex}
+        />
+      )}
+      <MessageButton
+        count={showMessages ? 0 : unreadMessageCount}
+        onClickAction={handleOpenMessages}
+      />
+
+      {showMessages && (
+        <MessageModal
+          type='admin'
+          orderId={orderId}
+          messages={messageList}
+          onMessagesChange={setMessageList}
+          onClose={() => setShowMessages(false)}
         />
       )}
     </>

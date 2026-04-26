@@ -1,9 +1,8 @@
 'use client';
 
-import {EMAILSVG} from '@/app/utils/svg';
+import {MESSAGESVG} from '@/app/utils/svg';
 import {GlassyButton} from '@/app/components/GlassyButton';
 import {useEffect, useState} from 'react';
-import {usePathname} from 'next/navigation';
 
 type MessageButtonProps = {
   count?: number;
@@ -11,11 +10,6 @@ type MessageButtonProps = {
 };
 
 export function MessageButton({count = 0, onClickAction}: MessageButtonProps) {
-  const path = usePathname();
-  const pathParts = path.split('/').filter(Boolean);
-  const isOrderDetailPage =
-    pathParts.length === 2 && pathParts[0] === 'order' && pathParts[1] !== null;
-
   const [aboveFooter, setAboveFooter] = useState(false);
 
   useEffect(() => {
@@ -51,11 +45,11 @@ export function MessageButton({count = 0, onClickAction}: MessageButtonProps) {
   return (
     <div
       className={`fixed left-4 bottom-4 z-40 transition-transform duration-300 
-                ${aboveFooter && isOrderDetailPage ? '-translate-y-16' : ''}`}
+                ${aboveFooter ? '-translate-y-16' : ''}`}
     >
       <div className='relative'>
         <GlassyButton
-          icon={EMAILSVG}
+          icon={MESSAGESVG}
           iconSize={45}
           aria-label='Mesajlara git'
           onClick={handleClick}

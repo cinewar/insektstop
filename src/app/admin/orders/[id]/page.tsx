@@ -32,8 +32,8 @@ export default async function AdminOrderPlaces({
   });
 
   const orderItems = order?.orderItems ?? [];
+  const messages = order?.messages ?? [];
 
-  console.log('Fetched Order:', order);
   const accordionItems: OrderProductWithProducts[] = orderItems;
 
   return (
@@ -72,7 +72,11 @@ export default async function AdminOrderPlaces({
         </div>
       </header>
       <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
-        <AdminPlaceContent items={accordionItems} />
+        <AdminPlaceContent
+          items={accordionItems}
+          orderId={orderId}
+          messages={messages}
+        />
       </div>
     </>
   );

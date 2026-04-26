@@ -14,7 +14,6 @@ import {
   uploadImageToOrderMessagetoR2,
   uploadOrderImagesToR2,
 } from './functions';
-import {orderMessageEventBus} from '@/lib/message-events';
 
 /**
  * Standard result shape returned by place-related server actions.
@@ -522,7 +521,7 @@ export async function sendMessageToOrder(formData: FormData) {
       },
     });
 
-    orderMessageEventBus.publishMessageCreated(orderId, newMessage);
+    // SSE event bus removed.
 
     revalidatePath(`/order/${orderId}`);
     return {ok: true, data: newMessage} as const;
@@ -570,7 +569,7 @@ export async function markOrderMessagesAsRead(orderId: string) {
       },
     });
 
-    orderMessageEventBus.publishMessagesRead(orderId, messageIds);
+    // SSE event bus removed.
 
     revalidatePath(`/order/${orderId}`);
     return {ok: true, data: messageIds} as const;

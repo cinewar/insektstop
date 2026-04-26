@@ -35,49 +35,7 @@ export function PlaceContent({orderId, messages}: PlaceContentProps) {
     setShowMessages(true);
   }
 
-  useEffect(() => {
-    if (!orderId) {
-      return;
-    }
-
-    const stream = new EventSource(`/api/orders/${orderId}/messages/stream`);
-
-    const handleMessageCreated = (event: MessageEvent) => {
-      const incoming = JSON.parse(event.data) as Message & {createdAt: string};
-      const normalizedMessage: Message = {
-        ...incoming,
-        createdAt: new Date(incoming.createdAt),
-      };
-
-      setMessageList((prev) => {
-        if (prev.some((item) => item.id === normalizedMessage.id)) {
-          return prev;
-        }
-
-        return [...prev, normalizedMessage];
-      });
-    };
-
-    const handleMessageRead = (event: MessageEvent) => {
-      const messageIds = JSON.parse(event.data) as string[];
-      const ids = new Set(messageIds);
-
-      setMessageList((prev) =>
-        prev.map((message) =>
-          ids.has(message.id) ? {...message, read: true} : message,
-        ),
-      );
-    };
-
-    stream.addEventListener('message-created', handleMessageCreated);
-    stream.addEventListener('message-read', handleMessageRead);
-
-    return () => {
-      stream.removeEventListener('message-created', handleMessageCreated);
-      stream.removeEventListener('message-read', handleMessageRead);
-      stream.close();
-    };
-  }, [orderId]);
+  // SSE logic removed. If you want to keep messages in sync, implement polling or another mechanism here.
 
   const title =
     modalType === 'create' ? 'Mekan ve Oda Oluştur' : 'Mekan ve Oda Düzenle';

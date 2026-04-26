@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import Svg from '@/app/components/Svg';
 import {ADDPHOTOSVG, CLOSESVG, SENDSVG} from '@/app/utils/svg';
 import {Message} from '../../../../../generated/prisma';
@@ -9,8 +9,13 @@ import {GlassyButton} from '@/app/components/GlassyButton';
 import {markOrderMessagesAsRead, sendMessageToOrder} from '../action';
 import Image from 'next/image';
 import {EnlargedImageGalery} from '@/app/components/EnlargedImageGalery';
+import {
+  getMessages,
+  sendAdminMessageToOrder,
+} from '@/app/admin/orders/[id]/action';
 
 interface MessageModalProps {
+  type?: 'admin' | 'customer';
   /** Closes the modal (with existing close animation flow). */
   onClose: () => void;
   /** Initial message snapshot when modal is opened. */
@@ -26,7 +31,51 @@ export function MessageModal({
   messages,
   orderId,
   onMessagesChange,
+  type = 'customer',
 }: MessageModalProps) {
+  // Hoisted so all hooks can use it
+  const syncMessagesFromDb = useCallback(async () => {
+    if (!orderId) return;
+    try {
+      const response = await getMessages(orderId);
+      if (!response.ok) return;
+      const payload = response.data as Array<Message & {createdAt: string}>;
+
+      const normalized = payload.map((message) => ({
+        ...message,
+        createdAt: new Date(message.createdAt),
+      }));
+      setMessageList((prev) => {
+        const hasNewMessage = normalized.some(
+          (message) => !prev.some((existing) => existing.id === message.id),
+        );
+        if (hasNewMessage) {
+          shouldScrollToLatestRef.current = true;
+        }
+        return normalized;
+      });
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Failed to sync order messages from the server.', error);
+      }
+    }
+  }, [orderId]);
+
+  // --- SSE Integration ---
+  useEffect(() => {
+    if (!orderId) return;
+
+    const evtSource = new EventSource(`/api/sse`);
+    const handleSSE = () => {
+      // On SSE event, refresh messages
+      void syncMessagesFromDb();
+    };
+    evtSource.addEventListener('message', handleSSE);
+    return () => {
+      evtSource.removeEventListener('message', handleSSE);
+      evtSource.close();
+    };
+  }, [orderId, syncMessagesFromDb]);
   const [enlargedImageUrl, setEnlargedImageUrl] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState({
@@ -135,37 +184,30 @@ export function MessageModal({
     });
   }, [messageList.length]);
 
-  /** Marks all unread messages as read when modal opens or reopens. */
+  /** Marks only the other party's unread messages as read when the modal is open. */
   useEffect(() => {
-    if (isClosing || !orderId || hasMarkedAsReadRef.current) {
-      return;
-    }
+    if (isClosing || !orderId) return;
 
-    hasMarkedAsReadRef.current = true;
+    // Determine which messages to mark as read
+    const targetCreator = type === 'admin' ? 'Customer' : 'Admin';
+    const unreadIds = messageList
+      .filter((msg) => !msg.read && msg.creator === targetCreator)
+      .map((msg) => msg.id);
+    if (unreadIds.length === 0) return;
 
-    const markMessagesAsReadOnOpen = async () => {
+    const markMessagesAsRead = async () => {
+      // Custom API to mark only specific messages as read
       const result = await markOrderMessagesAsRead(orderId);
-      if (!result.ok) {
-        return;
-      }
-
-      if (result.data && result.data.length > 0) {
-        const ids = new Set(result.data);
-        setMessageList((prev) =>
-          prev.map((message) =>
-            ids.has(message.id) ? {...message, read: true} : message,
-          ),
-        );
-      }
-
-      // Mark all as read in UI
+      if (!result.ok) return;
       setMessageList((prev) =>
-        prev.map((message) => ({...message, read: true})),
+        prev.map((message) =>
+          unreadIds.includes(message.id) ? {...message, read: true} : message,
+        ),
       );
     };
 
-    void markMessagesAsReadOnOpen();
-  }, [isClosing, orderId]);
+    void markMessagesAsRead();
+  }, [isClosing, orderId, messageList, type]);
 
   useEffect(() => {
     if (!orderId) {
@@ -191,96 +233,11 @@ export function MessageModal({
       );
     };
 
-    const syncMessagesFromDb = async () => {
-      try {
-        const response = await fetch(`/api/orders/${orderId}/messages`, {
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const payload = (await response.json()) as {
-          ok: boolean;
-          data?: Array<Message & {createdAt: string}>;
-        };
-
-        if (!payload.ok || !payload.data) {
-          return;
-        }
-
-        const normalized = payload.data.map((message) => ({
-          ...message,
-          createdAt: new Date(message.createdAt),
-        }));
-
-        setMessageList((prev) => {
-          const hasNewMessage = normalized.some(
-            (message) => !prev.some((existing) => existing.id === message.id),
-          );
-
-          if (hasNewMessage) {
-            shouldScrollToLatestRef.current = true;
-          }
-
-          return normalized;
-        });
-      } catch {
-        // Polling fallback is best-effort; ignore intermittent network errors.
-      }
-    };
-
     void syncReadState();
     void syncMessagesFromDb();
-
-    const pollInterval = setInterval(() => {
-      void syncMessagesFromDb();
-      void syncReadState();
-    }, 2500);
-
-    const stream = new EventSource(`/api/orders/${orderId}/messages/stream`);
-
-    const handleMessageCreated = (event: MessageEvent) => {
-      const incoming = JSON.parse(event.data) as Message & {createdAt: string};
-      const normalizedMessage: Message = {
-        ...incoming,
-        createdAt: new Date(incoming.createdAt),
-      };
-
-      setMessageList((prev) => {
-        if (prev.some((item) => item.id === normalizedMessage.id)) {
-          return prev;
-        }
-
-        shouldScrollToLatestRef.current = true;
-        return [...prev, normalizedMessage];
-      });
-
-      // Mark newly arrived messages as read when chat is already open.
-      void syncReadState();
-    };
-
-    const handleMessageRead = (event: MessageEvent) => {
-      const messageIds = JSON.parse(event.data) as string[];
-      const ids = new Set(messageIds);
-      setMessageList((prev) =>
-        prev.map((message) =>
-          ids.has(message.id) ? {...message, read: true} : message,
-        ),
-      );
-    };
-
-    stream.addEventListener('message-created', handleMessageCreated);
-    stream.addEventListener('message-read', handleMessageRead);
-
-    return () => {
-      clearInterval(pollInterval);
-      stream.removeEventListener('message-created', handleMessageCreated);
-      stream.removeEventListener('message-read', handleMessageRead);
-      stream.close();
-    };
-  }, [orderId, onMessagesChange]);
+    // Polling removed. Only SSE triggers refresh now.
+    return () => {};
+  }, [orderId, onMessagesChange, syncMessagesFromDb]);
 
   /** Sends text/image message via server action and appends new local message. */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -298,7 +255,10 @@ export function MessageModal({
       formData.append('image', values.image);
     }
 
-    const result = await sendMessageToOrder(formData);
+    const result =
+      type === 'admin'
+        ? await sendAdminMessageToOrder(formData)
+        : await sendMessageToOrder(formData);
     if (!result.ok) {
       return;
     }
@@ -311,6 +271,9 @@ export function MessageModal({
       shouldScrollToLatestRef.current = true;
       return [...prev, result.data];
     });
+
+    // Trigger SSE event for both clients
+    fetch('/api/sse/trigger', {method: 'POST'});
 
     if (imagePreviewUrl) {
       URL.revokeObjectURL(imagePreviewUrl);
@@ -344,7 +307,7 @@ export function MessageModal({
       }}
     >
       <div
-        className={`relative flex flex-col w-full max-h-[calc(100vh-5rem)] bg-secondary rounded-lg overflow-x-hidden overflow-y-hidden
+        className={`relative flex flex-col w-full h-[calc(100vh-10rem)] bg-secondary rounded-lg overflow-x-hidden overflow-y-hidden
           shadow-[inset_0_0_10px_rgba(255,71,249,0.45)] px-2 py-6 max-w-md ${
             isClosing ? 'animate-fade-out' : 'animate-fade-in'
           }`}
