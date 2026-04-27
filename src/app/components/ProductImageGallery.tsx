@@ -4,6 +4,8 @@ import Image from 'next/image';
 import {useEffect, useRef, useState} from 'react';
 import {normalizeImageUrl} from '@/lib/image-url';
 
+const SWIPE_THRESHOLD = 40;
+
 /**
  * Defines the ProductImage type.
  * Usage: Use ProductImage to type related values and keep data contracts consistent.
@@ -26,6 +28,45 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
   const thumbnailRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   const activeImage = images[selectedImageIndex] ?? images[0];
+
+  // Touch swipe state for sliding main image
+  const touchStartXRef = useRef<number | null>(null);
+  const touchDeltaXRef = useRef(0);
+
+  const handleNext = () => {
+    if (selectedImageIndex < images.length - 1) {
+      setSelectedImageIndex((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (selectedImageIndex > 0) {
+      setSelectedImageIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+    touchDeltaXRef.current = 0;
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartXRef.current === null) return;
+    touchDeltaXRef.current =
+      (event.touches[0]?.clientX ?? touchStartXRef.current) -
+      touchStartXRef.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartXRef.current === null) return;
+    if (touchDeltaXRef.current <= -SWIPE_THRESHOLD) {
+      handleNext();
+    } else if (touchDeltaXRef.current >= SWIPE_THRESHOLD) {
+      handlePrev();
+    }
+    touchStartXRef.current = null;
+    touchDeltaXRef.current = 0;
+  };
 
   const updateGlowVisibility = () => {
     const el = thumbnailsScrollRef.current;
@@ -96,13 +137,21 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
       {showRightGlow && (
         <div className='pointer-events-none absolute top-0 right-0 z-20 h-20 w-8 bg-linear-to-l from-dark-text/50 to-transparent' />
       )}
-      <Image
-        src={normalizeImageUrl(activeImage.img)}
-        alt={activeImage.alt || 'Urun Görseli'}
-        width={500}
-        height={400}
-        className='object-cover object-center w-full h-80'
-      />
+      <div
+        className='w-full h-80'
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{touchAction: 'pan-y'}}
+      >
+        <Image
+          src={normalizeImageUrl(activeImage.img)}
+          alt={activeImage.alt || 'Urun Görseli'}
+          width={500}
+          height={400}
+          className='object-cover object-center w-full h-80'
+        />
+      </div>
     </div>
   );
 }
