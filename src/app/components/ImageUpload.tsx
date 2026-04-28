@@ -338,13 +338,16 @@ export function ImageUpload({
         {selectedPreviews.length > 0 && (
           <div className='grid grid-cols-5 gap-1 w-full'>
             {selectedPreviews.map((url, idx) => (
-              <div key={url} className='relative group'>
+              <div
+                key={url}
+                className='relative group aspect-square overflow-hidden'
+              >
                 <Image
                   src={url}
                   alt={`Preview ${idx + 1}`}
-                  className='w-full aspect-square rounded-md border border-gray-200'
-                  width={50}
-                  height={50}
+                  className='w-full h-full object-cover rounded-md shadow-md'
+                  fill
+                  sizes='20vw'
                 />
                 <button
                   type='button'
