@@ -8,12 +8,16 @@ import Link from 'next/link';
 import {Search} from '@/app/components/Search';
 import {parseAsString, useQueryState} from 'nuqs';
 import {Button} from '@/app/components/Button';
+import {useState} from 'react';
+import {Modal} from '@/app/components/Modal';
+import {ProductForm} from './ProductForm';
 
 interface AdminProductContentProps {
   products: Product[];
 }
 
 export function AdminProductContent({products}: AdminProductContentProps) {
+  const [showModal, setShowModal] = useState(false);
   const [query] = useQueryState(
     'q',
     parseAsString.withOptions({shallow: false}),
@@ -53,16 +57,25 @@ export function AdminProductContent({products}: AdminProductContentProps) {
           ))}
         <div className='flex justify-center mt-4'>
           <Button
-            className='shining px-10'
-            // onClick={() => {
-            //   setModalType('create');
-            //   setShowModal(true);
-            // }}
+            className='shining px-10 active:scale-95 transition-all'
+            onClick={() => {
+              setShowModal(true);
+            }}
           >
             Ürün Ekle
           </Button>
         </div>
       </div>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          {({close}) => (
+            <div className='relative'>
+              <h2 className='text-lg font-bold mb-2'>Ürün Ekle</h2>
+              <ProductForm close={close} type='create' />
+            </div>
+          )}
+        </Modal>
+      )}
     </>
   );
 }
