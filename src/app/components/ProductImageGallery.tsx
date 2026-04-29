@@ -119,7 +119,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
               thumbnailRefs.current[index] = element;
             }}
             onClick={() => setSelectedImageIndex(index)}
-            className={`border object-cover w-20 h-20 shadow-lg rounded-lg ${
+            className={`border object-cover w-20 h-20 aspect-square shadow-lg rounded-lg ${
               selectedImageIndex === index
                 ? 'border-primary'
                 : 'border-dark-text hover:border-primary'
@@ -138,7 +138,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
         <div className='pointer-events-none absolute top-0 right-0 z-20 h-20 w-8 bg-linear-to-l from-dark-text/50 to-transparent' />
       )}
       <div
-        className='w-full h-80'
+        className='w-full'
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -148,8 +148,8 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
           src={normalizeImageUrl(activeImage.img)}
           alt={activeImage.alt || 'Urun Görseli'}
           width={500}
-          height={400}
-          className='object-cover object-center w-full h-80'
+          height={500}
+          className='object-cover object-center h-120'
         />
       </div>
     </div>

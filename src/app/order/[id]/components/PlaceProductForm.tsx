@@ -86,7 +86,6 @@ export default function PlaceProductForm({
       if (modalType === 'create') {
         const result = await createPlaceProduct(formData);
         if (!result.ok) {
-          console.error('Mekan ürünu oluşturma hatasi:', result.message);
           notify({
             type: 'error',
             message: result.message,
@@ -105,7 +104,6 @@ export default function PlaceProductForm({
       } else if (modalType === 'edit') {
         const result = await updatePlaceProduct(formData);
         if (!result.ok) {
-          console.error('Mekan ürünu güncelleme hatasi:', result.message);
           notify({
             type: 'error',
             message: result.message,
@@ -122,7 +120,6 @@ export default function PlaceProductForm({
         return;
       }
     } catch (error) {
-      console.error('Form islemi hatasi:', error);
       notify({
         type: 'error',
         message: 'Beklenmeyen bir hata olustu',

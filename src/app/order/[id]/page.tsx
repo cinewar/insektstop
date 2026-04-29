@@ -29,7 +29,6 @@ export default async function Order({
     },
   });
 
-  console.log('Fetched Order normal:', order);
   const orderItems = order?.orderItems ?? [];
   const messages = order?.messages ?? [];
 

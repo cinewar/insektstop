@@ -4,8 +4,15 @@ import {Input} from '@/app/components/Input';
 import {Textarea} from '@/app/components/Textarea';
 import {useState} from 'react';
 import {Product} from '../../../../../generated/prisma';
-import {ProductErrors, ProductField, productSchema} from '../[id]/schema';
+import {
+  getProductFormValues,
+  ProductErrors,
+  ProductField,
+  productSchema,
+} from '../[id]/schema';
 import {ImageUpload} from '@/app/components/ImageUpload';
+import {createProduct, updateProduct} from '../action';
+import {notify} from '@/app/lib/notifications';
 
 interface ProductFormProps {
   type: 'create' | 'edit';
@@ -19,11 +26,61 @@ export function ProductForm({product, type, close}: ProductFormProps) {
     name: product?.name || '',
     description: product?.description || '',
     price: product?.price || '',
-    images: product?.images || '',
+    images: product?.images || [],
   });
+  // Track selected image files and kept image URLs
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [keptImageUrls, setKeptImageUrls] = useState<string[]>(
+    Array.isArray(product?.images)
+      ? product.images.map((imgObj) =>
+          typeof imgObj === 'string' ? imgObj : imgObj.img,
+        )
+      : [],
+  );
 
-  function handleAction() {
-    // Handle form submission logic here
+  async function handleAction(formData: FormData) {
+    // Remove any existing 'images' and 'existingImages' entries
+    formData.delete('images');
+    formData.delete('existingImages');
+    // Append kept image URLs as 'existingImages'
+    keptImageUrls.forEach((url) => {
+      formData.append('existingImages', url);
+    });
+    // Append new image files
+    imageFiles.forEach((file) => {
+      formData.append('images', file);
+    });
+    const submittedValues = getProductFormValues(formData);
+    const result = productSchema.safeParse(submittedValues);
+    if (!result.success) {
+      const fieldErrors: ProductErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as ProductField;
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    if (type === 'create') {
+      const response = await createProduct(formData);
+      if (!response.ok) {
+        notify({type: 'error', title: 'Hata', message: response.message});
+        close?.();
+      } else {
+        notify({type: 'success', title: 'Başarılı', message: response.message});
+        close?.();
+      }
+    } else {
+      const response = await updateProduct(formData);
+      if (!response.ok) {
+        notify({type: 'error', title: 'Hata', message: response.message});
+        close?.();
+      } else {
+        notify({type: 'success', title: 'Başarılı', message: response.message});
+        close?.();
+      }
+    }
   }
 
   /**
@@ -43,7 +100,9 @@ export function ProductForm({product, type, close}: ProductFormProps) {
   function handleChange(field: ProductField) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value =
-        field === 'price' ? e.target.value.replace(/\D/g, '') : e.target.value;
+        field === 'price'
+          ? e.target.value.replace(/[^\d.]/g, '')
+          : e.target.value;
       setValues((prev) => ({...prev, [field]: value}));
       if (field === 'price' && e.target.value !== value) {
         e.target.value = value;
@@ -85,6 +144,7 @@ export function ProductForm({product, type, close}: ProductFormProps) {
         onBlur={handleBlur('price')}
         error={errors.price}
       />
+      {/* No hidden fields, handled in handleAction */}
 
       <Textarea
         label='Ürün Açıklaması'
@@ -102,13 +162,11 @@ export function ProductForm({product, type, close}: ProductFormProps) {
         label='Ürün Görselleri'
         name='images'
         uploadType='multiple'
-        defaultValue={
-          Array.isArray(values.images)
-            ? values.images.map((imgObj) =>
-                typeof imgObj === 'string' ? imgObj : imgObj.img
-              )
-            : values.images
-        }
+        defaultValue={keptImageUrls}
+        onImagesChange={({files, urls}) => {
+          setImageFiles(files);
+          setKeptImageUrls(urls);
+        }}
       />
       <FormActions
         close={close}

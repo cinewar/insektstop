@@ -7,16 +7,45 @@ import {CLOSESVG, EDITSVG, LOGOUTSVG} from '@/app/utils/svg';
 import {Modal} from '@/app/components/Modal';
 import {ProductForm} from '../../components/ProductForm';
 import {useState} from 'react';
+import {Confirmation} from '@/app/components/Confirmation';
+import {deleteProduct} from '../../action';
+import {notify} from '@/app/lib/notifications';
+import {useRouter} from 'next/navigation';
 
 interface AdminProductContentProps {
   product: Product;
 }
 
 export function AdminProductContent({product}: AdminProductContentProps) {
+  const router = useRouter();
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  async function handleConfirmDelete() {
+    setIsDeleting(true);
+
+    const response = await deleteProduct(product.id);
+    if (!response.ok) {
+      notify({
+        title: 'Ürün silinirken bir hata oluştu',
+        message: response.message,
+        type: 'error',
+      });
+    } else {
+      notify({
+        title: 'Ürün başarıyla silindi',
+        message: response.message,
+        type: 'success',
+      });
+      setIsDeleting(false);
+      setShowDeleteConfirmation(false);
+      router.push('/admin/products');
+    }
+  }
   return (
     <>
-      <div className='text-dark-text bg-secondary mt-1'>
+      <div className='text-dark-text flex flex-col bg-secondary mt-1'>
         <ProductImageGallery images={product.images} />
         <div
           className='bg-tertiary max-w-fit ml-2 text-white font-semibold px-2
@@ -27,12 +56,12 @@ export function AdminProductContent({product}: AdminProductContentProps) {
         <div className='p-2 -mt-6'>
           <p className='text-base leading-tight'>{product.description}</p>
         </div>
-        <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit float-end'>
+        <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit self-end mb-8 mt-6 mr-2'>
           <GlassyButton
             icon={CLOSESVG}
             label='Sil'
             iconSize={32}
-            // onClick={() => setOpenModal(true)}
+            onClick={() => setShowDeleteConfirmation(true)}
             className='gap-3 [&>svg]:stroke-red'
           />
           <GlassyButton
@@ -53,6 +82,14 @@ export function AdminProductContent({product}: AdminProductContentProps) {
             </div>
           )}
         </Modal>
+      )}
+      {showDeleteConfirmation && (
+        <Confirmation
+          message='Bu ürünü silmek istediğinize emin misiniz?'
+          onConfirmAction={handleConfirmDelete}
+          onCancelAction={() => setShowDeleteConfirmation(false)}
+          isLoading={isDeleting}
+        />
       )}
     </>
   );

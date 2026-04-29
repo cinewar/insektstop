@@ -40,7 +40,7 @@ export function AdminProductContent({products}: AdminProductContentProps) {
             >
               <div className='flex items-center gap-2'>
                 <Image
-                  src={product.images[0].img}
+                  src={product.images[0]?.img || '/placeholder.png'}
                   alt={product.name}
                   width={50}
                   height={50}

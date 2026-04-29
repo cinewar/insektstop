@@ -81,6 +81,8 @@ interface ImageUploadProps extends Omit<
   defaultValue?: string | string[];
   onDeleteAction?: () => void;
   onFileSelectedAction?: () => void;
+  onFilesChange?: (files: File[]) => void;
+  onImagesChange?: (payload: {files: File[]; urls: string[]}) => void;
 }
 
 /**
@@ -116,9 +118,7 @@ export function ImageUpload({
 
   // State for multiple upload
   const [selectedPreviews, setSelectedPreviews] = useState<string[]>(
-    uploadType === 'multiple' && Array.isArray(defaultValue)
-      ? defaultValue
-      : [],
+    Array.isArray(defaultValue) ? defaultValue : [],
   );
   const [files, setFiles] = useState<File[]>([]);
   const [multiProgress, setMultiProgress] = useState<number[]>([]);
@@ -127,11 +127,11 @@ export function ImageUpload({
 
   // Update previews if defaultValue changes (for multiple mode)
   useEffect(() => {
-    if (uploadType === 'multiple' && Array.isArray(defaultValue)) {
+    if (Array.isArray(defaultValue)) {
       setSelectedPreviews(defaultValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadType, defaultValue]);
+  }, [defaultValue]);
 
   useEffect(() => {
     return () => {
@@ -182,34 +182,24 @@ export function ImageUpload({
       return;
     }
     onFileSelectedAction?.();
-    let currentPreviews = [...selectedPreviews];
     let currentProgress = [...multiProgress];
     const availableSlots = 15 - currentFiles.length;
     const limitedFiles = fileList.slice(0, availableSlots);
     // Compress all new files
     const compressedFiles: File[] = [];
-    const previewUrls: string[] = [];
     for (let i = 0; i < limitedFiles.length; i++) {
       let file = limitedFiles[i];
       try {
         file = await compressImageFile(file);
       } catch {}
       compressedFiles.push(file);
-      previewUrls.push(URL.createObjectURL(file));
     }
-    // Append new previews and files
+    // Append new files
     currentFiles = currentFiles.concat(compressedFiles);
-    currentPreviews = currentPreviews.concat(previewUrls);
     currentProgress = currentProgress.concat(
       Array(compressedFiles.length).fill(100),
     );
-    // Clean up old previews if needed (only those that are removed)
-    previewUrlsRef.current.forEach((url) => {
-      if (!currentPreviews.includes(url)) URL.revokeObjectURL(url);
-    });
-    previewUrlsRef.current = currentPreviews;
     setFiles(currentFiles);
-    setSelectedPreviews(currentPreviews);
     setMultiProgress(currentProgress);
     // Update input files for parent
     const dataTransfer = new DataTransfer();
@@ -217,6 +207,10 @@ export function ImageUpload({
     if (multiInputRef.current) multiInputRef.current.files = dataTransfer.files;
     e.target.files = dataTransfer.files;
     onChange?.(e);
+    // Notify parent of change
+    if (props.onFilesChange) props.onFilesChange(currentFiles);
+    if (props.onImagesChange)
+      props.onImagesChange({files: currentFiles, urls: selectedPreviews});
   }
 
   if (uploadType === 'single') {
@@ -313,7 +307,7 @@ export function ImageUpload({
     // MULTIPLE UPLOAD UI
     return (
       <div className='w-full flex flex-col items-center border-2 border-gray-300 rounded-sm p-2 gap-2 text-center cursor-pointer relative'>
-        {selectedPreviews.length === 0 && (
+        {selectedPreviews.length === 0 && files.length === 0 && (
           <>
             <Svg icon={ADDPHOTOSVG} size={48} />
             <p className='text-gray'>
@@ -335,8 +329,9 @@ export function ImageUpload({
           }}
         />
         {/* Preview grid */}
-        {selectedPreviews.length > 0 && (
+        {(selectedPreviews.length > 0 || files.length > 0) && (
           <div className='grid grid-cols-5 gap-1 w-full'>
+            {/* Existing image URLs */}
             {selectedPreviews.map((url, idx) => (
               <div
                 key={url}
@@ -345,41 +340,64 @@ export function ImageUpload({
                 <Image
                   src={url}
                   alt={`Preview ${idx + 1}`}
-                  className='w-full h-full object-cover rounded-md shadow-md'
+                  className='w-full h-full object-cover rounded-md border border-primary'
                   fill
                   sizes='20vw'
                 />
                 <button
                   type='button'
-                  className='absolute top-1 right-1 bg-white/80 rounded-full p-1 shadow hover:bg-red-200 transition-opacity opacity-80 group-hover:opacity-100'
+                  className='absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs leading-none'
                   onClick={() => {
-                    // Remove preview and file
+                    // Remove preview (existing image URL)
                     const newPreviews = [...selectedPreviews];
-                    const newFiles = [...files];
-                    const newProgress = [...multiProgress];
-                    URL.revokeObjectURL(newPreviews[idx]);
                     newPreviews.splice(idx, 1);
-                    newFiles.splice(idx, 1);
-                    newProgress.splice(idx, 1);
                     setSelectedPreviews(newPreviews);
-                    setFiles(newFiles);
-                    setMultiProgress(newProgress);
-                    previewUrlsRef.current = newPreviews;
-                    // Update input files for parent
-                    if (multiInputRef.current) {
-                      const dataTransfer = new DataTransfer();
-                      newFiles.forEach((f) => dataTransfer.items.add(f));
-                      multiInputRef.current.files = dataTransfer.files;
-                    }
-                    onDeleteAction?.();
+                    if (props.onImagesChange)
+                      props.onImagesChange({files, urls: newPreviews});
                   }}
                   aria-label='Sil'
                 >
-                  <Svg icon={TRASHSVG} size={24} />
+                  ×
                 </button>
               </div>
             ))}
-            {selectedPreviews.length < 15 && (
+            {/* New files */}
+            {files.map((file, idx) => {
+              const url = URL.createObjectURL(file);
+              return (
+                <div
+                  key={url}
+                  className='relative group aspect-square overflow-hidden'
+                >
+                  <Image
+                    src={url}
+                    alt={`Preview new ${idx + 1}`}
+                    className='w-full h-full object-cover rounded-md shadow-md'
+                    fill
+                    sizes='20vw'
+                  />
+                  <button
+                    type='button'
+                    className='absolute top-1 right-1 bg-white/80 rounded-full p-1 shadow hover:bg-red-200 transition-opacity opacity-80 group-hover:opacity-100'
+                    onClick={() => {
+                      // Remove new file
+                      const newFiles = [...files];
+                      newFiles.splice(idx, 1);
+                      setFiles(newFiles);
+                      if (props.onImagesChange)
+                        props.onImagesChange({
+                          files: newFiles,
+                          urls: selectedPreviews,
+                        });
+                    }}
+                    aria-label='Sil'
+                  >
+                    <Svg icon={TRASHSVG} size={24} />
+                  </button>
+                </div>
+              );
+            })}
+            {selectedPreviews.length + files.length < 15 && (
               <button
                 type='button'
                 className='flex items-center justify-center rounded-md border-2 border-dashed border-gray-400'

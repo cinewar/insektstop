@@ -84,7 +84,6 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
         title: 'Durum Güncelleme Hatası',
         message: result.message,
       });
-      console.error('Error updating status:', result.message);
       setIsChangingStatus(false);
       setShowConfirmation({type: null, isVisible: false});
       return;
