@@ -11,12 +11,17 @@ import {
 } from '../utils/svg';
 import Svg from './Svg';
 import {usePathname} from 'next/navigation';
+import {User} from '../../../generated/prisma';
+
+interface ContactButtonsProps {
+  user: User | null;
+}
 
 /**
  * Describes behavior for ContactButtons.
  * Usage: Call ContactButtons(...) where this declaration is needed in the current module flow.
  */
-export function ContactButtons() {
+export function ContactButtons({user}: ContactButtonsProps) {
   const path = usePathname();
   const pathParts = path.split('/').filter(Boolean);
   const isOrderDetailPage =
@@ -41,9 +46,9 @@ export function ContactButtons() {
 
   const [openMenu, setOpenMenu] = useState(false);
 
-  const emailAddress = 'sevinc65semih@gmail.com';
-  const phoneNumber = '+905380600694';
-  const whatsAppNumber = '+905380600694';
+  const emailAddress = user?.email || 'sevinc65semih@gmail.com';
+  const phoneNumber = user?.phone || '+905380600694';
+  const whatsAppNumber = user?.phone || '+905380600694';
 
   const handleEmailClick = () => {
     const subject = encodeURIComponent('Merhaba');

@@ -9,6 +9,7 @@ import {ContactButtons} from './components/ContactButtons';
 import {Notification} from './components/Notification';
 import {getSessionUser} from './lib/session';
 import {JwtPayload} from 'jsonwebtoken';
+import {prisma} from '@/lib/prisma';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,6 +33,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await prisma.user.findFirst({});
   const sessionUser: SessionUser = await getSessionUser();
 
   return (
@@ -42,7 +44,7 @@ export default async function RootLayout({
         <NuqsAdapter>
           <div className='max-w-208.5 relative mx-auto'>
             <Notification />
-            <ContactButtons />
+            <ContactButtons user={user} />
             <ShowHeader>
               <Header />
             </ShowHeader>
