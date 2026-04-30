@@ -16,22 +16,22 @@ export function Footer({openLogin}: {openLogin?: () => void}) {
       <ul className='flex justify-start gap-1 pl-4'>
         <li>
           <Link href='/' className='hover:underline'>
-            <Svg icon={HOMESVG} size={32} />
+            <Svg icon={HOMESVG} size={32} className='w-8 sm:w-12' />
           </Link>
         </li>
         <li>
           <Link href='/about' className='hover:underline'>
-            <Svg icon={INFOSVG} size={32} />
+            <Svg icon={INFOSVG} size={32} className='w-8 sm:w-12' />
           </Link>
         </li>
         <li>
           <Link href='/contact' className='hover:underline'>
-            <Svg icon={CONTACTSVG} size={32} />
+            <Svg icon={CONTACTSVG} size={32} className='w-8 sm:w-12' />
           </Link>
         </li>
         <li>
           <Link href='/products' className='hover:underline'>
-            <Svg icon={PRODUCTSSVG} size={32} />
+            <Svg icon={PRODUCTSSVG} size={32} className='w-8 sm:w-12' />
           </Link>
         </li>
         {openLogin && (
@@ -46,7 +46,11 @@ export function Footer({openLogin}: {openLogin?: () => void}) {
                 openLogin();
               }}
             >
-              <Svg icon={USERSVG} className='[svg]:fill-primary' size={32} />
+              <Svg
+                icon={USERSVG}
+                size={32}
+                className=' [svg]:fill-primary w-8 sm:w-12'
+              />
             </button>
           </li>
         )}

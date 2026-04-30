@@ -8,7 +8,6 @@ import {
   CONTACTSVG,
   HOMESVG,
   LOGOSVG,
-  PHONESVG,
   PRODUCTSSVG,
   VERTICALDOTSSVG,
 } from '../utils/svg';
@@ -45,7 +44,9 @@ export function Header() {
       className='bg-transparent flex max-w-[inherit] justify-between 
                     items-center fixed top-0 w-full p-2 z-30'
     >
-      <Svg icon={LOGOSVG} className='rounded-full z-11' size={50} />
+      <Link href='/' className='flex items-center gap-2 z-11'>
+        <Svg icon={LOGOSVG} className='rounded-full z-11' size={50} />
+      </Link>
       <div className='hidden sm:flex sm:relative items-center bg-gray rounded-full p-1 gap-1'>
         <ul className='sm:flex space-x-1 text-dark-text font-medium text-lg'>
           <li key={routes.length}>
@@ -81,31 +82,38 @@ export function Header() {
               </li>
             ))}
         </ul>
-        <ul
-          className={`absolute top-15 left-0 bg-gray rounded-4xl p-2 gap-1 sm:flex sm:flex-col
-             space-x-1 text-dark-text font-medium text-lg z-50
-            transition-all duration-300
-            ${openRemainButtons ? 'animate-fade-in' : 'animate-fade-out'}
-            ${openRemainButtons ? 'block' : 'hidden'}`}
-        >
-          {routes.slice(3).map((route, index) => (
-            <li key={index}>
-              <Link href={route.href} className='flex items-center gap-1'>
-                <GlassyButton
-                  icon={route.icon}
-                  iconSize={36}
-                  className={`w-full ${
-                    pathName === route.href ||
-                    (pathName.includes(route.href) && route.href !== '/')
-                      ? '[&>svg]:fill-primary '
-                      : '[&>svg]:fill-dark-text '
-                  } `}
-                  label={route.name}
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {openRemainButtons && (
+          <ul
+            className={`absolute top-15 left-0 bg-gray rounded-4xl p-2 gap-1 sm:flex sm:flex-col
+               space-x-1 text-dark-text font-medium text-lg z-0
+              transition-all duration-300 animate-fade-in block`}
+          >
+            <button
+              className='absolute cursor-pointer -top-1 -right-3 bg-gray rounded-full p-1 
+                      border border-gray '
+              onClick={() => setOpenRemainButtons(false)}
+            >
+              <Svg icon={CLOSESVG} size={16} className='[svg]:stroke-white' />
+            </button>
+            {routes.slice(3).map((route, index) => (
+              <li key={index}>
+                <Link href={route.href} className='flex items-center gap-1'>
+                  <GlassyButton
+                    icon={route.icon}
+                    iconSize={36}
+                    className={`w-full ${
+                      pathName === route.href ||
+                      (pathName.includes(route.href) && route.href !== '/')
+                        ? '[&>svg]:fill-primary '
+                        : '[&>svg]:fill-dark-text '
+                    } `}
+                    label={route.name}
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       {openDropNav ? (
         <Svg

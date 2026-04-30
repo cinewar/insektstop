@@ -37,7 +37,7 @@ export default async function RootLayout({
   return (
     <html lang='tr'>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen  `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-200`}
       >
         <NuqsAdapter>
           <div className='max-w-208.5 relative mx-auto'>

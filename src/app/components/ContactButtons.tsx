@@ -84,7 +84,7 @@ export function ContactButtons() {
       <ul
         id='quick-contact-menu'
         aria-label='Hizli iletişim menusu'
-        className={`absolute right-0 bottom-14 flex flex-col gap-2 rounded-[100vw] border border-dark-text/10 bg-secondary/50
+        className={`absolute right-0 bottom-14 flex flex-col gap-2 rounded-[100vw] border border-dark-text/10 bg-gray/80
               py-1 shadow-custom backdrop-blur-sm transition-all origin-bottom duration-200 ${
                 openMenu
                   ? 'scale-y-100 delay-0 pointer-events-auto'

@@ -293,6 +293,20 @@ body {
       linear-gradient(black 0 0) border-box;
     mask-composite: exclude;
   }
+  @media screen and (min-width: 834px) {
+    .border-mask {
+      padding: 4px;
+    }
+    .border-glow {
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        var(--color-primary) 18%,
+        transparent 25%
+      );
+    }
+  }
+
   .border-glow {
     background: conic-gradient(
       from 0deg,

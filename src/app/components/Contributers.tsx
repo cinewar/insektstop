@@ -2,9 +2,9 @@ import {ADSVG, ALSVG, CPSVG, FRSVG, RP1SVG, RPSVG} from '../utils/svg';
 import Svg from './Svg';
 
 /**
-  * Describes behavior for Contributers.
-  * Usage: Call Contributers(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Contributers.
+ * Usage: Call Contributers(...) where this declaration is needed in the current module flow.
+ */
 export function Contributers() {
   const contributers = [
     ADSVG,
@@ -33,10 +33,10 @@ export function Contributers() {
                 
     '
     >
-      <div className='flex w-max no-scrollbar gap-4 animate-scroll'>
+      <div className='flex w-max no-scrollbar gap-4 sm:gap-8 animate-scroll'>
         {contributers.map((icon, index) => (
           <p key={index}>
-            <Svg icon={icon} size={60} className='mx-2' />
+            <Svg icon={icon} className='mx-2 w-20 sm:w-32' />
           </p>
         ))}
       </div>

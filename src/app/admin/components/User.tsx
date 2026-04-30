@@ -108,7 +108,10 @@ export function User({user}: UserProps) {
   return (
     <>
       <div className='p-4'>
-        <div className='bg-white w-full min-h-80 flex flex-col justify-between rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'>
+        <div
+          className='bg-white w-full min-h-80 flex flex-col justify-between 
+              rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'
+        >
           <div>
             <div className='text-sm text-tertiary'>Name & Surname:</div>
             <div>{user.name}</div>
