@@ -97,7 +97,9 @@ export function ImageUpload({
   defaultValue,
   onDeleteAction,
   onFileSelectedAction,
-  ...props
+  onFilesChange,
+  onImagesChange,
+  ...propsRest
 }: ImageUploadProps) {
   // State for single upload
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
@@ -208,9 +210,9 @@ export function ImageUpload({
     e.target.files = dataTransfer.files;
     onChange?.(e);
     // Notify parent of change
-    if (props.onFilesChange) props.onFilesChange(currentFiles);
-    if (props.onImagesChange)
-      props.onImagesChange({files: currentFiles, urls: selectedPreviews});
+    if (onFilesChange) onFilesChange(currentFiles);
+    if (onImagesChange)
+      onImagesChange({files: currentFiles, urls: selectedPreviews});
   }
 
   if (uploadType === 'single') {
@@ -287,15 +289,18 @@ export function ImageUpload({
           />
         )}
         {label && (
-          <label htmlFor={props.id || props.name} className='block -mb-2'>
+          <label
+            htmlFor={propsRest.id || propsRest.name}
+            className='block -mb-2'
+          >
             {label}
           </label>
         )}
         <input
-          {...props}
+          {...propsRest}
           ref={inputRef}
           type='file'
-          accept={props.accept || 'image/*'}
+          accept={propsRest.accept || 'image/*'}
           className={`absolute inset-0 opacity-0 cursor-pointer ${className || ''}`.trim()}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             handleSingleChange(e);
@@ -317,10 +322,10 @@ export function ImageUpload({
         )}
 
         <input
-          {...props}
+          {...propsRest}
           ref={multiInputRef}
           type='file'
-          accept={props.accept || 'image/*'}
+          accept={propsRest.accept || 'image/*'}
           multiple
           className={`absolute inset-0 opacity-0 cursor-pointer ${className || ''}`.trim()}
           disabled={files.length >= 15}
@@ -352,8 +357,8 @@ export function ImageUpload({
                     const newPreviews = [...selectedPreviews];
                     newPreviews.splice(idx, 1);
                     setSelectedPreviews(newPreviews);
-                    if (props.onImagesChange)
-                      props.onImagesChange({files, urls: newPreviews});
+                    if (onImagesChange)
+                      onImagesChange({files, urls: newPreviews});
                   }}
                   aria-label='Sil'
                 >
@@ -384,8 +389,8 @@ export function ImageUpload({
                       const newFiles = [...files];
                       newFiles.splice(idx, 1);
                       setFiles(newFiles);
-                      if (props.onImagesChange)
-                        props.onImagesChange({
+                      if (onImagesChange)
+                        onImagesChange({
                           files: newFiles,
                           urls: selectedPreviews,
                         });

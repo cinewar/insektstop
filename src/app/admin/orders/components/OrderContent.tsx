@@ -317,7 +317,6 @@ export function OrderContent({orders}: OrderContentProps) {
     'sort',
     parseAsString.withOptions({shallow: false}),
   );
-  console.log('Orders in OrderContent:', sort);
   const accordionItems = orders
     .filter((order) => {
       if (!sort) return true;

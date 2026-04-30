@@ -102,7 +102,6 @@ export default function OrderItemsAccordion({
       });
       setPlaceProductDeleteConfirmation(null);
     } catch (error) {
-      console.error('Error deleting place product:', error);
       notify({
         type: 'error',
         message: 'An error occurred while deleting the product.',

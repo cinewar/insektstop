@@ -40,7 +40,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen  `}
       >
         <NuqsAdapter>
-          <div className='max-w-120 relative mx-auto'>
+          <div className='max-w-208.5 relative mx-auto'>
             <Notification />
             <ContactButtons />
             <ShowHeader>

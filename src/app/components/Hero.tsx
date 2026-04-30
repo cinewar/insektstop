@@ -2,19 +2,19 @@
 import Link from 'next/link';
 
 /**
-  * Describes behavior for Hero.
-  * Usage: Call Hero(...) where this declaration is needed in the current module flow.
-  */
+ * Describes behavior for Hero.
+ * Usage: Call Hero(...) where this declaration is needed in the current module flow.
+ */
 export function Hero() {
   return (
     <section
-      className='relative w-full h-80 mt-15 gap-6 bg-[url("/hero.png")] bg-cover bg-center
+      className='relative w-full h-95 gap-6 bg-[url("/hero.png")] bg-cover bg-center
                 after:absolute after:inset-0 after:bg-black/25 after:z-0 
                 flex justify-center items-end p-4
     '
     >
       <div
-        className='absolute top-5 right-0 p-6 w-75 h-40 flex justify-center items-center z-1
+        className='absolute top-20 right-0 p-6 w-75 h-40 flex justify-center items-center z-1
                     glassy shadow-lg rounded-[30px] text-white text-sm font-medium overflow-hidden
       '
       >

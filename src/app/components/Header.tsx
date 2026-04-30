@@ -8,11 +8,14 @@ import {
   CONTACTSVG,
   HOMESVG,
   LOGOSVG,
+  PHONESVG,
   PRODUCTSSVG,
+  VERTICALDOTSSVG,
 } from '../utils/svg';
 import Svg from './Svg';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+import {GlassyButton} from './GlassyButton';
 
 /**
  * Describes behavior for Header.
@@ -20,13 +23,14 @@ import {usePathname} from 'next/navigation';
  */
 export function Header() {
   const [openDropNav, setOpenDropNav] = useState(false);
+  const [openRemainButtons, setOpenRemainButtons] = useState(false);
   const pathName = usePathname();
   const routes = [
     {name: 'Ana Sayfa', href: '/', icon: HOMESVG},
-    {name: 'Sipariş Oluştur ve Göruntule', href: '/order', icon: HOMESVG},
     {name: 'Hakkımızda', href: '/about', icon: ABOUTSVG},
     {name: 'İletişim', href: '/contact', icon: CONTACTSVG},
     {name: 'Urunler', href: '/products', icon: PRODUCTSSVG},
+    {name: 'Sipariş Oluştur ve Göruntule', href: '/order', icon: HOMESVG},
   ];
 
   const delays = [
@@ -37,19 +41,83 @@ export function Header() {
     'delay-500',
   ];
   return (
-    <header className='bg-transparent flex max-w-120 justify-between items-center fixed top-0 w-full p-2 z-30'>
+    <header
+      className='bg-transparent flex max-w-[inherit] justify-between 
+                    items-center fixed top-0 w-full p-2 z-30'
+    >
       <Svg icon={LOGOSVG} className='rounded-full z-11' size={50} />
+      <div className='hidden sm:flex sm:relative items-center bg-gray rounded-full p-1 gap-1'>
+        <ul className='sm:flex space-x-1 text-dark-text font-medium text-lg'>
+          <li key={routes.length}>
+            <GlassyButton
+              onClick={() => setOpenRemainButtons(!openRemainButtons)}
+              icon={VERTICALDOTSSVG}
+              iconSize={36}
+              className={`${
+                pathName === '/products' || pathName === '/order'
+                  ? '[&>svg]:fill-primary '
+                  : '[&>svg]:fill-dark-text '
+              } `}
+            />
+          </li>
+          {routes
+            .slice(0, 3)
+            .reverse()
+            .map((route, index) => (
+              <li key={index}>
+                <Link href={route.href} className='flex items-center gap-1'>
+                  <GlassyButton
+                    icon={route.icon}
+                    iconSize={36}
+                    className={`${
+                      pathName === route.href ||
+                      (pathName.includes(route.href) && route.href !== '/')
+                        ? '[&>svg]:fill-primary '
+                        : '[&>svg]:fill-dark-text '
+                    } `}
+                    label={route.name}
+                  />
+                </Link>
+              </li>
+            ))}
+        </ul>
+        <ul
+          className={`absolute top-15 left-0 bg-gray rounded-4xl p-2 gap-1 sm:flex sm:flex-col
+             space-x-1 text-dark-text font-medium text-lg z-50
+            transition-all duration-300
+            ${openRemainButtons ? 'animate-fade-in' : 'animate-fade-out'}
+            ${openRemainButtons ? 'block' : 'hidden'}`}
+        >
+          {routes.slice(3).map((route, index) => (
+            <li key={index}>
+              <Link href={route.href} className='flex items-center gap-1'>
+                <GlassyButton
+                  icon={route.icon}
+                  iconSize={36}
+                  className={`w-full ${
+                    pathName === route.href ||
+                    (pathName.includes(route.href) && route.href !== '/')
+                      ? '[&>svg]:fill-primary '
+                      : '[&>svg]:fill-dark-text '
+                  } `}
+                  label={route.name}
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       {openDropNav ? (
         <Svg
           icon={CLOSESVG}
-          className='z-11'
+          className='z-11 sm:hidden'
           onClick={() => setOpenDropNav(false)}
           size={32}
         />
       ) : (
         <Svg
           icon={BARSSVG}
-          className='z-11'
+          className='z-11 sm:hidden'
           onClick={() => setOpenDropNav(true)}
           size={32}
         />
@@ -57,7 +125,7 @@ export function Header() {
 
       <div
         className={`${openDropNav ? 'scale-y-100 delay-0' : 'scale-y-0 delay-700'} 
-        transition-transform origin-top absolute top-0 left-0
+        transition-transform origin-top absolute top-0 left-0 sm:hidden
          bg-gray rounded-lg shadow-custom p-4 pt-18 w-full`}
       >
         <ul className='space-y-2 text-dark-text font-medium text-lg'>
