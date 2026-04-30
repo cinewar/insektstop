@@ -5,6 +5,7 @@ import {GlassyButton} from './GlassyButton';
 import {
   CLOSESVG,
   EMAILSVG,
+  MAPSVG,
   PHONEINFOSVG,
   PHONESVG,
   WHATSUPSVG,
@@ -49,6 +50,7 @@ export function ContactButtons({user}: ContactButtonsProps) {
   const emailAddress = user?.email || 'sevinc65semih@gmail.com';
   const phoneNumber = user?.phone || '+905380600694';
   const whatsAppNumber = user?.phone || '+905380600694';
+  const address = user?.address || '';
 
   const handleEmailClick = () => {
     const subject = encodeURIComponent('Merhaba');
@@ -77,6 +79,14 @@ export function ContactButtons({user}: ContactButtonsProps) {
     setOpenMenu(false);
   };
 
+  const handleMapClick = () => {
+    const query = encodeURIComponent(address);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${query}`,
+      '_blank',
+    );
+  };
+
   if (path.startsWith('/admin')) {
     return null; // Sipariş detay sayfasında iletişim butonlarını gösterme
   }
@@ -102,6 +112,14 @@ export function ContactButtons({user}: ContactButtonsProps) {
             icon={CLOSESVG}
             onClick={() => setOpenMenu(!openMenu)}
             size={32}
+          />
+        </li>
+        <li>
+          <GlassyButton
+            icon={MAPSVG}
+            iconSize={45}
+            className={`${openMenu ? 'delay-100 scale-100' : 'delay-300 scale-0'}`}
+            onClick={() => handleMapClick()}
           />
         </li>
         <li>
