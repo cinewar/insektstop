@@ -9,6 +9,12 @@ export const userSchema = z.object({
     .regex(/^\d+$/, 'Telefon numarası sadece rakamlardan olusmalidir')
     .min(6, 'Geçerli bir telefon numarası girin'),
   address: z.string().min(5, 'Adres en az 5 karakter olmalidir'),
+  facebook: z.string().optional(),
+  instagram: z.string().optional(),
+  youtube: z.string().optional(),
+  heroText: z.string().min(10, 'Hero metni en az 10 karakter olmalidir'),
+  heroImage: z.instanceof(File),
+  about: z.string().min(10, 'Hakkında en az 10 karakter olmalidir'),
 });
 
 /**
@@ -38,5 +44,11 @@ export function getUserFormValues(formData: FormData): UserFormValues {
     email: (formData.get('email') as string) ?? '',
     phone: ((formData.get('phone') as string) ?? '').replace(/\D/g, ''),
     address: (formData.get('address') as string) ?? '',
+    facebook: (formData.get('facebook') as string) ?? '',
+    instagram: (formData.get('instagram') as string) ?? '',
+    youtube: (formData.get('youtube') as string) ?? '',
+    heroText: (formData.get('heroText') as string) ?? '',
+    heroImage: (formData.get('heroImage') as File) ?? undefined,
+    about: (formData.get('about') as string) ?? '',
   };
 }

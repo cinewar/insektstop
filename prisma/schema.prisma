@@ -21,6 +21,12 @@ model User {
   name      String?
   address   String?
   phone     String?
+  facebook String?
+  instagram String?
+  youtube   String?
+  about     String
+  heroImage String
+  heroText  String
   password  String
   resetToken String?
   createdAt DateTime @default(now())

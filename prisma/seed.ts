@@ -61,11 +61,17 @@ async function main() {
     update: {
       name: 'semih',
       password: hashedPassword,
+      about: 'Kurucu, sineklik uzmanı.',
+      heroImage: '/hero.png',
+      heroText: 'Evinizde Rahatça Oturmanın Yegane Yolu',
     },
     create: {
       name: 'semih',
       email: 'sevinc65semih@gmail.com',
       password: hashedPassword,
+      about: 'Kurucu, sineklik uzmanı.',
+      heroImage: '/hero.png',
+      heroText: 'Evinizde Rahatça Oturmanın Yegane Yolu',
     },
   });
   const products = productsJson.map((product, index) => ({

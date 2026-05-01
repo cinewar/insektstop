@@ -42,9 +42,10 @@ export function Modal({children, onClose}: ModalProps) {
       }}
     >
       <div
-        className={`relative bg-secondary rounded-lg p-2 w-full max-w-md shadow-custom ${
-          isClosing ? 'animate-fade-out' : 'animate-fade-in'
-        }`}
+        className={`relative overflow-y-scroll max-h-[80vh] bg-secondary rounded-lg p-2 
+            w-full max-w-md shadow-custom ${
+              isClosing ? 'animate-fade-out' : 'animate-fade-in'
+            }`}
       >
         <Svg
           icon={CLOSESVG}

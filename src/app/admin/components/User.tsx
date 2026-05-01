@@ -12,6 +12,7 @@ import {notify} from '@/app/lib/notifications';
 import {getUserFormValues, UserErrors, UserField, userSchema} from '../schema';
 import {Textarea} from '@/app/components/Textarea';
 import {FormActions} from '@/app/components/FormActions';
+import {ImageUpload} from '@/app/components/ImageUpload';
 
 interface UserProps {
   user: UserType;
@@ -22,6 +23,7 @@ async function handleLogout() {
 }
 
 export function User({user}: UserProps) {
+  console.log('User component rendered with user:', user); // Debug log to check user data
   const [openModal, setOpenModal] = useState(false);
   const [errors, setErrors] = useState<UserErrors>({});
   const [values, setValues] = useState({
@@ -29,12 +31,18 @@ export function User({user}: UserProps) {
     email: user.email || '',
     phone: user.phone || '',
     address: user.address || '',
+    facebook: user.facebook || '',
+    instagram: user.instagram || '',
+    youtube: user.youtube || '',
+    heroText: user.heroText || '',
+    heroImage: undefined as File | undefined,
+    about: user.about || '',
   });
 
   /**
    * Validates a single field and stores its error message when validation fails.
    */
-  function validateField(field: UserField, value: string) {
+  function validateField(field: UserField, value: string | File | undefined) {
     const result = userSchema.shape[field].safeParse(value);
     setErrors((prev) => ({
       ...prev,
@@ -74,6 +82,8 @@ export function User({user}: UserProps) {
   async function handleAction(formData: FormData) {
     const submittedValues = getUserFormValues(formData);
 
+    console.log('Submitted Values:', submittedValues); // Debug log for submitted values
+
     const validateResult = userSchema.safeParse(submittedValues);
     if (!validateResult.success) {
       const fieldErrors: UserErrors = {};
@@ -97,7 +107,18 @@ export function User({user}: UserProps) {
     }
 
     setErrors({});
-    setValues(submittedValues);
+    setValues({
+      name: submittedValues.name,
+      email: submittedValues.email,
+      phone: submittedValues.phone,
+      address: submittedValues.address,
+      facebook: submittedValues.facebook || '',
+      instagram: submittedValues.instagram || '',
+      youtube: submittedValues.youtube || '',
+      heroText: submittedValues.heroText || '',
+      heroImage: submittedValues.heroImage || undefined,
+      about: submittedValues.about || '',
+    });
     setOpenModal(false);
     notify({
       type: 'success',
@@ -105,6 +126,20 @@ export function User({user}: UserProps) {
       message: 'Kullanıcı detaylari başarıyla kaydedildi.',
     });
   }
+
+  /**
+   * Describes behavior for markImageSlotRemoved.
+   * Usage: Call markImageSlotRemoved(...) where this declaration is needed in the current module flow.
+   */
+  function markImageSlotRemoved() {
+    setValues((prev) => {
+      return {
+        ...prev,
+        heroImage: undefined,
+      };
+    });
+  }
+
   return (
     <>
       <div className='p-4'>
@@ -186,6 +221,69 @@ export function User({user}: UserProps) {
                   onBlur={handleBlur('phone')}
                   error={errors.phone}
                 />
+                <Input
+                  placeholder='Facebookunuzu girin'
+                  label='Facebook'
+                  name='facebook'
+                  value={values.facebook}
+                  onChange={handleChange('facebook')}
+                  onBlur={handleBlur('facebook')}
+                  error={errors.facebook}
+                />
+                <Input
+                  placeholder='Instagramınızı girin'
+                  label='Instagram'
+                  name='instagram'
+                  value={values.instagram}
+                  onChange={handleChange('instagram')}
+                  onBlur={handleBlur('instagram')}
+                  error={errors.instagram}
+                />
+                <Input
+                  placeholder='YouTube kanalınızı girin'
+                  label='YouTube'
+                  name='youtube'
+                  value={values.youtube}
+                  onChange={handleChange('youtube')}
+                  onBlur={handleBlur('youtube')}
+                  error={errors.youtube}
+                />
+                <Input
+                  placeholder='Anasayfa hero metnini girin'
+                  label='Hero Metni'
+                  name='heroText'
+                  value={values.heroText}
+                  onChange={handleChange('heroText')}
+                  onBlur={handleBlur('heroText')}
+                  error={errors.heroText}
+                />
+                <Textarea
+                  label='Hakkında'
+                  name='about'
+                  placeholder='Hakkında bilgi girin'
+                  value={values.about}
+                  onChange={handleChange('about')}
+                  onBlur={handleBlur('about')}
+                  error={errors.about}
+                />
+                <label htmlFor='' className='-mb-2'>
+                  Görsellerinizi aşağıya ekleyin
+                </label>
+                <div
+                  className='flex justify-between gap-1 w-40 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
+                        focus-within:border-primary/50 focus-within:outline-0'
+                >
+                  <ImageUpload
+                    defaultValue={
+                      values.heroImage
+                        ? URL.createObjectURL(values.heroImage)
+                        : user.heroImage || undefined
+                    }
+                    name='heroImage'
+                    onDeleteAction={() => markImageSlotRemoved()}
+                    onFileSelectedAction={() => markImageSlotRemoved()}
+                  />
+                </div>
                 <Textarea
                   label='Adres'
                   name='address'
