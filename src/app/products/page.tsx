@@ -33,17 +33,11 @@ export default async function Products({searchParams}: ProductsProps) {
 
   return (
     <div className='min-h-screen flex flex-col bg-secondary'>
-      <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
-        <div className='flex items-center w-full gap-2 relative'>
-          <h1 className='text-2xl font-bold text-dark-text'>Urunler</h1>
-          <Search />
-          {q && filteredProducts.length !== 0 && (
-            <SearchDropdown products={filteredProducts} />
-          )}
-        </div>
+      <div className='p-4 sm:pr-2 mt-14 sm:mt-18 sm:w-1/2'>
+        <Search />
       </div>
-      <div className='flex flex-col gap-4 mt-32 mb-4 px-4'>
-        {products.map((product) => {
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 px-4'>
+        {filteredProducts.map((product) => {
           return (
             <Link
               key={product.id}
@@ -53,7 +47,7 @@ export default async function Products({searchParams}: ProductsProps) {
               <Card
                 key={product.id}
                 className='relative text-secondary flex items-end text-center z-10 before:z-0 before:absolute before:inset-0 
-                before:bg-linear-to-t before:from-dark-text before:from-20% before:to-secondary/29 before:rounded-lg h-70 w-full rounded-lg shadow-md'
+                before:bg-linear-to-t before:from-dark-text before:from-20% before:to-secondary/29 before:rounded-lg h-70 sm:h-90 w-full rounded-lg shadow-md'
               >
                 <h2 className='absolute font-bold shadow-lg top-2 right-2 bg-tertiary p-1 rounded-full'>
                   ${product.price.toFixed(2)}

@@ -20,7 +20,7 @@ interface SearchProps {
  * Usage: Call Search(...) where this declaration is needed in the current module flow.
  */
 export function Search({
-  placeholder = 'Urun ara...',
+  placeholder = 'Produkt suchen...',
   paramKey = 'q',
 }: SearchProps) {
   const [query, setQuery] = useQueryState(

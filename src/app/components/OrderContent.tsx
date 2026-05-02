@@ -20,7 +20,8 @@ import {notify} from '../lib/notifications';
 import {useRouter} from 'next/navigation';
 import {GlassyButton} from './GlassyButton';
 import {Confirmation} from './Confirmation';
-import {EDITSVG, RIGHTARROWSVG, TRASHSVG} from '../utils/svg';
+import {ABOUTSCENESVG, EDITSVG, RIGHTARROWSVG, TRASHSVG} from '../utils/svg';
+import Svg from './Svg';
 
 /**
  * Props for rendering the order create/edit controls with an optional selected order.
@@ -187,18 +188,22 @@ export function OrderContent({order}: OrderContentProps) {
 
   return (
     <>
-      <div className='fixed h-28 px-3 pb-2 flex shadow-md items-end w-full max-w-120 bg-secondary z-20'>
-        <div className='flex items-center w-full gap-2 relative'>
-          <h1 className='text-xl min-w-fit font-bold text-dark-text'>
-            Oluştur veya
-          </h1>
-        </div>
-      </div>
-      <div className='flex flex-col items-center w-full  gap-4 mt-32 mb-4 px-4'>
-        <label className='text-lg font-semibold -mb-3 self-start'>
-          Siparişim Var
+      <div className='flex flex-col w-full mt-14 sm:mt-20 px-4 gap-4'>
+        <label className='text-lg -mb-3 text-center sm:text-start '>
+          Suchen Sie Ihre Bestellung oder erstellen Sie eine neue Bestellung.
         </label>
-        <Search className='' placeholder='Sipariş Ara' />
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+          <Search placeholder='Bestellung suchen' />
+          <Button
+            className='shining hidden sm:flex'
+            onClick={() => {
+              setModalType('create');
+              setShowModal(true);
+            }}
+          >
+            Bestellung erstellen
+          </Button>
+        </div>
         {order && (
           <div className='bg-white w-full rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'>
             <div>
@@ -217,7 +222,7 @@ export function OrderContent({order}: OrderContentProps) {
               <div className='text-sm text-tertiary'>Email:</div>
               <div>{order.createrEmail}</div>
             </div>
-            <div className='flex flex-col gap-2 bg-gray p-2 rounded-2xl mt-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 bg-gray p-2 rounded-2xl mt-4'>
               <GlassyButton
                 icon={RIGHTARROWSVG}
                 label='Siparişi Detayı Gör'
@@ -260,13 +265,13 @@ export function OrderContent({order}: OrderContentProps) {
         )}
 
         <Button
-          className='shining '
+          className='shining self-center sm:hidden'
           onClick={() => {
             setModalType('create');
             setShowModal(true);
           }}
         >
-          Sipariş Oluştur
+          Bestellung erstellen
         </Button>
         {showModal && (
           <Modal onClose={() => setShowModal(false)}>
@@ -323,6 +328,13 @@ export function OrderContent({order}: OrderContentProps) {
             )}
           </Modal>
         )}
+        <div>
+          <Svg
+            icon={ABOUTSCENESVG}
+            size={400}
+            className='w-full contact-scene-buzz [&_path[data-testid^="fly-"]]:animate-buzz'
+          />
+        </div>
       </div>
     </>
   );
