@@ -38,6 +38,8 @@ export {default as SORTINGSVG} from '@/assets/sorting.svg';
 export {default as CLEARSORTINGSVG} from '@/assets/clear-sorting.svg';
 export {default as BACKSVG} from '@/assets/back.svg';
 export {default as MESSAGESVG} from '@/assets/message.svg';
+export {default as INSTAGRAMSVG} from '@/assets/instagram.svg';
+export {default as FACEBOOKSVG} from '@/assets/facebook.svg';
 
 export {default as ADSVG} from '@/assets/ad.svg';
 export {default as ALSVG} from '@/assets/al.svg';
@@ -48,3 +50,4 @@ export {default as RP1SVG} from '@/assets/rp1.svg';
 
 export {default as FLYSVG} from '@/assets/fly.svg';
 export {default as CONTACTSCENESVG} from '@/assets/contact-scene.svg';
+export {default as ABOUTSCENESVG} from '@/assets/about-scene.svg';

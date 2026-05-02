@@ -1,39 +1,51 @@
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useSessionUserStore} from './LayoutClientWrapper';
-import {CONTACTSVG, HOMESVG, INFOSVG, PRODUCTSSVG, USERSVG} from '../utils/svg';
+import {
+  CONTACTSVG,
+  FACEBOOKSVG,
+  HOMESVG,
+  INFOSVG,
+  INSTAGRAMSVG,
+  PRODUCTSSVG,
+  USERSVG,
+} from '../utils/svg';
 import Svg from './Svg';
+import {User} from '../../../generated/prisma';
 
 /**
  * Describes behavior for Footer.
  * Usage: Call Footer(...) where this declaration is needed in the current module flow.
  */
-export function Footer({openLogin}: {openLogin?: () => void}) {
+export function Footer({
+  user,
+  openLogin,
+}: {
+  user: User | null;
+  openLogin?: () => void;
+}) {
   const sessionUser = useSessionUserStore((state) => state.sessionUser);
   const router = useRouter();
+
+  const routes = [
+    {href: '/', icon: HOMESVG},
+    {href: '/about', icon: INFOSVG},
+    {href: '/contact', icon: CONTACTSVG},
+    {href: '/products', icon: PRODUCTSSVG},
+    {href: user?.facebook ? user.facebook : '#', icon: FACEBOOKSVG},
+    {href: user?.instagram ? user.instagram : '#', icon: INSTAGRAMSVG},
+  ];
   return (
     <footer className='w-full text-center py-2 bg-dark-text text-primary mt-auto'>
       <ul className='flex justify-start gap-1 pl-4'>
-        <li>
-          <Link href='/' className='hover:underline'>
-            <Svg icon={HOMESVG} size={32} className='w-8 sm:w-12' />
-          </Link>
-        </li>
-        <li>
-          <Link href='/about' className='hover:underline'>
-            <Svg icon={INFOSVG} size={32} className='w-8 sm:w-12' />
-          </Link>
-        </li>
-        <li>
-          <Link href='/contact' className='hover:underline'>
-            <Svg icon={CONTACTSVG} size={32} className='w-8 sm:w-12' />
-          </Link>
-        </li>
-        <li>
-          <Link href='/products' className='hover:underline'>
-            <Svg icon={PRODUCTSSVG} size={32} className='w-8 sm:w-12' />
-          </Link>
-        </li>
+        {routes.map((route, index) => (
+          <li key={index}>
+            <Link href={route.href} className='hover:underline'>
+              <Svg icon={route.icon} size={32} className='w-8 sm:w-12' />
+            </Link>
+          </li>
+        ))}
+
         {openLogin && (
           <li>
             <button
@@ -56,7 +68,7 @@ export function Footer({openLogin}: {openLogin?: () => void}) {
         )}
       </ul>
       <div className='text-sm text-secondary'>
-        &copy; {new Date().getFullYear()} Insektstop. Tum haklari saklidir.
+        &copy; {new Date().getFullYear()} Insektstop. Alle Rechte vorbehalten.
       </div>
     </footer>
   );

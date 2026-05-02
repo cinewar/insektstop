@@ -7,45 +7,60 @@ import {
   COPIEDSVG,
   COPYSVG,
   EMAILSVG,
+  FACEBOOKSVG,
+  INSTAGRAMSVG,
   MAPSVG,
   PHONESVG,
   WHATSUPSVG,
 } from '../utils/svg';
 import {User} from '../../../generated/prisma';
+import {useUserStore} from '../components/LayoutClientWrapper';
 
-interface ContactContentProps {
-  user: User;
-}
+export function ContactContent() {
+  const user = useUserStore((state) => state.user) as User;
 
-export function ContactContent({user}: ContactContentProps) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const contactItems = [
     {
       key: 'map',
       icon: MAPSVG,
-      text: user.address ? user.address : 'Adres bilgisi bulunamadı',
+      text: user?.address ? user.address : 'Adres bilgisi bulunamadı',
       iconClassName: 'inline-block min-w-10 mr-2',
       textClassName: 'text-dark-text leading-tight',
     },
     {
       key: 'phone',
       icon: PHONESVG,
-      text: user.phone ? user.phone : 'Telefon bilgisi bulunamadı',
+      text: user?.phone ? user?.phone : 'Telefon bilgisi bulunamadı',
       iconClassName: 'inline-block mr-2',
       textClassName: 'text-dark-text',
     },
     {
       key: 'whatsapp',
       icon: WHATSUPSVG,
-      text: user.phone ? user.phone : 'WhatsApp bilgisi bulunamadı',
+      text: user?.phone ? user?.phone : 'WhatsApp bilgisi bulunamadı',
       iconClassName: 'inline-block mr-2',
       textClassName: 'text-dark-text',
     },
     {
       key: 'email',
       icon: EMAILSVG,
-      text: user.email ? user.email : 'Email bilgisi bulunamadı',
+      text: user?.email ? user?.email : 'Email bilgisi bulunamadı',
+      iconClassName: 'inline-block mr-2',
+      textClassName: 'text-dark-text',
+    },
+    {
+      key: 'instagram',
+      icon: INSTAGRAMSVG,
+      text: user?.instagram ? user?.instagram : 'Instagram bilgisi bulunamadı',
+      iconClassName: 'inline-block mr-2',
+      textClassName: 'text-dark-text',
+    },
+    {
+      key: 'facebook',
+      icon: FACEBOOKSVG,
+      text: user?.facebook ? user?.facebook : 'Facebook bilgisi bulunamadı',
       iconClassName: 'inline-block mr-2',
       textClassName: 'text-dark-text',
     },

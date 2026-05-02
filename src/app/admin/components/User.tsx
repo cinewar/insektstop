@@ -270,7 +270,7 @@ export function User({user}: UserProps) {
                   Görsellerinizi aşağıya ekleyin
                 </label>
                 <div
-                  className='flex justify-between gap-1 w-40 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
+                  className='flex self-end gap-1 w-40 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
                         focus-within:border-primary/50 focus-within:outline-0'
                 >
                   <ImageUpload

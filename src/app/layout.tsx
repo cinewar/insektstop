@@ -48,7 +48,7 @@ export default async function RootLayout({
             <ShowHeader>
               <Header />
             </ShowHeader>
-            <LayoutClientWrapper sessionUser={sessionUser}>
+            <LayoutClientWrapper user={user} sessionUser={sessionUser}>
               {children}
             </LayoutClientWrapper>
           </div>

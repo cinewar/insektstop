@@ -8,6 +8,7 @@ import {
   CONTACTSVG,
   HOMESVG,
   LOGOSVG,
+  ORDERSVG,
   PRODUCTSSVG,
   VERTICALDOTSSVG,
 } from '../utils/svg';
@@ -25,11 +26,11 @@ export function Header() {
   const [openRemainButtons, setOpenRemainButtons] = useState(false);
   const pathName = usePathname();
   const routes = [
-    {name: 'Ana Sayfa', href: '/', icon: HOMESVG},
-    {name: 'Hakkımızda', href: '/about', icon: ABOUTSVG},
-    {name: 'İletişim', href: '/contact', icon: CONTACTSVG},
-    {name: 'Urunler', href: '/products', icon: PRODUCTSSVG},
-    {name: 'Sipariş Oluştur ve Göruntule', href: '/order', icon: HOMESVG},
+    {name: 'Startseite', href: '/', icon: HOMESVG},
+    {name: 'Über uns', href: '/about', icon: ABOUTSVG},
+    {name: 'Kontakt', href: '/contact', icon: CONTACTSVG},
+    {name: 'Produkte', href: '/products', icon: PRODUCTSSVG},
+    {name: 'Bestellung erstellen und anzeigen', href: '/order', icon: ORDERSVG},
   ];
 
   const delays = [
@@ -84,9 +85,10 @@ export function Header() {
         </ul>
         {openRemainButtons && (
           <ul
-            className={`absolute top-15 left-0 bg-gray rounded-4xl p-2 gap-1 sm:flex sm:flex-col
-               space-x-1 text-dark-text font-medium text-lg z-0
-              transition-all duration-300 animate-fade-in block`}
+            className={`absolute top-15 left-0 bg-gray rounded-4xl p-2 gap-1
+              inline-flex flex-col items-stretch
+              text-dark-text font-medium text-lg z-0
+              transition-all duration-300 animate-fade-in`}
           >
             <button
               className='absolute cursor-pointer -top-1 -right-3 bg-gray rounded-full p-1 
@@ -96,12 +98,15 @@ export function Header() {
               <Svg icon={CLOSESVG} size={16} className='[svg]:stroke-white' />
             </button>
             {routes.slice(3).map((route, index) => (
-              <li key={index}>
-                <Link href={route.href} className='flex items-center gap-1'>
+              <li key={index} className='flex-1'>
+                <Link
+                  href={route.href}
+                  className='flex items-center gap-1 w-full'
+                >
                   <GlassyButton
                     icon={route.icon}
                     iconSize={36}
-                    className={`w-full ${
+                    className={`w-full gap-1 ${
                       pathName === route.href ||
                       (pathName.includes(route.href) && route.href !== '/')
                         ? '[&>svg]:fill-primary '

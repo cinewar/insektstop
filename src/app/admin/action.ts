@@ -173,6 +173,18 @@ export async function updateUser(formData: FormData) {
     } as const;
   }
 
+  // Delete old hero image if a new one is uploaded
+  if (submittedValues.heroImage && user?.heroImage) {
+    const deletionResult = await deleteHeroImagesFromR2([user.heroImage]);
+    if (deletionResult instanceof Error) {
+      return {
+        ok: false,
+        message: 'Mevcut hero görseli silinirken bir hata oluştu',
+      } as const;
+    }
+  }
+
+  // Delete old hero image if removing image
   if (!submittedValues.heroImage && user?.heroImage) {
     const deletionResult = await deleteHeroImagesFromR2([user.heroImage]);
     if (deletionResult instanceof Error) {
@@ -189,7 +201,7 @@ export async function updateUser(formData: FormData) {
     uploadedImage = await uploadHeroImagesToR2(submittedValues.heroImage);
   }
 
-  if (!uploadedImage) {
+  if (submittedValues.heroImage && !uploadedImage) {
     return {
       ok: false,
       message: 'Hero görseli yüklenirken bir hata oluştu',

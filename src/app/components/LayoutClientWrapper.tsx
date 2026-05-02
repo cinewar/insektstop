@@ -23,6 +23,7 @@ import {useRouter} from 'next/navigation';
 import {SessionUser} from '../layout';
 import {useEffect} from 'react';
 import {create} from 'zustand';
+import {User} from '../../../generated/prisma';
 
 interface SessionUserState {
   sessionUser: SessionUser;
@@ -36,18 +37,30 @@ export const useSessionUserStore = create<SessionUserState>((set) => ({
   removeSessionUser: () => set({sessionUser: null}),
 }));
 
+export const useUserStore = create<{
+  user: User | null;
+  setUser: (user: User | null) => void;
+}>((set) => ({
+  user: null,
+  setUser: (user) => set({user}),
+}));
+
 export default function LayoutClientWrapper({
   children,
+  user,
   sessionUser,
 }: {
   children: React.ReactNode;
+  user: User | null;
   sessionUser: SessionUser;
 }) {
   // Hydrate Zustand store with sessionUser from server
   const setSessionUser = useSessionUserStore((state) => state.setSessionUser);
+  const setUser = useUserStore((state) => state.setUser);
   useEffect(() => {
     setSessionUser(sessionUser);
-  }, [sessionUser, setSessionUser]);
+    setUser(user);
+  }, [sessionUser, setSessionUser, user, setUser]);
   const router = useRouter();
 
   const [showLogin, setShowLogin] = useState(false);
@@ -186,7 +199,7 @@ export default function LayoutClientWrapper({
   return (
     <>
       {children}
-      <Footer openLogin={openLogin} />
+      <Footer user={user} openLogin={openLogin} />
       {showLogin && (
         <Modal onClose={closeLogin}>
           <div className='relative'>
