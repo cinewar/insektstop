@@ -74,7 +74,7 @@ export default function Accordion({
                       defaultValue={
                         typeof item.title === 'string' ? item.title : ''
                       }
-                      placeholder='Bolum Adi'
+                      placeholder='Abschnittsname eingeben'
                       className='relative w-full p-1 placeholder:text-md placeholder:text-dark-text/50 rounded-sm 
                     border-2 focus:border-primary/50 focus:outline-0 border-gray-300'
                     />
@@ -98,7 +98,7 @@ export default function Accordion({
                     actions={[
                       {
                         id: 'edit',
-                        label: 'Edit',
+                        label: 'Bearbeiten',
                         icon: EDITSVG,
                         iconSize: 40,
                         onClick: () => {
@@ -107,7 +107,7 @@ export default function Accordion({
                         },
                       },
                       {
-                        label: 'Delete',
+                        label: 'Löschen',
                         id: 'delete',
                         icon: TRASHSVG,
                         iconSize: 40,

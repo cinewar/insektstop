@@ -118,8 +118,8 @@ export function OrderContent({order}: OrderContentProps) {
     } catch {
       notify({
         type: 'error',
-        title: `Sipariş ${actionType === 'edit' ? 'güncelleme' : 'oluşturma'} basarisiz`,
-        message: 'Lütfen tekrar deneyin.',
+        title: `Sipariş ${actionType === 'edit' ? 'aktualisieren' : 'erstellen'} fehlgeschlagen`,
+        message: 'Bitte versuchen Sie es erneut.',
       });
       return;
     }
@@ -129,11 +129,11 @@ export function OrderContent({order}: OrderContentProps) {
     setShowModal(false);
     notify({
       type: 'success',
-      title: `Sipariş ${actionType === 'edit' ? 'güncellendi' : 'oluşturuldu'}`,
+      title: `Sipariş ${actionType === 'edit' ? 'aktualisiert' : 'erstellt'}`,
       message:
         actionType === 'edit'
-          ? 'Sipariş detaylari başarıyla kaydedildi.'
-          : 'Yeni sipariş başarıyla oluşturuldu.',
+          ? 'Bestelldetails erfolgreich gespeichert.'
+          : 'Neue Bestellung erfolgreich erstellt.',
       duration: 4000,
     });
   }
@@ -170,15 +170,15 @@ export function OrderContent({order}: OrderContentProps) {
         setShowDeleteConfirmation(false);
         notify({
           type: 'success',
-          title: 'Sipariş silindi',
-          message: 'Seçilen sipariş başarıyla silindi.',
+          title: 'Bestellung gelöscht',
+          message: 'Die ausgewählte Bestellung wurde erfolgreich gelöscht.',
         });
         router.push('/order');
       } catch {
         notify({
           type: 'error',
-          title: 'Sipariş silme basarisiz',
-          message: 'Lütfen tekrar deneyin.',
+          title: 'Bestellung löschen fehlgeschlagen',
+          message: 'Bitte versuchen Sie es erneut.',
         });
       } finally {
         setIsDeleting(false);
@@ -207,25 +207,25 @@ export function OrderContent({order}: OrderContentProps) {
         {order && (
           <div className='bg-white w-full rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'>
             <div>
-              <div className='text-sm text-tertiary'>Name & Surname:</div>
+              <div className='text-sm text-tertiary'>Vorname & Nachname:</div>
               <div>{order.createrName}</div>
             </div>
             <div>
-              <div className='text-sm text-tertiary'>Phone Number:</div>
+              <div className='text-sm text-tertiary'>Telefonnummer:</div>
               <div>{order.createrPhone}</div>
             </div>
             <div>
-              <div className='text-sm text-tertiary'>Address:</div>
+              <div className='text-sm text-tertiary'>Adresse:</div>
               <div>{order.createrAddress}</div>
             </div>
             <div>
-              <div className='text-sm text-tertiary'>Email:</div>
+              <div className='text-sm text-tertiary'>E-Mail:</div>
               <div>{order.createrEmail}</div>
             </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 bg-gray p-2 rounded-2xl mt-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 bg-gray p-2 rounded-2xl sm:rounded-full mt-4'>
               <GlassyButton
                 icon={RIGHTARROWSVG}
-                label='Siparişi Detayı Gör'
+                label='Bestellung ansehen'
                 iconSize={32}
                 className='pr-4'
                 onClick={() => router.push(`/order/${order.id}`)}
@@ -233,14 +233,14 @@ export function OrderContent({order}: OrderContentProps) {
               <div className='flex gap-2 justify-between'>
                 <GlassyButton
                   icon={EDITSVG}
-                  label='Düzenle'
+                  label='Bearbeiten'
                   iconSize={40}
                   onClick={handleEdit}
                   className='flex-1'
                 />
                 <GlassyButton
                   icon={TRASHSVG}
-                  label='Sil'
+                  label='Löschen'
                   iconSize={40}
                   onClick={handleDelete}
                   className='flex-1'
@@ -248,16 +248,10 @@ export function OrderContent({order}: OrderContentProps) {
               </div>
             </div>
           </div>
-
-          // <SearchDropdown
-          //   onEditAction={handleEdit}
-          //   onDeleteAction={handleDelete}
-          //   orderId={order.id}
-          // />
         )}
         {showDeleteConfirmation && (
           <Confirmation
-            message='Bu siparişi silmek istediginize emin misiniz?'
+            message='Sind Sie sicher, dass Sie diese Bestellung löschen möchten?'
             onConfirmAction={handleConfirmDelete}
             onCancelAction={() => setShowDeleteConfirmation(false)}
             isLoading={isDeleting}
@@ -277,12 +271,12 @@ export function OrderContent({order}: OrderContentProps) {
           <Modal onClose={() => setShowModal(false)}>
             {({close}) => (
               <div className='relative'>
-                <h2 className='text-lg font-bold mb-2'>Sipariş Oluştur</h2>
+                <h2 className='text-lg font-bold mb-2'>Bestellung erstellen</h2>
                 <form className='flex flex-col gap-1' action={handleAction}>
                   <FormPendingOverlay />
                   <Input
-                    placeholder='Adinizi ve soyadınızi girin'
-                    label='Ad Soyad'
+                    placeholder='Geben Sie Ihren Vor- und Nachnamen ein'
+                    label='Vorname & Nachname'
                     name='name'
                     value={values.name}
                     onChange={handleChange('name')}
@@ -290,8 +284,8 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.name}
                   />
                   <Input
-                    placeholder='E-posta adresinizi girin'
-                    label='E-posta'
+                    placeholder='Geben Sie Ihre E-Mail-Adresse ein'
+                    label='E-Mail'
                     name='email'
                     value={values.email}
                     onChange={handleChange('email')}
@@ -299,8 +293,8 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.email}
                   />
                   <Input
-                    placeholder='Telefon numaranizi girin'
-                    label='Telefon Numarası'
+                    placeholder='Geben Sie Ihre Telefonnummer ein'
+                    label='Telefonnummer'
                     name='phone'
                     inputMode='numeric'
                     pattern='[0-9]*'
@@ -311,9 +305,9 @@ export function OrderContent({order}: OrderContentProps) {
                     error={errors.phone}
                   />
                   <Textarea
-                    label='Adres'
+                    label='Adresse'
                     name='address'
-                    placeholder='Adresinizi girin'
+                    placeholder='Geben Sie Ihre Adresse ein'
                     value={values.address}
                     onChange={handleChange('address')}
                     onBlur={handleBlur('address')}
@@ -321,20 +315,20 @@ export function OrderContent({order}: OrderContentProps) {
                   />
                   <FormActions
                     close={close}
-                    label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
+                    label={modalType === 'create' ? 'Erstellen' : 'Bearbeiten'}
                   />
                 </form>
               </div>
             )}
           </Modal>
         )}
-        <div>
-          <Svg
-            icon={ABOUTSCENESVG}
-            size={400}
-            className='w-full contact-scene-buzz [&_path[data-testid^="fly-"]]:animate-buzz'
-          />
-        </div>
+      </div>
+      <div>
+        <Svg
+          icon={ABOUTSCENESVG}
+          size={400}
+          className='w-full contact-scene-buzz [&_path[data-testid^="fly-"]]:animate-buzz'
+        />
       </div>
     </>
   );

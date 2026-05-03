@@ -50,7 +50,7 @@ export default async function Products({searchParams}: ProductsProps) {
                 before:bg-linear-to-t before:from-dark-text before:from-20% before:to-secondary/29 before:rounded-lg h-70 sm:h-90 w-full rounded-lg shadow-md'
               >
                 <h2 className='absolute font-bold shadow-lg top-2 right-2 bg-tertiary p-1 rounded-full'>
-                  ${product.price.toFixed(2)}
+                  £{product.price.toFixed(2)}
                 </h2>
                 <div className='z-10 p-3'>
                   <div className='text-2xl pb-2 font-bold'>{product.name}</div>

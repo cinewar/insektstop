@@ -1,13 +1,15 @@
 import {z} from 'zod';
 
 export const orderSchema = z.object({
-  name: z.string().min(2, 'Ad en az 2 karakter olmalidir'),
-  email: z.string().email('Geçerli bir e-posta adresi girin'),
+  name: z.string().min(2, 'Der Name muss mindestens 2 Zeichen lang sein'),
+  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein'),
   phone: z
     .string()
-    .regex(/^\d+$/, 'Telefon numarası sadece rakamlardan olusmalidir')
-    .min(6, 'Geçerli bir telefon numarası girin'),
-  address: z.string().min(5, 'Adres en az 5 karakter olmalidir'),
+    .regex(/^\d+$/, 'Die Telefonnummer darf nur Ziffern enthalten')
+    .min(6, 'Bitte geben Sie eine gültige Telefonnummer ein'),
+  address: z
+    .string()
+    .min(5, 'Die Adresse muss mindestens 5 Zeichen lang sein.'),
 });
 
 /**

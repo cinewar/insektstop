@@ -7,6 +7,7 @@ import {CLOSESVG} from '../utils/svg';
  * Usage: Use ModalProps to type related values and keep data contracts consistent.
  */
 type ModalProps = {
+  overFlow?: boolean;
   children:
     | React.ReactNode
     | ((controls: {close: () => void}) => React.ReactNode);
@@ -17,7 +18,7 @@ type ModalProps = {
  * Describes behavior for Modal.
  * Usage: Call Modal(...) where this declaration is needed in the current module flow.
  */
-export function Modal({children, onClose}: ModalProps) {
+export function Modal({children, onClose, overFlow = false}: ModalProps) {
   const [isClosing, setIsClosing] = useState(false);
 
   const close = () => {
@@ -42,7 +43,7 @@ export function Modal({children, onClose}: ModalProps) {
       }}
     >
       <div
-        className={`relative overflow-y-scroll max-h-[80vh] bg-secondary rounded-lg p-2 
+        className={`relative ${overFlow ? 'overflow-y-auto' : ''} max-h-[80vh] bg-secondary rounded-lg p-2 
             w-full max-w-md shadow-custom ${
               isClosing ? 'animate-fade-out' : 'animate-fade-in'
             }`}

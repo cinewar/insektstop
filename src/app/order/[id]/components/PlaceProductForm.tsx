@@ -82,6 +82,19 @@ export default function PlaceProductForm({
   async function handleAction(formData: FormData) {
     // TODO: Implement create/edit/delete logic based on modalType and provided IDs
     // For example:
+    const submittedValues = getPlaceProductFormValues(formData);
+    const result = placeProductSchema.safeParse(submittedValues);
+    if (!result.success) {
+      const fieldErrors: PlaceProductErrors = {};
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as PlaceProductField;
+        fieldErrors[field] = issue.message;
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    // If validation passes, call the appropriate action based on modalType
     try {
       if (modalType === 'create') {
         const result = await createPlaceProduct(formData);
@@ -89,15 +102,15 @@ export default function PlaceProductForm({
           notify({
             type: 'error',
             message: result.message,
-            title: 'Hata',
+            title: 'Fehler',
           });
           return;
         }
 
         notify({
           type: 'success',
-          message: `${result.data.name} ürünu ${placeName} alanina başarıyla eklendi!`,
-          title: 'Başarılı',
+          message: `${result.data.name} Produkt wurde erfolgreich zum ${placeName} Bereich hinzugefügt!`,
+          title: 'Erfolgreich',
         });
         close();
         return;
@@ -107,14 +120,14 @@ export default function PlaceProductForm({
           notify({
             type: 'error',
             message: result.message,
-            title: 'Hata',
+            title: 'Fehler',
           });
           return;
         }
         notify({
           type: 'success',
-          message: `${result.data.name} ürünu ${placeName} alaninda başarıyla güncellendi!`,
-          title: 'Başarılı',
+          message: `${result.data.name} Produkt wurde erfolgreich im ${placeName} Bereich aktualisiert!`,
+          title: 'Erfolgreich',
         });
         close();
         return;
@@ -122,16 +135,16 @@ export default function PlaceProductForm({
     } catch (error) {
       notify({
         type: 'error',
-        message: 'Beklenmeyen bir hata olustu',
-        title: 'Hata',
+        message: 'Ein unerwarteter Fehler ist aufgetreten',
+        title: 'Fehler',
       });
       return;
     }
 
     notify({
       type: 'error',
-      message: 'Bu formda yalnizca oluşturma modu uygulanmistir.',
-      title: 'Henuz Uygulanmadi',
+      message: 'Dieses Formular unterstützt derzeit nur den Erstellungsmodus.',
+      title: 'Noch nicht implementiert',
     });
   }
 
@@ -224,11 +237,11 @@ export default function PlaceProductForm({
         }
         onBlur={(value) => validateField('product', value)}
         error={errors.product}
-        placeholder='Bir ürün seçin'
+        placeholder='Produkt auswählen'
       />
       <Input
-        placeholder='Urun genişliğini girin'
-        label='Urun Genişliği(m)'
+        placeholder='Geben Sie die Breite des Produkts ein'
+        label='Produktbreite (cm)'
         inputMode='numeric'
         pattern='[0-9]*'
         name='width'
@@ -238,8 +251,8 @@ export default function PlaceProductForm({
         error={errors.width}
       />
       <Input
-        placeholder='Urun uzunluğunu girin'
-        label='Urun Uzunluğu(m)'
+        placeholder='Geben Sie die Länge des Produkts ein'
+        label='Produktlänge (cm)'
         name='length'
         inputMode='numeric'
         pattern='[0-9]*'
@@ -250,7 +263,7 @@ export default function PlaceProductForm({
       />
 
       <label htmlFor='' className='-mb-2'>
-        Görsellerinizi aşağıya ekleyin
+        Fügen Sie Ihre Bilder unten hinzu (max. 3 Bilder, optional)
       </label>
       <div
         className='flex justify-between gap-1 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
@@ -277,7 +290,7 @@ export default function PlaceProductForm({
       </div>
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
+        label={modalType === 'create' ? 'Erstellen' : 'Bearbeiten'}
       />
     </form>
   );

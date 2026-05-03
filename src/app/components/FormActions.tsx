@@ -27,7 +27,7 @@ export function FormActions({close, label, login, disabled}: FormActionsProps) {
           <GlassyButton
             onClick={close}
             type='button'
-            label='İptal'
+            label='Abbrechen'
             icon={CLOSESVG}
             iconSize={32}
             disabled={pending}

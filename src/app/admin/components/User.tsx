@@ -184,7 +184,7 @@ export function User({user}: UserProps) {
         </div>
       </div>
       {openModal && (
-        <Modal onClose={() => setOpenModal(false)}>
+        <Modal overFlow onClose={() => setOpenModal(false)}>
           {({close}) => (
             <div className='relative'>
               <h2 className='text-lg font-bold mb-2'>Admin Düzenle</h2>

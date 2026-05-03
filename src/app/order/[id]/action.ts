@@ -67,11 +67,14 @@ async function syncOrderProductPrice(
   });
 
   if (!orderProductWithItems) {
-    throw new Error('Fiyat senkronizasyonunda sipariş ürünu bulunamadı');
+    throw new Error(
+      'Bestellprodukt bei der Preissynchronisierung nicht gefunden.',
+    );
   }
 
   const nextPrice = orderProductWithItems.products.reduce(
-    (sum, item) => sum + item.product.price,
+    (sum, item) =>
+      sum + (item.product.price * item.width * item.length) / 10000,
     0,
   );
 
@@ -99,7 +102,7 @@ async function syncOrderTotalPrice(orderId: string): Promise<Order> {
   });
 
   if (!orderWithItems) {
-    throw new Error('Toplam fiyat senkronizasyonunda sipariş bulunamadı');
+    throw new Error('Bestellung bei der Preissynchronisierung nicht gefunden.');
   }
 
   const nextTotalPrice = orderWithItems.orderItems.reduce(
@@ -125,7 +128,7 @@ export async function createPlace(
   try {
     const orderId = formData.get('id');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
 
     const submittedValues = getPlaceFormValues(formData);
@@ -159,7 +162,7 @@ export async function createPlace(
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan oluşturma basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Erstellen des Standorts, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -174,12 +177,12 @@ export async function updatePlace(
   try {
     const placeId = formData.get('placeId');
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
+      return {ok: false, message: 'Standort-ID ist erforderlich'} as const;
     }
 
     const orderId = formData.get('id');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
 
     const submittedValues = getPlaceFormValues(formData);
@@ -202,7 +205,7 @@ export async function updatePlace(
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan güncelleme basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Aktualisieren des Standorts, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -240,7 +243,7 @@ export async function deletePlace(orderId: string, placeId: string) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan silme basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Löschen des Standorts, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -256,10 +259,10 @@ export async function createPlaceProduct(
     const orderId = formData.get('orderId');
     const placeId = formData.get('placeId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
+      return {ok: false, message: 'Standort-ID ist erforderlich'} as const;
     }
 
     const submittedValues = getPlaceProductFormValues(formData);
@@ -319,7 +322,7 @@ export async function createPlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan ürünu oluşturma basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Erstellen des Standort-Produkts, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -336,15 +339,15 @@ export async function updatePlaceProduct(
     const placeId = formData.get('placeId');
     const orderItemProductId = formData.get('orderItemProductId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
     if (typeof placeId !== 'string' || !placeId) {
-      return {ok: false, message: 'Mekan kimliği gereklidir'} as const;
+      return {ok: false, message: 'Standort-ID ist erforderlich'} as const;
     }
     if (typeof orderItemProductId !== 'string' || !orderItemProductId) {
       return {
         ok: false,
-        message: 'Sipariş ürünu kayit kimliği gereklidir',
+        message: 'Bestellprodukt-ID ist erforderlich',
       } as const;
     }
 
@@ -372,7 +375,7 @@ export async function updatePlaceProduct(
     if (!existingPlace) {
       return {
         ok: false,
-        message: 'Mekan bu siparişe ait degil',
+        message: 'Dieser Ort gehört nicht zur Bestellung.',
       } as const;
     }
 
@@ -389,7 +392,7 @@ export async function updatePlaceProduct(
     if (!existingOrderItemProduct) {
       return {
         ok: false,
-        message: 'Mekan ürünu bulunamadı',
+        message: 'Dieses Produkt wurde nicht gefunden',
       } as const;
     }
 
@@ -446,7 +449,7 @@ export async function updatePlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan ürünu güncelleme basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Aktualisieren des Standortprodukts. ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -481,7 +484,7 @@ export async function deletePlaceProduct(
   } catch (error) {
     return {
       ok: false,
-      message: `Mekan ürünu silme basarisiz, ${getErrorMessage(error)}`,
+      message: `Fehler beim Löschen des Standortprodukts. ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -494,11 +497,14 @@ export async function sendMessageToOrder(formData: FormData) {
   try {
     const orderId = formData.get('orderId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
     const content = formData.get('content');
     if (typeof content !== 'string') {
-      return {ok: false, message: 'Mesaj içeriği gereklidir'} as const;
+      return {
+        ok: false,
+        message: 'Nachrichteninhalt ist erforderlich',
+      } as const;
     }
 
     const imageFile = formData.get('image');
@@ -508,7 +514,10 @@ export async function sendMessageToOrder(formData: FormData) {
         : null;
 
     if (!content && !uploadedImage) {
-      return {ok: false, message: 'Mesaj veya görsel gereklidir'} as const;
+      return {
+        ok: false,
+        message: 'Nachricht oder Bild ist erforderlich',
+      } as const;
     }
 
     const newMessage = await prisma.message.create({
@@ -528,7 +537,7 @@ export async function sendMessageToOrder(formData: FormData) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mesaj gönderme başarısız, ${getErrorMessage(error)}`,
+      message: `Fehler beim Senden der Nachricht, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -540,7 +549,7 @@ export async function sendMessageToOrder(formData: FormData) {
 export async function markOrderMessagesAsRead(orderId: string) {
   try {
     if (!orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
     }
 
     const unreadMessages = await prisma.message.findMany({
@@ -576,7 +585,7 @@ export async function markOrderMessagesAsRead(orderId: string) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mesajlar okundu olarak işaretlenemedi, ${getErrorMessage(error)}`,
+      message: `Fehler beim Markieren der Nachrichten als gelesen, ${getErrorMessage(error)}`,
     } as const;
   }
 }

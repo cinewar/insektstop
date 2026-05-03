@@ -140,23 +140,23 @@ export default function OrderItemsAccordion({
               rounded-lg'
             >
               <div className='flex px-2 text-secondary font-semibold bg-gray rounded-t-lg'>
-                <span className='flex-3'>Urun</span>
-                <span className='flex-1'>Genislik(m)</span>
-                <span className='flex-1'>Uzunluk(m)</span>
+                <span className='flex-3'>Produkt</span>
+                <span className='flex-1'>Breite(cm)</span>
+                <span className='flex-1'>Länge(cm)</span>
               </div>
               <div className='p-1 flex flex-col gap-2'>
                 <div className='grid grid-cols-5 items-center px-1'>
                   <span className='col-span-3'>{productLink.product.name}</span>
-                  <span className='col-span-1'>{productLink.width}m</span>
+                  <span className='col-span-1'>{productLink.width}cm</span>
                   <span className='col-span-1 flex items-center gap-2'>
-                    {productLink.length}m{' '}
+                    {productLink.length}cm{' '}
                     <ActionMenu
                       className='ml-auto'
                       actions={[
                         {
                           id: 'edit',
                           icon: SETSVG,
-                          label: 'Düzenle',
+                          label: 'Bearbeiten',
                           iconSize: 40,
                           onClick: () => {
                             setPlaceProductModal({
@@ -176,7 +176,7 @@ export default function OrderItemsAccordion({
                         {
                           id: 'delete',
                           icon: TRASHSVG,
-                          label: 'Sil',
+                          label: 'Löschen',
                           iconSize: 40,
                           onClick: () => {
                             setPlaceProductDeleteConfirmation({
@@ -227,7 +227,12 @@ export default function OrderItemsAccordion({
                   className='bg-gray max-w-max py-1 px-3 text-secondary text-base rounded-full
                     font-semibold ml-1'
                 >
-                  fiyat: £{productLink.product.price.toFixed(2)}
+                  Preis: £
+                  {(
+                    productLink.product.price *
+                    (productLink.width / 100) *
+                    (productLink.length / 100)
+                  ).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -237,7 +242,7 @@ export default function OrderItemsAccordion({
               <GlassyButton
                 icon={ADDSVG}
                 iconSize={40}
-                label='Urun Ekle'
+                label='Produkt hinzufügen'
                 className='[&>svg]:stroke-4 text-lg w-auto gap-4'
                 onClick={() =>
                   setPlaceProductModal({
@@ -258,7 +263,7 @@ export default function OrderItemsAccordion({
     <>
       <Accordion
         items={accordionItems}
-        className='p-2 flex flex-col gap-2 w-full'
+        className='p-2 sm:px-12 flex flex-col gap-2 w-full'
       />
 
       {placeModal ? (
@@ -267,8 +272,8 @@ export default function OrderItemsAccordion({
             <div className='relative'>
               <h2 className='mb-2 text-lg font-bold'>
                 {placeModal.modalType === 'delete'
-                  ? 'Delete Place & Room'
-                  : 'Edit a Place & Room'}
+                  ? 'Standort löschen'
+                  : 'Standort bearbeiten'}{' '}
               </h2>
               <PlaceForm
                 close={close}
@@ -287,8 +292,10 @@ export default function OrderItemsAccordion({
           {({close}) => (
             <div className='relative'>
               <h2 className='mb-2 text-lg font-bold'>
-                {placeProductModal.modalType === 'edit' ? 'Edit' : 'Add'}{' '}
-                Product {placeProductModal.modalType === 'edit' ? 'of' : 'to'}{' '}
+                {placeProductModal.modalType === 'edit'
+                  ? 'Produkt bearbeiten'
+                  : 'Produkt hinzufügen'}{' '}
+                {placeProductModal.modalType === 'edit' ? 'von' : 'zu'}{' '}
                 {placeProductModal.placeName}
               </h2>
               <PlaceProductForm
@@ -324,8 +331,8 @@ export default function OrderItemsAccordion({
       )}
       {placeProductDeleteConfirmation && (
         <Confirmation
-          title='Mekan Urununu Sil'
-          message={`${placeProductDeleteConfirmation.productName} ürünunu ${placeProductDeleteConfirmation.placeName} alanindan silmek istediginize emin misiniz?`}
+          title='Produkt löschen'
+          message={`Möchten Sie das Produkt "${placeProductDeleteConfirmation.productName}" wirklich aus dem Bereich "${placeProductDeleteConfirmation.placeName}" löschen?`}
           onConfirmAction={() =>
             handleDeletePlaceProduct(
               placeProductDeleteConfirmation.orderItemProductId,

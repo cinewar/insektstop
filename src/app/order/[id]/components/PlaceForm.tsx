@@ -96,8 +96,8 @@ export function PlaceForm({
       if (!placeId) {
         notify({
           type: 'error',
-          title: 'Mekan güncelleme basarisiz',
-          message: 'Düzenleme icin mekan kimliği gerekli.',
+          title: 'Aktualisierung des Standorts fehlgeschlagen',
+          message: 'Für die Bearbeitung ist eine Standort-ID erforderlich.',
         });
         return;
       }
@@ -110,7 +110,7 @@ export function PlaceForm({
     if (!result.ok) {
       notify({
         type: 'error',
-        title: `Mekan ${modalType === 'edit' ? 'güncelleme' : 'oluşturma'} basarisiz`,
+        title: `Standort ${modalType === 'edit' ? 'aktualisieren' : 'erstellen'} fehlgeschlagen`,
         message: result.message,
       });
       return;
@@ -118,7 +118,7 @@ export function PlaceForm({
 
     notify({
       type: 'success',
-      title: `Mekan başarıyla ${modalType === 'edit' ? 'güncellendi' : 'oluşturuldu'}`,
+      title: `Standort erfolgreich ${modalType === 'edit' ? 'aktualisiert' : 'erstellt'}`,
     });
 
     setValues(submittedValues);
@@ -135,8 +135,8 @@ export function PlaceForm({
     if (!placeId) {
       notify({
         type: 'error',
-        title: 'Mekan silme basarisiz',
-        message: 'Silme icin mekan kimliği gerekli.',
+        title: 'Standort löschen fehlgeschlagen',
+        message: 'Für das Löschen ist eine Standort-ID erforderlich.',
       });
       return;
     }
@@ -147,7 +147,7 @@ export function PlaceForm({
       if (!result.ok) {
         notify({
           type: 'error',
-          title: 'Mekan silme basarisiz',
+          title: 'Standort löschen fehlgeschlagen',
           message: result.message,
         });
         return;
@@ -155,7 +155,7 @@ export function PlaceForm({
 
       notify({
         type: 'success',
-        title: 'Mekan başarıyla silindi',
+        title: 'Standort erfolgreich gelöscht',
       });
       close();
     } finally {
@@ -166,8 +166,8 @@ export function PlaceForm({
   if (modalType === 'delete') {
     return (
       <Confirmation
-        title='Mekanı Sil'
-        message={`"${initialPlace || 'bu mekan'}" kaydini silmek istediginize emin misiniz?`}
+        title='Standort löschen'
+        message={`Möchten Sie den Standort "${initialPlace || 'diesen Standort'}" wirklich löschen?`}
         onConfirmAction={handleDelete}
         onCancelAction={close}
         isLoading={isDeleting}
@@ -181,8 +181,8 @@ export function PlaceForm({
       <input type='hidden' name='id' value={orderId} />
       {placeId ? <input type='hidden' name='placeId' value={placeId} /> : null}
       <Input
-        placeholder='Oda ve mekan adını girin'
-        label='Oda ve Mekan Adi'
+        placeholder='Geben Sie den Raum- und Standortnamen ein'
+        label='Raum- und Standortname'
         name='place'
         value={values.place}
         onChange={handleChange('place')}
@@ -191,7 +191,7 @@ export function PlaceForm({
       />
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Oluştur' : 'Düzenle'}
+        label={modalType === 'create' ? 'Erstellen' : 'Bearbeiten'}
       />
     </form>
   );

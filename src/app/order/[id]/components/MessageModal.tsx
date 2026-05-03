@@ -343,7 +343,7 @@ export function MessageModal({
                     text-sm
                   ${message.creator === 'Admin' ? '-right-1 ' : '-left-1 '}`}
                 >
-                  {message.creator}
+                  {message.creator === 'Admin' ? 'Admin' : 'Kunde'}
                 </div>
                 <div
                   className={`text-xs text-tertiary absolute -top-4 max-w-[70%] truncate ${message.creator === 'Admin' ? 'left-2' : 'right-2'}`}
@@ -399,7 +399,7 @@ export function MessageModal({
           >
             <div className='flex-1 min-w-0 bg-secondary'>
               <Input
-                placeholder='Mesajınızı yazın...'
+                placeholder='Nachricht schreiben…'
                 name='content'
                 value={values.content}
                 onChange={handleChange}

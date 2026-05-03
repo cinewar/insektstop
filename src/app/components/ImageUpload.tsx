@@ -18,7 +18,7 @@ async function loadImageFromFile(file: File): Promise<HTMLImageElement> {
       const element = new window.Image();
       element.onload = () => resolve(element);
       element.onerror = () =>
-        reject(new Error('Failed to load selected image'));
+        reject(new Error('Bild konnte nicht geladen werden.'));
       element.src = imageUrl;
     });
 
@@ -316,7 +316,8 @@ export function ImageUpload({
           <>
             <Svg icon={ADDPHOTOSVG} size={48} />
             <p className='text-gray'>
-              Fotoğraflarınızı Yüklemek için Sürükleyin veya Tıklayın (max 15)
+              Ziehen Sie Ihre Fotos hierher oder klicken Sie zum Hochladen (max.
+              15)
             </p>
           </>
         )}
@@ -383,7 +384,7 @@ export function ImageUpload({
                   />
                   <button
                     type='button'
-                    className='absolute top-1 right-1 bg-white/80 rounded-full p-1 shadow hover:bg-red-200 transition-opacity opacity-80 group-hover:opacity-100'
+                    className='absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs leading-none'
                     onClick={() => {
                       // Remove new file
                       const newFiles = [...files];
@@ -397,7 +398,7 @@ export function ImageUpload({
                     }}
                     aria-label='Sil'
                   >
-                    <Svg icon={TRASHSVG} size={24} />
+                    ×
                   </button>
                 </div>
               );

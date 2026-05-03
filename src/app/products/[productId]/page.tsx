@@ -33,12 +33,14 @@ export default async function ProductPage({
   }
 
   return (
-    <div className='min-h-screen  text-dark-text bg-secondary pt-18'>
+    <div className='min-h-screen  text-dark-text bg-secondary'>
       <ProductImageGallery images={product.images} />
-      <div className='p-4'>
+      <p className='bg-tertiary max-w-fit ml-2 text-white font-semibold px-4 text-lg sm:text-2xl rounded-full -translate-y-10'>
+        £{product.price}
+      </p>
+      <div className='p-4 -my-4'>
         <div className='flex justify-between items-start text-3xl font-bold'>
           <h1 className=''>{product.name}</h1>
-          <p className=''>${product.price}</p>
         </div>
         <p className='text-lg mt-2'>{product.description}</p>
       </div>
@@ -46,9 +48,9 @@ export default async function ProductPage({
         <Link
           href='/order'
           className='relative active:scale-95 transition-transform inline-flex
-           items-center justify-center cursor-pointer px-4 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw] shadow-md hover:bg-tertiary z-2 shining'
+           items-center justify-center cursor-pointer px-8 py-2 min-w-30 bg-primary text-white text-lg font-medium rounded-[100vw] shadow-md hover:bg-tertiary z-2 shining'
         >
-          Fiyat Al
+          Preis anfragen
         </Link>
       </div>
       <Cards products={products} />

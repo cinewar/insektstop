@@ -22,8 +22,8 @@ type ProductImage = {
  */
 export function ProductImageGallery({images}: {images: ProductImage[]}) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [showLeftGlow, setShowLeftGlow] = useState(false);
-  const [showRightGlow, setShowRightGlow] = useState(false);
+  const [showTopGlow, setShowTopGlow] = useState(false);
+  const [showBottomGlow, setShowBottomGlow] = useState(false);
   const thumbnailsScrollRef = useRef<HTMLDivElement>(null);
   const thumbnailRefs = useRef<(HTMLImageElement | null)[]>([]);
 
@@ -72,12 +72,12 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
     const el = thumbnailsScrollRef.current;
     if (!el) return;
 
-    const hasOverflow = el.scrollWidth > el.clientWidth;
-    const isAtLeft = el.scrollLeft <= 1;
-    const isAtRight = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    const hasOverflow = el.scrollHeight > el.clientHeight;
+    const isAtTop = el.scrollTop <= 1;
+    const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
 
-    setShowLeftGlow(hasOverflow && !isAtLeft);
-    setShowRightGlow(hasOverflow && !isAtRight);
+    setShowTopGlow(hasOverflow && !isAtTop);
+    setShowBottomGlow(hasOverflow && !isAtBottom);
   };
 
   useEffect(() => {
@@ -91,11 +91,21 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
     }
 
     const selectedThumbnail = thumbnailRefs.current[selectedImageIndex];
-    selectedThumbnail?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'center',
-    });
+    if (selectedThumbnail && thumbnailsScrollRef.current) {
+      // Scroll the thumbnail container so the selected thumbnail is centered
+      const container = thumbnailsScrollRef.current;
+      const thumbnailRect = selectedThumbnail.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const offset =
+        thumbnailRect.top -
+        containerRect.top -
+        container.clientHeight / 2 +
+        thumbnailRect.height / 2;
+      container.scrollBy({
+        top: offset,
+        behavior: 'smooth',
+      });
+    }
 
     const frameId = requestAnimationFrame(updateGlowVisibility);
     return () => cancelAnimationFrame(frameId);
@@ -110,7 +120,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
       <div
         ref={thumbnailsScrollRef}
         onScroll={updateGlowVisibility}
-        className='absolute top-0 overflow-auto no-scrollbar flex gap-1 opacity-70 z-10 w-full'
+        className='absolute bottom-0 right-0 overflow-auto no-scrollbar flex flex-col gap-1 opacity-70 z-10 h-100 sm:h-160'
       >
         {images.map((image, index) => (
           <Image
@@ -119,7 +129,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
               thumbnailRefs.current[index] = element;
             }}
             onClick={() => setSelectedImageIndex(index)}
-            className={`border object-cover w-20 h-20 aspect-square shadow-lg rounded-lg ${
+            className={`border object-cover w-16 h-16 sm:w-20 sm:h-20 aspect-square shadow-lg rounded-lg ${
               selectedImageIndex === index
                 ? 'border-primary'
                 : 'border-dark-text hover:border-primary'
@@ -131,11 +141,11 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
           />
         ))}
       </div>
-      {showLeftGlow && (
-        <div className='pointer-events-none absolute top-0 left-0 z-20 h-20 w-8 bg-linear-to-r from-dark-text/50 to-transparent' />
+      {showTopGlow && (
+        <div className='pointer-events-none absolute right-0 top-20 sm:top-20 z-20 w-16 h-8 sm:w-20 bg-linear-to-b from-dark-text/50 to-transparent' />
       )}
-      {showRightGlow && (
-        <div className='pointer-events-none absolute top-0 right-0 z-20 h-20 w-8 bg-linear-to-l from-dark-text/50 to-transparent' />
+      {showBottomGlow && (
+        <div className='pointer-events-none absolute right-0 bottom-0 z-20 w-16 h-8 sm:w-20 bg-linear-to-t from-dark-text/50 to-transparent' />
       )}
       <div
         className='w-full'
@@ -149,7 +159,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
           alt={activeImage.alt || 'Urun Görseli'}
           width={500}
           height={500}
-          className='object-cover object-center h-120'
+          className='object-cover w-full object-center h-120 sm:h-180'
         />
       </div>
     </div>

@@ -49,15 +49,15 @@ export function FinishOrderButton({
       await finalizeOrder(orderId);
       notify({
         type: 'success',
-        title: 'Sipariş tamamlandı',
-        message: 'Son detaylar müşteriye gönderildi.',
+        title: 'Bestellung abgeschlossen',
+        message: 'Die letzten Details wurden an den Kunden gesendet.',
       });
       setShowConfirmation(false);
     } catch {
       notify({
         type: 'error',
-        title: 'Tamamlama basarisiz',
-        message: 'Lütfen tekrar deneyin.',
+        title: 'Abschluss fehlgeschlagen',
+        message: 'Bitte versuchen Sie es erneut.',
       });
     } finally {
       setIsFinishing(false);
@@ -68,11 +68,11 @@ export function FinishOrderButton({
     <>
       <div
         className={`fixed inset-x-0 bottom-4 z-30 flex justify-center pointer-events-none
-              transition-transform duration-300 ${aboveFooter && isOrderDetailPage ? '-translate-y-16' : ''}`}
+              transition-transform duration-300 ${aboveFooter && isOrderDetailPage ? '-translate-y-16 sm:-translate-y-20' : ''}`}
       >
         <div className='pointer-events-auto bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 shadow-lg'>
           <GlassyButton
-            label='Siparişi Bitir'
+            label='Bestellung abschließen'
             icon={OKSVG}
             iconSize={36}
             className='gap-1 [&>svg]:stroke-4'
@@ -82,12 +82,12 @@ export function FinishOrderButton({
       </div>
       {showConfirmation && (
         <Confirmation
-          title='Siparişi Bitir'
+          title='Bestellung abschließen'
           message={`${
             orderName
-              ? `${orderName} siparişini tamamlamak`
-              : 'Bu siparişi tamamlamak'
-          } istediginize emin misiniz?`}
+              ? `Möchten Sie die Bestellung ${orderName} abschließen?`
+              : 'Möchten Sie diese Bestellung abschließen?'
+          }`}
           onConfirmAction={handleConfirmFinish}
           onCancelAction={() => setShowConfirmation(false)}
           isLoading={isFinishing}

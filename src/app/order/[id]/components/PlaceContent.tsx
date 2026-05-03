@@ -2,7 +2,7 @@
 
 import {Button} from '@/app/components/Button';
 import {Modal} from '@/app/components/Modal';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {PlaceForm} from './PlaceForm';
 import {MessageButton} from './MessageButton';
 import {Message} from '../../../../../generated/prisma';
@@ -38,10 +38,12 @@ export function PlaceContent({orderId, messages}: PlaceContentProps) {
   // SSE logic removed. If you want to keep messages in sync, implement polling or another mechanism here.
 
   const title =
-    modalType === 'create' ? 'Mekan ve Oda Oluştur' : 'Mekan ve Oda Düzenle';
+    modalType === 'create'
+      ? 'Bereich und Raum erstellen'
+      : 'Bereich und Raum bearbeiten';
   return (
     <>
-      <div className='flex items-center justify-center'>
+      <div className='flex items-center mt-2 justify-center'>
         <Button
           className='shining'
           onClick={() => {
@@ -49,7 +51,7 @@ export function PlaceContent({orderId, messages}: PlaceContentProps) {
             setShowModal(true);
           }}
         >
-          Mekan ve Oda Ekle
+          Ort und Raum hinzufügen
         </Button>
         {showModal && (
           <Modal onClose={() => setShowModal(false)}>

@@ -22,7 +22,7 @@ type ConfirmationProps = {
  * Usage: Call Confirmation(...) where this declaration is needed in the current module flow.
  */
 export function Confirmation({
-  title = 'Siparişi Sil',
+  title = 'Bestellung löschen',
   message,
   onConfirmAction,
   onCancelAction,
@@ -41,7 +41,7 @@ export function Confirmation({
             <GlassyButton
               onClick={onCancelAction}
               type='button'
-              label='İptal'
+              label='Abbrechen'
               icon={CLOSESVG}
               iconSize={32}
               disabled={isLoading}
@@ -50,7 +50,7 @@ export function Confirmation({
             <GlassyButton
               onClick={onConfirmAction}
               type='button'
-              label='Tamam'
+              label='OK'
               icon={OKSVG}
               iconSize={40}
               disabled={isLoading}

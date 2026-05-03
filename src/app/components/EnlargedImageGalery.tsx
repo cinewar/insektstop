@@ -84,7 +84,7 @@ export function EnlargedImageGalery({
       <Svg
         icon={CLOSESVG}
         size={32}
-        className='absolute top-4 right-4 z-20 text-primary cursor-pointer'
+        className='absolute top-4 right-4 z-20 text-primary cursor-pointer bg-dark-text rounded-full'
         onClick={onCloseAction}
       />
       <button
