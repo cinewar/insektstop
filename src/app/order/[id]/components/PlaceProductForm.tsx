@@ -290,7 +290,7 @@ export default function PlaceProductForm({
       </div>
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Erstellen' : 'Bearbeiten'}
+        label={modalType === 'create' ? 'Erstellen' : 'Speichern'}
       />
     </form>
   );

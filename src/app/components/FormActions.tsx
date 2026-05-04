@@ -22,7 +22,7 @@ export function FormActions({close, label, login, disabled}: FormActionsProps) {
 
   return (
     <div className='flex justify-end mt-4'>
-      <div className='flex gap-2 bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 text-lg shadow-lg'>
+      <div className='flex gap-1 bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-1 text-lg shadow-lg'>
         {close && (
           <GlassyButton
             onClick={close}
@@ -31,7 +31,7 @@ export function FormActions({close, label, login, disabled}: FormActionsProps) {
             icon={CLOSESVG}
             iconSize={32}
             disabled={pending}
-            className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-4'
+            className='[&>svg]:stroke-red-600 [&>svg]:stroke-4 gap-1'
           />
         )}
         <GlassyButton
@@ -40,7 +40,7 @@ export function FormActions({close, label, login, disabled}: FormActionsProps) {
           iconSize={40}
           type='submit'
           disabled={pending || disabled}
-          className={login ? 'gap-4' : '[&>svg]:stroke-4 gap-4'}
+          className={login ? 'gap-4' : '[&>svg]:stroke-4 gap-1'}
         />
       </div>
     </div>

@@ -191,7 +191,7 @@ export function PlaceForm({
       />
       <FormActions
         close={close}
-        label={modalType === 'create' ? 'Erstellen' : 'Bearbeiten'}
+        label={modalType === 'create' ? 'Erstellen' : 'Speichern'}
       />
     </form>
   );

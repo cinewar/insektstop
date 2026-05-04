@@ -148,7 +148,7 @@ export default function OrderItemsAccordion({
                 <div className='grid grid-cols-5 items-center px-1'>
                   <span className='col-span-3'>{productLink.product.name}</span>
                   <span className='col-span-1'>{productLink.width}cm</span>
-                  <span className='col-span-1 flex items-center gap-2'>
+                  <span className='col-span-1 flex items-center'>
                     {productLink.length}cm{' '}
                     <ActionMenu
                       className='ml-auto'

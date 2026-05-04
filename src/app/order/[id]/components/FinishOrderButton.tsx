@@ -72,7 +72,7 @@ export function FinishOrderButton({
       >
         <div className='pointer-events-auto bg-gray/90 backdrop-blur-sm border border-white/30 rounded-full p-2 shadow-lg'>
           <GlassyButton
-            label='Bestellung abschließen'
+            label='Abschließen'
             icon={OKSVG}
             iconSize={36}
             className='gap-1 [&>svg]:stroke-4'
