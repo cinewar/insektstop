@@ -39,10 +39,10 @@ export default async function ProductPage({
         £{product.price}
       </p>
       <div className='p-4 -my-4'>
-        <div className='flex justify-between items-start text-3xl font-bold'>
+        <div className='flex justify-between items-start text-xl sm:text-3xl font-bold'>
           <h1 className=''>{product.name}</h1>
         </div>
-        <p className='text-lg mt-2'>{product.description}</p>
+        <p className='text-base sm:text-lg mt-2'>{product.description}</p>
       </div>
       <div className='flex justify-center mt-2'>
         <Link

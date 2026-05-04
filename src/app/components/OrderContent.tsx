@@ -323,13 +323,12 @@ export function OrderContent({order}: OrderContentProps) {
           </Modal>
         )}
       </div>
-      <div>
-        <Svg
-          icon={ABOUTSCENESVG}
-          size={400}
-          className='w-full contact-scene-buzz [&_path[data-testid^="fly-"]]:animate-buzz'
-        />
-      </div>
+
+      <Svg
+        icon={ABOUTSCENESVG}
+        size={400}
+        className='w-full contact-scene-buzz [&_path[data-testid^="fly-"]]:animate-buzz'
+      />
     </>
   );
 }

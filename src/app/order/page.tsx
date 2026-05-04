@@ -23,7 +23,7 @@ export default async function CreateOrder({searchParams}: ProductsProps) {
   });
 
   return (
-    <div className='min-h-screen flex flex-col bg-secondary'>
+    <div className='flex flex-col bg-secondary'>
       <OrderContent order={order ?? undefined} />
     </div>
   );
