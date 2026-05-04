@@ -54,9 +54,12 @@ export function Cards({products}: CardsProps) {
           <Link
             key={product.id}
             href={`/products/${product.id}`}
-            className='relative'
+            className='relative '
           >
-            <Card key={product.id} className='relative bg-tertiary'>
+            <Card
+              key={product.id}
+              className='relative w-45 sm:w-55 bg-tertiary'
+            >
               <h2 className='absolute text-white font-bold shadow-lg top-2 right-2 bg-tertiary p-1 rounded-full'>
                 £{product.price.toFixed(2)}
               </h2>
@@ -65,9 +68,9 @@ export function Cards({products}: CardsProps) {
                   product.images[0]?.img || '/placeholder.png',
                 )}
                 alt={product.name}
-                width={200}
-                height={200}
-                className='rounded-lg h-32 w-full object-cover'
+                width={220}
+                height={128}
+                className='rounded-lg h-32 object-cover'
               />
               <div className='p-2 h-30 justify-between flex flex-col'>
                 <div className='font-bold mb-1'>

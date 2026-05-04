@@ -16,7 +16,7 @@ export function Card({children, className, onClick}: CardProps) {
   return (
     <div
       onClick={onClick}
-      className={`min-w-45 sm:min-w-55 p-1 text-white shadow-lg rounded-xl ${className}`}
+      className={`p-1 text-white shadow-lg rounded-xl ${className}`}
     >
       {children}
     </div>

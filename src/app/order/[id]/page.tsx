@@ -9,7 +9,9 @@ export default async function Order({
   params: {id: string} | Promise<{id: string}>;
 }) {
   const {id: orderId} = await Promise.resolve(params);
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: {active: true},
+  });
   const order = await prisma.order.findFirst({
     where: {
       id: orderId,

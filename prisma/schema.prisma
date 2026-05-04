@@ -36,6 +36,7 @@ model User {
 model Product {
   id          String         @id @default(auto()) @map("_id") @db.ObjectId
   productId   Int            @unique
+  active      Boolean        @default(true)
   name        String
   description String
   price       Float

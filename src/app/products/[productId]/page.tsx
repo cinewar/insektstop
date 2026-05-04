@@ -22,7 +22,9 @@ export default async function ProductPage({
     where: {id: productId},
   });
 
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: {active: true},
+  });
 
   if (!product) {
     return (
@@ -36,7 +38,7 @@ export default async function ProductPage({
     <div className='min-h-screen  text-dark-text bg-secondary'>
       <ProductImageGallery images={product.images} />
       <p className='bg-tertiary max-w-fit ml-2 text-white font-semibold px-4 text-lg sm:text-2xl rounded-full -translate-y-10'>
-        £{product.price}
+        £{product.price.toFixed(2)}
       </p>
       <div className='p-4 -my-4'>
         <div className='flex justify-between items-start text-xl sm:text-3xl font-bold'>

@@ -11,7 +11,7 @@ const ORDER_NAME_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 /**
  * Supported order lifecycle actions used in notification content.
  */
-type OrderAction = 'created' | 'updated' | 'deleted' | 'completed';
+type OrderAction = 'erstellt' | 'aktualisiert' | 'gelöscht' | 'abgeschlossen';
 
 /**
  * Data required to compose and send order notification emails.
@@ -39,7 +39,7 @@ function buildOrderEmailHtml(payload: OrderNotificationPayload) {
         <li><strong>E-Mail:</strong> ${payload.createrEmail}</li>
         <li><strong>Telefon:</strong> ${payload.createrPhone}</li>
         <li><strong>Adresse:</strong> ${payload.createrAddress}</li>
-        <li><strong>Gesamtpreis:</strong> <span style="color:#1976d2;">${payload.totalPrice}</span></li>
+        <li><strong>Gesamtpreis:</strong> <span style="color:#1976d2;">£${payload.totalPrice.toFixed(2)}</span></li>
       </ul>
     </div>
   `;
@@ -111,7 +111,7 @@ function buildCompletedOrderEmailHtml(order: {
                                       (productLink) => `
                                         <li>
                                           <strong>${productLink.product.name}</strong>
-                                          | Maße: ${productLink.width}m x ${productLink.length}m
+                                          | Maße: ${productLink.width}cm x ${productLink.length}cm
                                           | Einzelpreis: £${productLink.product.price.toFixed(2)}
                                         </li>
                                       `,
@@ -209,7 +209,7 @@ export async function createOrder(formData: FormData) {
 
   try {
     await sendResendEmail({
-      action: 'created',
+      action: 'erstellt',
       orderName: result.orderName,
       createrName: result.createrName,
       createrEmail: result.createrEmail,
@@ -251,7 +251,7 @@ export async function updateOrder(formData: FormData) {
 
   try {
     await sendResendEmail({
-      action: 'updated',
+      action: 'aktualisiert',
       orderName: result.orderName,
       createrName: result.createrName,
       createrEmail: result.createrEmail,
@@ -330,7 +330,7 @@ export async function deleteOrder(id: string) {
 
   try {
     await sendResendEmail({
-      action: 'deleted',
+      action: 'gelöscht',
       orderName: result.orderName,
       createrName: result.createrName,
       createrEmail: result.createrEmail,

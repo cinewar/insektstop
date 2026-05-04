@@ -6,7 +6,9 @@ import {Hero} from './components/Hero';
 import {VideoPlayer} from './components/Video';
 
 export default async function Home() {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: {active: true},
+  });
   return (
     <div className='flex flex-col bg-secondary'>
       <Hero />

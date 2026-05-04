@@ -23,7 +23,9 @@ type ProductsProps = {
 };
 
 export default async function Products({searchParams}: ProductsProps) {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: {active: true},
+  });
 
   const {q} = await loadSearchParams(searchParams);
 
