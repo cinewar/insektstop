@@ -118,7 +118,7 @@ export function OrderContent({order}: OrderContentProps) {
     } catch {
       notify({
         type: 'error',
-        title: `Sipariş ${actionType === 'edit' ? 'aktualisieren' : 'erstellen'} fehlgeschlagen`,
+        title: `Bestellung ${actionType === 'edit' ? 'aktualisieren' : 'erstellen'} fehlgeschlagen`,
         message: 'Bitte versuchen Sie es erneut.',
       });
       return;
@@ -129,7 +129,7 @@ export function OrderContent({order}: OrderContentProps) {
     setShowModal(false);
     notify({
       type: 'success',
-      title: `Sipariş ${actionType === 'edit' ? 'aktualisiert' : 'erstellt'}`,
+      title: `Bestellung ${actionType === 'edit' ? 'aktualisiert' : 'erstellt'}`,
       message:
         actionType === 'edit'
           ? 'Bestelldetails erfolgreich gespeichert.'

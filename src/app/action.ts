@@ -32,14 +32,16 @@ async function sendResendEmail(payload: ResetPasswordPayload) {
     body: JSON.stringify({
       from,
       to: [to],
-      subject: `Şifre Sıfırlama Talebi`,
-      text: `Merhaba,\n\nŞifre sıfırlama kodunuz: ${payload.activationCode}\n\nLütfen bu kodu güvenli bir yerde saklayın ve mümkünse giriş yaptıktan sonra değiştirin.\n\nİyi günler dileriz.`,
+      subject: `Anfrage zum Zurücksetzen des Passworts für Insektstop`,
+      text: `Hallo,\n\nIhr Passwort-Zurücksetzungscode lautet: ${payload.activationCode}\n\nBitte bewahren Sie diesen Code an einem sicheren Ort auf und ändern Sie Ihr Passwort nach Möglichkeit nach der Anmeldung.\n\nMit freundlichen Grüßen.`,
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Resend istegi basarisiz: ${response.status} ${errorText}`);
+    throw new Error(
+      `Erneutes Senden fehlgeschlagen: ${response.status} ${errorText}`,
+    );
   }
 
   return true;
@@ -52,10 +54,10 @@ export async function login(formData: FormData) {
   // Fetch user from DB by email (pseudo-code)
   const user = await prisma.user.findUnique({where: {email}});
 
-  if (!user) return {error: 'User not found'};
+  if (!user) return {error: 'Benutzer nicht gefunden'};
 
   const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return {error: 'Invalid password'};
+  if (!isValid) return {error: 'Ungültiges Passwort'};
 
   // Create JWT session
   const payload = {id: user.id, email: user.email};
@@ -81,17 +83,17 @@ export async function sendPasswordResetEmail(formData: FormData) {
   // Validate email format (basic check)
   const result = z.string().email().safeParse(comingEmail);
   if (!result.success) {
-    return {error: 'Invalid email address'};
+    return {error: 'Ungültige E-Mail-Adresse'};
   }
 
   // Check if user exists
   const user = await prisma.user.findUnique({where: {email: comingEmail}});
   if (!user) {
-    return {error: 'User not found'};
+    return {error: 'Benutzer nicht gefunden'};
   }
 
   if (user.email !== comingEmail) {
-    return {error: 'Email does not match our records'};
+    return {error: 'E-Mail stimmt nicht mit unseren Aufzeichnungen überein'};
   }
 
   // Generate a six-digit numeric code for validation
@@ -106,7 +108,7 @@ export async function sendPasswordResetEmail(formData: FormData) {
     data: {resetToken: token},
   });
   if (!resultUser) {
-    return {error: 'Failed to set reset token'};
+    return {error: 'Fehler beim Setzen des Rücksetz-Tokens'};
   }
 
   // Send the password reset email
@@ -115,9 +117,9 @@ export async function sendPasswordResetEmail(formData: FormData) {
     activationCode: token,
   });
   if (!emailResult) {
-    return {error: 'Failed to send password reset email'};
+    return {error: 'Fehler beim Senden der Passwort-Zurücksetzungs-E-Mail'};
   }
-  return {success: true, message: 'Password reset email sent'};
+  return {success: true, message: 'Passwort-Zurücksetzungs-E-Mail gesendet'};
 }
 
 export async function resetPassword(formData: FormData) {
@@ -128,18 +130,18 @@ export async function resetPassword(formData: FormData) {
   // Validate email format (basic check)
   const result = z.string().email().safeParse(email);
   if (!result.success) {
-    return {error: 'Invalid email address'};
+    return {error: 'Ungültige E-Mail-Adresse'};
   }
 
   // Check if user exists
   const user = await prisma.user.findUnique({where: {email}});
   if (!user) {
-    return {error: 'User not found'};
+    return {error: 'Benutzer nicht gefunden'};
   }
 
   // Check if the provided verification code matches the one in the database
   if (user.resetToken !== verificationCode) {
-    return {error: 'Invalid verification code'};
+    return {error: 'Ungültiger Verifizierungscode'};
   }
 
   // Hash the new password
@@ -152,7 +154,7 @@ export async function resetPassword(formData: FormData) {
   });
 
   if (!updatedUser) {
-    return {error: 'Failed to reset password'};
+    return {error: 'Fehler beim Zurücksetzen des Passworts'};
   }
-  return {success: true, message: 'Password has been reset successfully'};
+  return {success: true, message: 'Passwort wurde erfolgreich zurückgesetzt'};
 }

@@ -19,7 +19,6 @@ type OrderAction = 'created' | 'updated' | 'deleted' | 'completed';
 type OrderNotificationPayload = {
   action: OrderAction;
   orderName: string;
-  orderId: number;
   createrName: string;
   createrEmail: string;
   createrPhone: string;
@@ -30,23 +29,26 @@ type OrderNotificationPayload = {
 /**
  * Builds the plain-text email body for order notifications.
  */
-function buildOrderEmailText(payload: OrderNotificationPayload) {
-  return [
-    `Sipariş ${payload.action}`,
-    `Sipariş Adi: ${payload.orderName}`,
-    `Sipariş ID: ${payload.orderId}`,
-    `Müşteri: ${payload.createrName}`,
-    `E-posta: ${payload.createrEmail}`,
-    `Telefon: ${payload.createrPhone}`,
-    `Adres: ${payload.createrAddress}`,
-    `Toplam Fiyat: ${payload.totalPrice}`,
-  ].join('\n');
+function buildOrderEmailHtml(payload: OrderNotificationPayload) {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #222;">
+      <h2>Bestellung ${payload.action}</h2>
+      <ul style="list-style:none; padding:0;">
+        <li><strong>Bestellname:</strong> ${payload.orderName}</li>
+        <li><strong>Kunde:</strong> ${payload.createrName}</li>
+        <li><strong>E-Mail:</strong> ${payload.createrEmail}</li>
+        <li><strong>Telefon:</strong> ${payload.createrPhone}</li>
+        <li><strong>Adresse:</strong> ${payload.createrAddress}</li>
+        <li><strong>Gesamtpreis:</strong> <span style="color:#1976d2;">${payload.totalPrice}</span></li>
+      </ul>
+    </div>
+  `;
 }
 
 /**
- * Builds the plain-text email body for completed order details.
+ * Builds the HTML email body for completed order details.
  */
-function buildCompletedOrderEmailText(order: {
+function buildCompletedOrderEmailHtml(order: {
   orderName: string;
   orderId: number;
   createrName: string;
@@ -64,53 +66,85 @@ function buildCompletedOrderEmailText(order: {
     }>;
   }>;
 }) {
-  const lines = [
-    'Sipariş tamamlandı. Son detaylar aşağıdadır:',
-    '',
-    `Sipariş Adi: ${order.orderName}`,
-    `Sipariş ID: ${order.orderId}`,
-    `Müşteri: ${order.createrName}`,
-    `E-posta: ${order.createrEmail}`,
-    `Telefon: ${order.createrPhone}`,
-    `Adres: ${order.createrAddress}`,
-    '',
-    'Mekan ve Ürün Detayları:',
-  ];
-
-  if (order.orderItems.length === 0) {
-    lines.push('- Henüz mekan/ürün eklenmedi.');
-  } else {
-    for (const item of order.orderItems) {
-      lines.push(
-        `- Mekan: ${item.name} | Mekan Toplamı: £${item.price.toFixed(2)}`,
-      );
-
-      if (item.products.length === 0) {
-        lines.push('  - Ürün yok');
-        continue;
+  return `
+    <div style="font-family: Arial, sans-serif; color: #222;">
+      <h2>Bestellung abgeschlossen</h2>
+      <ul style="list-style:none; padding:0;">
+        <li><strong>Bestellname:</strong> ${order.orderName}</li>
+        <li><strong>Kunde:</strong> ${order.createrName}</li>
+        <li><strong>E-Mail:</strong> ${order.createrEmail}</li>
+        <li><strong>Telefon:</strong> ${order.createrPhone}</li>
+        <li><strong>Adresse:</strong> ${order.createrAddress}</li>
+      </ul>
+      <h3>Standort- und Produktdetails</h3>
+      ${
+        order.orderItems.length === 0
+          ? '<p>- Noch keine Standorte/Produkte hinzugefügt.</p>'
+          : `
+            <table style="border-collapse:collapse; width:100%; margin-bottom:16px;">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #ccc; padding:8px;">Standort</th>
+                  <th style="border:1px solid #ccc; padding:8px;">Standort Gesamt (£)</th>
+                  <th style="border:1px solid #ccc; padding:8px;">Produkte</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${order.orderItems
+                  .map(
+                    (item) => `
+                      <tr>
+                        <td style="border:1px solid #ccc; padding:8px; vertical-align:top;">
+                          ${item.name}
+                        </td>
+                        <td style="border:1px solid #ccc; padding:8px; vertical-align:top;">
+                          £${item.price.toFixed(2)}
+                        </td>
+                        <td style="border:1px solid #ccc; padding:8px;">
+                          ${
+                            item.products.length === 0
+                              ? '<em>Keine Produkte für diesen Standort hinzugefügt.</em>'
+                              : `
+                                <ul style="margin:0; padding-left:18px;">
+                                  ${item.products
+                                    .map(
+                                      (productLink) => `
+                                        <li>
+                                          <strong>${productLink.product.name}</strong>
+                                          | Maße: ${productLink.width}m x ${productLink.length}m
+                                          | Einzelpreis: £${productLink.product.price.toFixed(2)}
+                                        </li>
+                                      `,
+                                    )
+                                    .join('')}
+                                </ul>
+                              `
+                          }
+                        </td>
+                      </tr>
+                    `,
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          `
       }
-
-      for (const productLink of item.products) {
-        lines.push(
-          `  - ${productLink.product.name} | Ölçü: ${productLink.width}m x ${productLink.length}m | Birim Fiyat: £${productLink.product.price.toFixed(2)}`,
-        );
-      }
-    }
-  }
-
-  lines.push('', `Toplam Fiyat: £${order.totalPrice.toFixed(2)}`);
-  return lines.join('\n');
+      <p><strong>Gesamtpreis:</strong> <span style="color:#1976d2;">£${order.totalPrice.toFixed(2)}</span></p>
+    </div>
+  `;
 }
 
 /**
  * Sends an order notification email via Resend when credentials are configured.
  */
 async function sendResendEmail(payload: OrderNotificationPayload) {
+  const user = await prisma.user.findFirst({});
+  const recipients = [payload.createrEmail, user?.email];
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
-  const to = payload.createrEmail || process.env.RESEND_TO_EMAIL;
+  const to = recipients.filter((email): email is string => !!email);
 
-  if (!apiKey || !from || !to) {
+  if (!apiKey || !from || to.length === 0) {
     return;
   }
 
@@ -122,15 +156,17 @@ async function sendResendEmail(payload: OrderNotificationPayload) {
     },
     body: JSON.stringify({
       from,
-      to: [to],
-      subject: `Sipariş ${payload.action}: ${payload.orderName}`,
-      text: buildOrderEmailText(payload),
+      to,
+      subject: `Bestellung ${payload.action}: ${payload.orderName}`,
+      html: buildOrderEmailHtml(payload),
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Resend istegi basarisiz: ${response.status} ${errorText}`);
+    throw new Error(
+      `Resend-Anfrage fehlgeschlagen: ${response.status} ${errorText}`,
+    );
   }
 }
 
@@ -152,7 +188,7 @@ export async function createOrder(formData: FormData) {
   const validationResult = orderSchema.safeParse(submittedValues);
 
   if (!validationResult.success) {
-    throw new Error('Gecersiz sipariş form verisi');
+    throw new Error('Ungültige Bestellformular-Daten');
   }
 
   const orderId = Date.now();
@@ -175,7 +211,6 @@ export async function createOrder(formData: FormData) {
     await sendResendEmail({
       action: 'created',
       orderName: result.orderName,
-      orderId: result.orderId,
       createrName: result.createrName,
       createrEmail: result.createrEmail,
       createrPhone: result.createrPhone,
@@ -183,7 +218,7 @@ export async function createOrder(formData: FormData) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend bildirimi basarisiz:', error);
+    console.error('Resend-Benachrichtigung fehlgeschlagen:', error);
   }
 
   return result;
@@ -197,7 +232,7 @@ export async function updateOrder(formData: FormData) {
   const validationResult = orderSchema.safeParse(submittedValues);
 
   if (!validationResult.success) {
-    throw new Error('Gecersiz sipariş form verisi');
+    throw new Error('Ungültige Bestellformular-Daten');
   }
 
   const orderName = formData.get('orderName') as string;
@@ -218,7 +253,6 @@ export async function updateOrder(formData: FormData) {
     await sendResendEmail({
       action: 'updated',
       orderName: result.orderName,
-      orderId: result.orderId,
       createrName: result.createrName,
       createrEmail: result.createrEmail,
       createrPhone: result.createrPhone,
@@ -226,7 +260,7 @@ export async function updateOrder(formData: FormData) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend bildirimi basarisiz:', error);
+    console.error('Resend-Benachrichtigung fehlgeschlagen:', error);
   }
 
   return result;
@@ -237,7 +271,7 @@ export async function updateOrder(formData: FormData) {
  */
 export async function deleteOrder(id: string) {
   if (!id) {
-    throw new Error('Silme islemi icin sipariş kimliği gereklidir');
+    throw new Error('Löschvorgang erfordert eine Bestell-ID');
   }
 
   const places = await prisma.orderProduct.findMany({
@@ -298,7 +332,6 @@ export async function deleteOrder(id: string) {
     await sendResendEmail({
       action: 'deleted',
       orderName: result.orderName,
-      orderId: result.orderId,
       createrName: result.createrName,
       createrEmail: result.createrEmail,
       createrPhone: result.createrPhone,
@@ -306,7 +339,7 @@ export async function deleteOrder(id: string) {
       totalPrice: result.totalPrice,
     });
   } catch (error) {
-    console.error('Resend bildirimi basarisiz:', error);
+    console.error('Resend-Benachrichtigung fehlgeschlagen:', error);
   }
   return result;
 }
@@ -316,7 +349,7 @@ export async function deleteOrder(id: string) {
  */
 export async function finalizeOrder(id: string) {
   if (!id) {
-    throw new Error('Tamamlama islemi icin sipariş kimliği gereklidir');
+    throw new Error('Abschlussvorgang erfordert eine Bestell-ID');
   }
 
   const order = await prisma.order.findUnique({
@@ -340,15 +373,19 @@ export async function finalizeOrder(id: string) {
   });
 
   if (!order) {
-    throw new Error('Sipariş bulunamadı');
+    throw new Error('Bestellung nicht gefunden');
   }
 
+  const user = await prisma.user.findFirst({});
+
+  const recipients = [order.createrEmail, user?.email].filter(
+    (email): email is string => !!email,
+  );
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
-  const to = order.createrEmail || process.env.RESEND_TO_EMAIL;
 
-  if (!apiKey || !from || !to) {
-    throw new Error('E-posta ayarları eksik');
+  if (!apiKey || !from || recipients.length === 0) {
+    throw new Error('E-Mail-Einstellungen fehlen');
   }
 
   const response = await fetch('https://api.resend.com/emails', {
@@ -359,16 +396,16 @@ export async function finalizeOrder(id: string) {
     },
     body: JSON.stringify({
       from,
-      to: [to],
-      subject: `Sipariş tamamlandı: ${order.orderName}`,
-      text: buildCompletedOrderEmailText(order),
+      to: recipients,
+      subject: `Bestellung abgeschlossen: ${order.orderName}`,
+      html: buildCompletedOrderEmailHtml(order),
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
-      `Son detay e-postası basarisiz: ${response.status} ${errorText}`,
+      `Letzte Detail-E-Mail fehlgeschlagen: ${response.status} ${errorText}`,
     );
   }
 
