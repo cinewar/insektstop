@@ -68,7 +68,7 @@ export function AdminProductContent({product}: AdminProductContentProps) {
           />
           <GlassyButton
             icon={EDITSVG}
-            label='Düzenle'
+            label='Bearbeiten'
             iconSize={40}
             onClick={() => setShowModal(true)}
             className='gap-3 '
@@ -79,7 +79,7 @@ export function AdminProductContent({product}: AdminProductContentProps) {
         <Modal onClose={() => setShowModal(false)}>
           {({close}) => (
             <div className='relative'>
-              <h2 className='text-lg font-bold mb-2'>Ürün Düzenle</h2>
+              <h2 className='text-lg font-bold mb-2'>Produkt bearbeiten</h2>
               <ProductForm close={close} type='edit' product={product} />
             </div>
           )}
@@ -87,7 +87,7 @@ export function AdminProductContent({product}: AdminProductContentProps) {
       )}
       {showDeleteConfirmation && (
         <Confirmation
-          message='Bu ürünü silmek istediğinize emin misiniz?'
+          message='Sind Sie sicher, dass Sie dieses Produkt löschen möchten?'
           onConfirmAction={handleConfirmDelete}
           onCancelAction={() => setShowDeleteConfirmation(false)}
           isLoading={isDeleting}

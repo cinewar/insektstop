@@ -127,8 +127,8 @@ export function ProductForm({product, type, close}: ProductFormProps) {
       <FormPendingOverlay />
       {type === 'edit' && <input name='id' hidden defaultValue={product?.id} />}
       <Input
-        placeholder='Ürün adını girin'
-        label='Ürün Adı'
+        placeholder='Geben Sie den Produktnamen ein'
+        label='Produktname'
         name='name'
         value={values.name}
         onChange={handleChange('name')}
@@ -136,8 +136,8 @@ export function ProductForm({product, type, close}: ProductFormProps) {
         error={errors.name}
       />
       <Input
-        placeholder='Fiyatınızı girin'
-        label='Fiyat'
+        placeholder='Geben Sie Ihren Preis ein'
+        label='Preis'
         name='price'
         value={values.price}
         onChange={handleChange('price')}
@@ -147,19 +147,19 @@ export function ProductForm({product, type, close}: ProductFormProps) {
       {/* No hidden fields, handled in handleAction */}
 
       <Textarea
-        label='Ürün Açıklaması'
+        label='Produktbeschreibung'
         name='description'
-        placeholder='Ürün açıklamasını girin'
+        placeholder='Geben Sie die Produktbeschreibung ein'
         value={values.description}
         onChange={handleChange('description')}
         onBlur={handleBlur('description')}
         error={errors.description}
       />
       <label htmlFor='' className='-mb-2'>
-        Görsellerinizi aşağıya ekleyin (max 15)
+        Fügen Sie Ihre Bilder unten hinzu (max. 15)
       </label>
       <ImageUpload
-        label='Ürün Görselleri'
+        label='Produktbilder'
         name='images'
         uploadType='multiple'
         defaultValue={keptImageUrls}
@@ -170,7 +170,7 @@ export function ProductForm({product, type, close}: ProductFormProps) {
       />
       <FormActions
         close={close}
-        label={type === 'edit' ? 'Düzenle' : 'Oluştur'}
+        label={type === 'edit' ? 'Bearbeiten' : 'Erstellen'}
       />
     </form>
   );

@@ -260,13 +260,13 @@ export function ImageUpload({
               {
                 id: 'edit',
                 icon: EDITSVG,
-                label: preview ? 'Düzenle' : 'Ekle',
+                label: preview ? 'Bearbeiten' : 'Hinzufügen',
                 onClick: () => inputRef.current?.click(),
               },
               {
                 id: 'delete',
                 icon: TRASHSVG,
-                label: 'Sil',
+                label: 'Löschen',
                 onClick: () => {
                   if (inputRef.current) {
                     inputRef.current.value = '';
