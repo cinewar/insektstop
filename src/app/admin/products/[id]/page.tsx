@@ -12,7 +12,6 @@ export default async function AdminProduct({
   const product = await prisma.product.findFirst({
     where: {
       id: (await Promise.resolve(params)).id,
-      active: true,
     },
   });
   return (
