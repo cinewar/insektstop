@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Svg from '../components/Svg';
 import {RIGHTARROWSVG} from '../utils/svg';
 import Link from 'next/link';
-import {SearchDropdown} from '../components/SearchDropdown';
 import {prisma} from '@/lib/prisma';
 import {normalizeImageUrl} from '@/lib/image-url';
 
