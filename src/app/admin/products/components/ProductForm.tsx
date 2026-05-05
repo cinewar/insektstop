@@ -48,7 +48,7 @@ export function ProductForm({product, type, close}: ProductFormProps) {
     if (totalNewImageBytes > MAX_ACTION_PAYLOAD_BYTES) {
       notify({
         type: 'error',
-        title: 'Hata',
+        title: 'Fehler',
         message:
           'Bilddaten sind zu groß. Bitte weniger oder stärker komprimierte Bilder hochladen.',
       });
@@ -81,19 +81,27 @@ export function ProductForm({product, type, close}: ProductFormProps) {
     if (type === 'create') {
       const response = await createProduct(formData);
       if (!response.ok) {
-        notify({type: 'error', title: 'Hata', message: response.message});
+        notify({type: 'error', title: 'Fehler', message: response.message});
         close?.();
       } else {
-        notify({type: 'success', title: 'Başarılı', message: response.message});
+        notify({
+          type: 'success',
+          title: 'Erfolgreich',
+          message: response.message,
+        });
         close?.();
       }
     } else {
       const response = await updateProduct(formData);
       if (!response.ok) {
-        notify({type: 'error', title: 'Hata', message: response.message});
+        notify({type: 'error', title: 'Fehler', message: response.message});
         close?.();
       } else {
-        notify({type: 'success', title: 'Başarılı', message: response.message});
+        notify({
+          type: 'success',
+          title: 'Erfolgreich',
+          message: response.message,
+        });
         close?.();
       }
     }

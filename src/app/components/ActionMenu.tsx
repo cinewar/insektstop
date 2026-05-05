@@ -1,6 +1,7 @@
 'use client';
 
 import {ComponentType, SVGProps, useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
 import Svg from './Svg';
 import {CLOSESVG, VERTICALDOTSSVG} from '../utils/svg';
 import {GlassyButton} from './GlassyButton';
@@ -50,6 +51,7 @@ export default function ActionMenu({
   const [isClosing, setIsClosing] = useState(false);
   const [openToRight, setOpenToRight] = useState(false);
   const [openUpward, setOpenUpward] = useState(false);
+  const [panelPosition, setPanelPosition] = useState({top: 0, left: 0});
   const containerRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -61,37 +63,57 @@ export default function ActionMenu({
     const updateMenuPosition = () => {
       const container = containerRef.current;
       const panel = panelRef.current;
-      if (!container || !panel) {
+      if (!container) {
         return;
       }
       const viewportPadding = 8;
       const triggerRect = container.getBoundingClientRect();
-      const panelRect = panel.getBoundingClientRect();
-      const panelWidth = panelRect.width;
-      const panelHeight = panelRect.height;
-      const leftAlignedStartX = triggerRect.right - panelWidth;
-      setOpenToRight(leftAlignedStartX < viewportPadding);
+      const panelWidth = panel?.offsetWidth ?? 220;
+      const panelHeight = panel?.offsetHeight ?? 180;
+
+      const shouldOpenToRight =
+        triggerRect.right - panelWidth < viewportPadding;
+      setOpenToRight(shouldOpenToRight);
 
       // Upward logic
       const spaceBelow = window.innerHeight - triggerRect.bottom;
       const spaceAbove = triggerRect.top;
-      if (
+      const shouldOpenUpward =
         spaceBelow < panelHeight + viewportPadding &&
-        spaceAbove > panelHeight + viewportPadding
-      ) {
-        setOpenUpward(true);
-      } else {
-        setOpenUpward(false);
-      }
+        spaceAbove > panelHeight + viewportPadding;
+      setOpenUpward(shouldOpenUpward);
+
+      let left = shouldOpenToRight
+        ? triggerRect.left + viewportPadding
+        : triggerRect.right - panelWidth - viewportPadding;
+      let top = shouldOpenUpward
+        ? triggerRect.top - panelHeight - viewportPadding
+        : triggerRect.bottom + viewportPadding;
+
+      left = Math.min(
+        Math.max(left, viewportPadding),
+        window.innerWidth - panelWidth - viewportPadding,
+      );
+      top = Math.min(
+        Math.max(top, viewportPadding),
+        window.innerHeight - panelHeight - viewportPadding,
+      );
+
+      setPanelPosition({top, left});
     };
 
     updateMenuPosition();
     window.addEventListener('resize', updateMenuPosition);
+    window.addEventListener('scroll', updateMenuPosition, true);
+
+    const frame = requestAnimationFrame(updateMenuPosition);
 
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition, true);
     };
-  }, [isOpen]);
+  }, [isOpen, actions.length]);
 
   useEffect(() => {
     onOpenChangeAction?.(isOpen);
@@ -111,13 +133,15 @@ export default function ActionMenu({
       ? 'hidden -translate-y-2 scale-95 pointer-events-none'
       : 'hidden translate-y-2 scale-95 pointer-events-none';
 
-  const panelSideClassName = openToRight
+  const panelOriginClassName = openToRight
     ? openUpward
-      ? 'left-2 origin-bottom-left'
-      : 'left-2 origin-top-left'
+      ? 'origin-bottom-left'
+      : 'origin-top-left'
     : openUpward
-      ? 'right-2 origin-bottom-right'
-      : 'right-2 origin-top-right';
+      ? 'origin-bottom-right'
+      : 'origin-top-right';
+
+  const shouldRenderPanel = isOpen || isClosing;
 
   return (
     <div
@@ -139,40 +163,52 @@ export default function ActionMenu({
         size={triggerSize}
         className='transition-transform duration-200 active:scale-95'
       />
-      <div
-        ref={panelRef}
-        className={`flex flex-col p-1 pt-8 gap-1 absolute z-310
-        shadow-custom bg-gray backdrop-blur-sm 
-        ${isOpen ? 'animate-fade-in scale-100' : isClosing ? 'animate-fade-out scale-95' : ''} 
-        transition-all duration-200 ease-out 
-        ${openUpward ? 'bottom-0 mb-2' : 'top-0 mt-2'} rounded-2xl ${panelSideClassName} ${panelStateClassName} ${menuClassName}`}
-        style={{pointerEvents: isOpen || isClosing ? 'auto' : 'none'}}
-      >
-        <Svg
-          onClick={() => setIsOpen(false)}
-          icon={CLOSESVG}
-          size={28}
-          className='absolute top-1 right-1 transition-transform text-mid-magenta duration-200 active:scale-95'
-        />
-        {actions.map((action) => (
-          <GlassyButton
-            label={action.label}
-            key={action.id}
-            icon={action.icon}
-            iconSize={action.iconSize ?? triggerSize}
-            className={`gap-3 ${action.className}`}
-            type='button'
-            onClick={() => {
-              action.onClick?.();
-
-              if (action.closeOnClick ?? true) {
-                setIsOpen(false);
-              }
+      {shouldRenderPanel &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className={`flex flex-col p-1 pt-8 gap-1 fixed z-1000
+            shadow-custom bg-gray backdrop-blur-sm 
+            ${isOpen ? 'animate-fade-in scale-100' : isClosing ? 'animate-fade-out scale-95' : ''} 
+            transition-all duration-200 ease-out rounded-2xl ${panelOriginClassName} ${panelStateClassName} ${menuClassName}`}
+            style={{
+              top: panelPosition.top,
+              left: panelPosition.left,
+              pointerEvents: isOpen || isClosing ? 'auto' : 'none',
             }}
-            {...action.buttonProps}
-          />
-        ))}
-      </div>
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Svg
+              onClick={() => {
+                setIsClosing(true);
+                setIsOpen(false);
+              }}
+              icon={CLOSESVG}
+              size={28}
+              className='absolute top-1 right-1 transition-transform text-mid-magenta duration-200 active:scale-95'
+            />
+            {actions.map((action) => (
+              <GlassyButton
+                label={action.label}
+                key={action.id}
+                icon={action.icon}
+                iconSize={action.iconSize ?? triggerSize}
+                className={`gap-3 ${action.className}`}
+                type='button'
+                onClick={() => {
+                  action.onClick?.();
+
+                  if (action.closeOnClick ?? true) {
+                    setIsClosing(true);
+                    setIsOpen(false);
+                  }
+                }}
+                {...action.buttonProps}
+              />
+            ))}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

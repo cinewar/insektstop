@@ -28,13 +28,13 @@ export function AdminProductContent({product}: AdminProductContentProps) {
     const response = await deleteProduct(product.id);
     if (!response.ok) {
       notify({
-        title: 'Ürün silinirken bir hata oluştu',
+        title: 'Fehler beim Löschen des Produkts',
         message: response.message,
         type: 'error',
       });
     } else {
       notify({
-        title: 'Ürün başarıyla silindi',
+        title: 'Das Produkt wurde erfolgreich gelöscht.',
         message: response.message,
         type: 'success',
       });
