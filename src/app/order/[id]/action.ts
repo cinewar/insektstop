@@ -546,7 +546,10 @@ export async function sendMessageToOrder(formData: FormData) {
  * Marks all unread messages in an order as read and broadcasts those ids
  * so connected clients can update UI state instantly.
  */
-export async function markOrderMessagesAsRead(orderId: string) {
+export async function markOrderMessagesAsRead(
+  orderId: string,
+  creator: 'Admin' | 'Customer',
+) {
   try {
     if (!orderId) {
       return {ok: false, message: 'Bestell-ID ist erforderlich'} as const;
@@ -556,6 +559,7 @@ export async function markOrderMessagesAsRead(orderId: string) {
       where: {
         orderRefId: orderId,
         read: false,
+        creator,
       },
       select: {
         id: true,

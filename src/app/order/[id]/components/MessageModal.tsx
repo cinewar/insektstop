@@ -184,41 +184,31 @@ export function MessageModal({
     });
   }, [messageList.length]);
 
-  /** Marks only the other party's unread messages as read when the modal is open. */
-  useEffect(() => {
-    if (isClosing || !orderId) return;
-
-    // Determine which messages to mark as read
-    const targetCreator = type === 'admin' ? 'Customer' : 'Admin';
-    const unreadIds = messageList
-      .filter((msg) => !msg.read && msg.creator === targetCreator)
-      .map((msg) => msg.id);
-    if (unreadIds.length === 0) return;
-
-    const markMessagesAsRead = async () => {
-      // Custom API to mark only specific messages as read
-      const result = await markOrderMessagesAsRead(orderId);
-      if (!result.ok) return;
-      setMessageList((prev) =>
-        prev.map((message) =>
-          unreadIds.includes(message.id) ? {...message, read: true} : message,
-        ),
-      );
-    };
-
-    void markMessagesAsRead();
-  }, [isClosing, orderId, messageList, type]);
+  // Determine which creator's messages this viewer should mark as read
+  const targetCreator = type === 'admin' ? 'Customer' : 'Admin';
 
   useEffect(() => {
     if (!orderId) {
       return;
     }
+    void syncMessagesFromDb();
+    // Polling removed. Only SSE triggers refresh now.
+    return () => {};
+  }, [orderId, syncMessagesFromDb]);
+
+  // Mark the other party's unread messages as read whenever the modal is open
+  // and new unread messages exist (including on initial open and SSE updates).
+  useEffect(() => {
+    if (!orderId || isClosing) return;
+
+    const hasUnread = messageList.some(
+      (msg) => !msg.read && msg.creator === targetCreator,
+    );
+    if (!hasUnread) return;
 
     const syncReadState = async () => {
-      const result = await markOrderMessagesAsRead(orderId);
-      if (!result.ok || result.data.length === 0) {
-        return;
-      }
+      const result = await markOrderMessagesAsRead(orderId, targetCreator);
+      if (!result.ok || result.data.length === 0) return;
 
       const ids = new Set(result.data);
       setMessageList((prev) =>
@@ -226,18 +216,10 @@ export function MessageModal({
           ids.has(message.id) ? {...message, read: true} : message,
         ),
       );
-
-      // Force local unread reset so badge clears even if SSE delivery is delayed.
-      setMessageList((prev) =>
-        prev.map((message) => ({...message, read: true})),
-      );
     };
 
     void syncReadState();
-    void syncMessagesFromDb();
-    // Polling removed. Only SSE triggers refresh now.
-    return () => {};
-  }, [orderId, onMessagesChange, syncMessagesFromDb]);
+  }, [orderId, isClosing, targetCreator, messageList]);
 
   /** Sends text/image message via server action and appends new local message. */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

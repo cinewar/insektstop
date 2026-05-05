@@ -228,5 +228,6 @@ export async function updateUser(formData: FormData) {
   return {
     ok: true,
     message: 'Benutzer erfolgreich aktualisiert',
+    user: result,
   } as const;
 }

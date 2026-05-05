@@ -54,7 +54,9 @@ export function AdminProductContent({product}: AdminProductContentProps) {
           £{product.price}
         </div>
         <div className='p-2 -mt-6'>
-          <p className='text-base leading-tight'>{product.description}</p>
+          <p className='text-base sm:text-lg leading-tight'>
+            {product.description}
+          </p>
         </div>
         <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit self-end mb-8 mt-6 mr-2'>
           <GlassyButton

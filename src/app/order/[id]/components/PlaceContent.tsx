@@ -28,7 +28,7 @@ export function PlaceContent({orderId, messages}: PlaceContentProps) {
   const [messageList, setMessageList] = useState<Message[]>(messages);
 
   const unreadMessageCount = messageList.filter(
-    (message) => !message.read,
+    (message) => !message.read && message.creator === 'Admin',
   ).length;
 
   function handleOpenMessages() {

@@ -13,6 +13,7 @@ import {getUserFormValues, UserErrors, UserField, userSchema} from '../schema';
 import {Textarea} from '@/app/components/Textarea';
 import {FormActions} from '@/app/components/FormActions';
 import {ImageUpload} from '@/app/components/ImageUpload';
+import {login} from '@/app/action';
 
 interface UserProps {
   user: UserType;
@@ -126,6 +127,9 @@ export function User({user}: UserProps) {
       title: `Benutzer erfolgreich aktualisiert`,
       message: 'Benutzerdetails wurden erfolgreich gespeichert.',
     });
+    if (result.user.email !== user.email) {
+      await logout();
+    }
   }
 
   /**

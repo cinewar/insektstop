@@ -18,7 +18,7 @@ export default async function AdminProduct({
   return (
     <>
       <header
-        className='bg-secondary/80 flex gap-4 max-w-120 shadow-lg
+        className='bg-secondary/80 flex gap-4 shadow-lg
                 justify-between items-center sticky top-0 w-full p-2 z-30'
       >
         <div
@@ -34,8 +34,10 @@ export default async function AdminProduct({
           </Link>
         </div>
         <div className='flex flex-col'>
-          <span className='text-sm text-end text-tertiary mr-1'>Product</span>
-          <span className='bg-gray text-secondary rounded-full p-1 px-2'>
+          <span className='text-sm sm:text-base text-end text-tertiary mr-1'>
+            Produkt
+          </span>
+          <span className='bg-gray sm:text-lg sm:font-semibold text-secondary rounded-full p-1 px-2'>
             {product?.name}
           </span>
         </div>

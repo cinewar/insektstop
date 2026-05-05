@@ -43,12 +43,38 @@ export function Cards({products}: CardsProps) {
     return () => cancelAnimationFrame(frameId);
   }, []);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (event: WheelEvent) => {
+      const hasHorizontalOverflow = el.scrollWidth > el.clientWidth;
+      const horizontalDelta =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY;
+
+      if (hasHorizontalOverflow && horizontalDelta !== 0) {
+        el.scrollLeft += horizontalDelta;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    el.addEventListener('wheel', onWheel, {passive: false});
+
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, []);
+
   return (
     <div className='relative w-full overflow-hidden'>
       <div
         ref={scrollRef}
         onScroll={updateGlowVisibility}
-        className='flex gap-3 w-full py-4 px-2 overflow-auto no-scrollbar'
+        className='flex gap-3 w-full py-4 px-2 overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none touch-pan-x no-scrollbar'
       >
         {products.map((product) => (
           <Link
