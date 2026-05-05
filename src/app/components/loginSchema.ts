@@ -1,8 +1,8 @@
 import {z} from 'zod';
 
 export const loginSchema = z.object({
-  email: z.string().email('Geçerli bir e-posta adresi girin'),
-  password: z.string().min(1, 'Şifre gereklidir'),
+  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
+  password: z.string().min(1, 'Passwort ist erforderlich.'),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;

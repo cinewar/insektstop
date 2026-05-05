@@ -1,20 +1,22 @@
 import {z} from 'zod';
 
 export const userSchema = z.object({
-  id: z.string().min(1, 'Kullanıcı ID gerekli'),
-  name: z.string().min(2, 'Ad en az 2 karakter olmalidir'),
-  email: z.string().email('Geçerli bir e-posta adresi girin'),
+  id: z.string().min(1, 'Benutzer-ID erforderlich'),
+  name: z.string().min(2, 'Name muss mindestens 2 Zeichen lang sein'),
+  email: z.string().email('Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
   phone: z
     .string()
-    .regex(/^\d+$/, 'Telefon numarası sadece rakamlardan olusmalidir')
-    .min(6, 'Geçerli bir telefon numarası girin'),
-  address: z.string().min(5, 'Adres en az 5 karakter olmalidir'),
+    .regex(/^\d+$/, 'Telefonnummer darf nur aus Ziffern bestehen')
+    .min(6, 'Bitte geben Sie eine gültige Telefonnummer ein'),
+  address: z.string().min(5, 'Adresse muss mindestens 5 Zeichen lang sein'),
   facebook: z.string().optional(),
   instagram: z.string().optional(),
   youtube: z.string().optional(),
-  heroText: z.string().min(10, 'Hero metni en az 10 karakter olmalidir'),
+  heroText: z
+    .string()
+    .min(10, 'Hero-Text muss mindestens 10 Zeichen lang sein'),
   heroImage: z.instanceof(File),
-  about: z.string().min(10, 'Hakkında en az 10 karakter olmalidir'),
+  about: z.string().min(10, 'Über mich muss mindestens 10 Zeichen lang sein'),
 });
 
 /**
