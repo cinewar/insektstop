@@ -1,12 +1,7 @@
 'use server';
 
 import {prisma} from '@/lib/prisma';
-import {
-  getProductFormValues,
-  ProductErrors,
-  ProductField,
-  productSchema,
-} from './[id]/schema';
+import {getProductFormValues, productSchema} from './[id]/schema';
 
 import {
   DeleteObjectCommand,
@@ -48,11 +43,11 @@ function getR2Config() {
     process.env.CLOUDFLARE_R2_PUBLIC_URL ?? process.env.R2_PUBLIC_BASE_URL;
 
   if (!accountId || !accessKeyId || !secretAccessKey || !bucketName) {
-    throw new Error('R2 environment variables are missing');
+    throw new Error('Die R2-Umgebungsvariablen fehlen');
   }
 
   if (!publicBaseUrl) {
-    throw new Error('R2 public URL is missing');
+    throw new Error('Die R2 public URL fehlt');
   }
 
   return {
@@ -154,7 +149,7 @@ async function deleteProductImagesFromR2(imageUrls: string[]) {
     } catch (err) {
       return err instanceof Error
         ? err
-        : new Error('Unknown error during R2 deletion');
+        : new Error('Unbekannter Fehler beim Löschen in R2');
     }
   }
 }
@@ -176,7 +171,7 @@ export async function createProduct(data: FormData) {
     if (uploadedImages.length !== submittedValues.images.length) {
       return {
         ok: false,
-        message: 'Görseller yüklenirken bir hata oluştu',
+        message: 'Fehler beim Hochladen der Bilder',
       } as const;
     }
   }
@@ -194,7 +189,7 @@ export async function createProduct(data: FormData) {
   if (!result) {
     return {
       ok: false,
-      message: 'Ürün oluşturulurken bir hata oluştu',
+      message: 'Fehler beim Erstellen des Produkts',
     } as const;
   }
 
@@ -202,7 +197,7 @@ export async function createProduct(data: FormData) {
 
   return {
     ok: true,
-    message: 'Ürün başarıyla oluşturuldu',
+    message: 'Produkt erfolgreich erstellt',
   } as const;
 }
 
@@ -211,7 +206,7 @@ export async function updateProduct(data: FormData) {
   if (typeof productId !== 'string' || !productId) {
     return {
       ok: false,
-      message: 'Geçersiz ürün ID',
+      message: 'Ungültige Produkt-ID',
     } as const;
   }
   const submittedValues = getProductFormValues(data);
@@ -250,7 +245,7 @@ export async function updateProduct(data: FormData) {
     if (uploadedImages.length !== submittedValues.images.length) {
       return {
         ok: false,
-        message: 'Görseller yüklenirken bir hata oluştu',
+        message: 'Fehler beim Hochladen der Bilder',
       } as const;
     }
   }
@@ -279,7 +274,7 @@ export async function updateProduct(data: FormData) {
   if (!result) {
     return {
       ok: false,
-      message: 'Ürün güncellenirken bir hata oluştu',
+      message: 'Fehler beim Aktualisieren des Produkts',
     } as const;
   }
 
@@ -287,7 +282,7 @@ export async function updateProduct(data: FormData) {
 
   return {
     ok: true,
-    message: 'Ürün başarıyla güncellendi',
+    message: 'Produkt erfolgreich aktualisiert',
   } as const;
 }
 
@@ -295,34 +290,21 @@ export async function deleteProduct(productId: string) {
   if (!productId) {
     return {
       ok: false,
-      message: 'Geçersiz ürün ID',
+      message: 'Ungültige Produkt-ID',
     } as const;
   }
 
-  // Fetch current product images from DB
-  const existingProduct = await prisma.product.findUnique({
+  const result = await prisma.product.update({
     where: {id: productId},
-    select: {images: true},
-  });
-  const imagesToDelete = existingProduct?.images || [];
-  const response = await deleteProductImagesFromR2(
-    imagesToDelete.map((img) => img.img),
-  );
-  if (response instanceof Error) {
-    return {
-      ok: false,
-      message: 'Ürün görselleri silinirken bir hata oluştu',
-    } as const;
-  }
-
-  const result = await prisma.product.delete({
-    where: {id: productId},
+    data: {
+      active: false,
+    },
   });
 
   if (!result) {
     return {
       ok: false,
-      message: 'Ürün silinirken bir hata oluştu',
+      message: 'Fehler beim Löschen des Produkts',
     } as const;
   }
 
@@ -330,6 +312,6 @@ export async function deleteProduct(productId: string) {
 
   return {
     ok: true,
-    message: 'Ürün başarıyla silindi',
+    message: 'Produkt erfolgreich gelöscht',
   } as const;
 }

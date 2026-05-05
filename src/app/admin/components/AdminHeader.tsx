@@ -1,8 +1,7 @@
 'use client';
 
 import {GlassyButton} from '@/app/components/GlassyButton';
-import Svg from '@/app/components/Svg';
-import {HOMESVG, ORDERSVG, PRODUCTSSVG, USERSVG} from '@/app/utils/svg';
+import {ORDERSVG, PRODUCTSSVG, USERSVG} from '@/app/utils/svg';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
@@ -10,8 +9,8 @@ export function AdminHeader() {
   const pathName = usePathname();
   const adminLinks = [
     {href: '/admin', label: 'Admin', icon: USERSVG},
-    {href: '/admin/orders', label: 'Siparişler', icon: ORDERSVG},
-    {href: '/admin/products', label: 'Ürünler', icon: PRODUCTSSVG},
+    {href: '/admin/orders', label: 'Bestellungen', icon: ORDERSVG},
+    {href: '/admin/products', label: 'Produkte', icon: PRODUCTSSVG},
   ];
   return (
     <header
