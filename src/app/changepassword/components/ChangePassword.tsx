@@ -66,15 +66,16 @@ export function ChangePassword() {
     if (result.success) {
       notify({
         type: 'success',
-        title: 'Şifre Değiştirildi',
-        message: 'Şifreniz başarıyla değiştirildi. Lütfen tekrar giriş yapın.',
+        title: 'Passwort geändert',
+        message:
+          'Ihr Passwort wurde erfolgreich geändert. Bitte melden Sie sich erneut an.',
       });
       router.push('/');
     } else {
       notify({
         type: 'error',
-        title: 'Hata',
-        message: 'Bir hata oluştu. Lütfen tekrar deneyin.',
+        title: 'Fehler',
+        message: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
       });
     }
   }
@@ -86,8 +87,8 @@ export function ChangePassword() {
       <FormPendingOverlay />
 
       <Input
-        placeholder='E-posta adresinizi girin'
-        label='E-posta'
+        placeholder='E-Mail-Adresse eingeben'
+        label='E-Mail'
         name='email'
         value={values.email}
         onChange={handleChange('email')}
@@ -95,8 +96,8 @@ export function ChangePassword() {
         error={errors.email}
       />
       <Input
-        placeholder='Aktivasyon kodunu girin'
-        label='Aktivasyon Kodu'
+        placeholder='Aktivierungscode eingeben'
+        label='Aktivierungscode'
         name='verificationCode'
         value={values.verificationCode}
         onChange={handleChange('verificationCode')}
@@ -105,8 +106,8 @@ export function ChangePassword() {
       />
       <Input
         type='password'
-        placeholder='Yeni şifrenizi girin'
-        label='Yeni Şifre'
+        placeholder='Neues Passwort eingeben'
+        label='Neues Passwort'
         name='newPassword'
         value={values.newPassword}
         onChange={handleChange('newPassword')}
@@ -115,8 +116,8 @@ export function ChangePassword() {
       />
       <Input
         type='password'
-        placeholder='Şifrenizi tekrar girin'
-        label='Şifreyi Onayla'
+        placeholder='Neues Passwort erneut eingeben'
+        label='Neues Passwort bestätigen'
         name='confirmPassword'
         value={values.confirmPassword}
         onChange={handleChange('confirmPassword')}
@@ -124,7 +125,7 @@ export function ChangePassword() {
         error={errors.confirmPassword}
       />
 
-      <FormActions label='Şifreyi Değiştir' />
+      <FormActions label='Passwort ändern' />
     </form>
   );
 }

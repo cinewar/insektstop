@@ -100,16 +100,17 @@ export default function LayoutClientWrapper({
     if (result.success) {
       notify({
         type: 'success',
-        title: 'Giriş Başarılı',
-        message: 'Başarıyla giriş yaptınız.',
+        title: 'Erfolgreich eingeloggt',
+        message: 'Erfolgreich eingeloggt.',
       });
       router.push('/admin');
       closeLogin();
     } else {
       notify({
         type: 'error',
-        title: 'Giriş Başarısız',
-        message: 'Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.',
+        title: 'Fehler beim Einloggen',
+        message:
+          'Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut.',
       });
       closeLogin();
     }
@@ -180,17 +181,17 @@ export default function LayoutClientWrapper({
     if (result.success) {
       notify({
         type: 'success',
-        title: 'Şifre Sıfırlama Talebi Gönderildi',
+        title: 'Passwort-Zurücksetzungsanfrage gesendet',
         message:
-          'Eğer bu e-posta adresi kayıtlıysa, şifre sıfırlama talimatları gönderilecektir.',
+          'Wenn diese E-Mail-Adresse registriert ist, werden Anweisungen zum Zurücksetzen des Passworts gesendet.',
       });
       closeForgotPassword();
       router.push('/changepassword');
     } else {
       notify({
         type: 'error',
-        title: 'Şifre Sıfırlama Talebi Gönderilemedi',
-        message: 'Bir hata oluştu. Lütfen tekrar deneyin.',
+        title: 'Passwort-Zurücksetzungsanfrage konnte nicht gesendet werden',
+        message: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
       });
       closeForgotPassword();
     }
@@ -203,13 +204,13 @@ export default function LayoutClientWrapper({
       {showLogin && (
         <Modal onClose={closeLogin}>
           <div className='relative'>
-            <h2 className='text-lg font-bold mb-2'>Giriş Yap</h2>
+            <h2 className='text-lg font-bold mb-2'>Einloggen</h2>
             <form className='flex flex-col gap-1' action={handleAction}>
               <FormPendingOverlay />
 
               <Input
-                placeholder='E-posta adresinizi girin'
-                label='E-posta'
+                placeholder='E-Mail-Adresse eingeben'
+                label='E-Mail'
                 name='email'
                 value={values.email}
                 onChange={handleChange('email')}
@@ -218,8 +219,8 @@ export default function LayoutClientWrapper({
               />
               <Input
                 type='password'
-                placeholder='Şifrenizi girin'
-                label='Şifre'
+                placeholder='Passwort eingeben'
+                label='Passwort'
                 name='password'
                 value={values.password}
                 onChange={handleChange('password')}
@@ -231,9 +232,9 @@ export default function LayoutClientWrapper({
                 className='text-tertiary self-start'
                 onClick={openForgotPassword}
               >
-                Şifremi Unuttum
+                Passwort vergessen
               </button>
-              <FormActions login close={closeLogin} label='Giriş' />
+              <FormActions login close={closeLogin} label='Einloggen' />
             </form>
           </div>
         </Modal>
@@ -242,20 +243,20 @@ export default function LayoutClientWrapper({
       {forgotPassword && (
         <Modal onClose={closeForgotPassword}>
           <div className='relative'>
-            <h2 className='text-lg font-bold mb-2'>Şifremi Unuttum</h2>
+            <h2 className='text-lg font-bold mb-2'>Passwort vergessen</h2>
             <form className='flex flex-col gap-1' action={handleForgotPassword}>
               <FormPendingOverlay />
 
               <Input
-                placeholder='E-posta adresinizi girin'
-                label='E-posta'
+                placeholder='E-Mail-Adresse eingeben'
+                label='E-Mail'
                 name='email'
                 value={forgotValues.email}
                 onChange={handleForgotChange('email')}
                 onBlur={handleForgotBlur('email')}
                 error={forgotErrors.email}
               />
-              <FormActions close={closeForgotPassword} label='Gönder' />
+              <FormActions close={closeForgotPassword} label='Senden' />
             </form>
           </div>
         </Modal>

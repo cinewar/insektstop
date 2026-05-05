@@ -1,10 +1,14 @@
 import {z} from 'zod';
 
 export const changePasswordSchema = z.object({
-  email: z.string().email('Geçerli bir e-posta adresi girin'),
-  verificationCode: z.string().min(1, 'Doğrulama kodu gereklidir'),
-  newPassword: z.string().min(6, 'Şifre en az 6 karakter olmalıdır'),
-  confirmPassword: z.string().min(6, 'Şifre en az 6 karakter olmalıdır'),
+  email: z.string().email('Geben Sie eine gültige E-Mail-Adresse ein'),
+  verificationCode: z.string().min(1, 'Verifizierungscode ist erforderlich'),
+  newPassword: z
+    .string()
+    .min(6, 'Das Passwort muss mindestens 6 Zeichen lang sein'),
+  confirmPassword: z
+    .string()
+    .min(6, 'Das Passwort muss mindestens 6 Zeichen lang sein'),
 });
 
 /**

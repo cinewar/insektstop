@@ -2,7 +2,6 @@
 import {prisma} from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import {z} from 'zod';
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import {cookies} from 'next/headers';
 
