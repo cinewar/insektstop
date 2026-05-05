@@ -61,7 +61,7 @@ export function AdminProductContent({product}: AdminProductContentProps) {
         <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit self-end mb-8 mt-6 mr-2'>
           <GlassyButton
             icon={CLOSESVG}
-            label='Sil'
+            label='löschen'
             iconSize={32}
             onClick={() => setShowDeleteConfirmation(true)}
             className='gap-3 [&>svg]:stroke-red'
