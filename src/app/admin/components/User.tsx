@@ -26,6 +26,7 @@ export function User({user}: UserProps) {
   console.log('User component rendered with user:', user); // Debug log to check user data
   const [openModal, setOpenModal] = useState(false);
   const [errors, setErrors] = useState<UserErrors>({});
+  const [heroImageDeleted, setHeroImageDeleted] = useState(false);
   const [values, setValues] = useState({
     name: user.name || '',
     email: user.email || '',
@@ -122,8 +123,8 @@ export function User({user}: UserProps) {
     setOpenModal(false);
     notify({
       type: 'success',
-      title: `Kullanıcı başarıyla güncellendi`,
-      message: 'Kullanıcı detaylari başarıyla kaydedildi.',
+      title: `Benutzer erfolgreich aktualisiert`,
+      message: 'Benutzerdetails wurden erfolgreich gespeichert.',
     });
   }
 
@@ -132,12 +133,19 @@ export function User({user}: UserProps) {
    * Usage: Call markImageSlotRemoved(...) where this declaration is needed in the current module flow.
    */
   function markImageSlotRemoved() {
-    setValues((prev) => {
-      return {
-        ...prev,
-        heroImage: undefined,
-      };
-    });
+    setValues((prev) => ({
+      ...prev,
+      heroImage: undefined,
+    }));
+    setHeroImageDeleted(true);
+  }
+
+  function markImageSlotReplaced() {
+    setValues((prev) => ({
+      ...prev,
+      heroImage: undefined,
+    }));
+    setHeroImageDeleted(false);
   }
 
   return (
@@ -148,38 +156,36 @@ export function User({user}: UserProps) {
               rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'
         >
           <div>
-            <div className='text-sm text-tertiary'>Name & Surname:</div>
+            <div className='text-sm text-tertiary'>Vorname & Nachname:</div>
             <div>{user.name}</div>
           </div>
           <div>
-            <div className='text-sm text-tertiary'>Phone Number:</div>
+            <div className='text-sm text-tertiary'>Telefonnummer:</div>
             <div>{user.phone}</div>
           </div>
           <div>
-            <div className='text-sm text-tertiary'>Address:</div>
+            <div className='text-sm text-tertiary'>Adresse:</div>
             <div>{user.address}</div>
           </div>
           <div>
-            <div className='text-sm text-tertiary'>Email:</div>
+            <div className='text-sm text-tertiary'>E-Mail:</div>
             <div>{user.email}</div>
           </div>
-          <div className='flex flex-col gap-2 bg-gray p-2 rounded-full mt-4'>
-            <div className='flex gap-2 justify-between'>
-              <GlassyButton
-                icon={EDITSVG}
-                label='Düzenle'
-                iconSize={40}
-                onClick={() => setOpenModal(true)}
-                className='flex-1'
-              />
-              <GlassyButton
-                icon={LOGOUTSVG}
-                label='Çıkış Yap'
-                iconSize={40}
-                onClick={handleLogout}
-                className='flex-1'
-              />
-            </div>
+          <div className='flex sm:max-w-fit sm:self-end gap-2 bg-gray p-2 rounded-full mt-4'>
+            <GlassyButton
+              icon={EDITSVG}
+              label='Bearbeiten'
+              iconSize={40}
+              onClick={() => setOpenModal(true)}
+              className='flex-1 sm:flex-initial'
+            />
+            <GlassyButton
+              icon={LOGOUTSVG}
+              label='Abmelden'
+              iconSize={40}
+              onClick={handleLogout}
+              className='flex-1 sm:flex-initial'
+            />
           </div>
         </div>
       </div>
@@ -187,13 +193,13 @@ export function User({user}: UserProps) {
         <Modal overFlow onClose={() => setOpenModal(false)}>
           {({close}) => (
             <div className='relative'>
-              <h2 className='text-lg font-bold mb-2'>Admin Düzenle</h2>
+              <h2 className='text-lg font-bold mb-2'>Admin Bearbeiten</h2>
               <form className='flex flex-col gap-1' action={handleAction}>
                 <FormPendingOverlay />
                 <input name='id' hidden defaultValue={user.id} />
                 <Input
-                  placeholder='Adinizi ve soyadınızi girin'
-                  label='Ad Soyad'
+                  placeholder='Geben Sie Ihren Vor- und Nachnamen ein'
+                  label='Vorname & Nachname'
                   name='name'
                   value={values.name}
                   onChange={handleChange('name')}
@@ -201,8 +207,8 @@ export function User({user}: UserProps) {
                   error={errors.name}
                 />
                 <Input
-                  placeholder='E-posta adresinizi girin'
-                  label='E-posta'
+                  placeholder='Geben Sie Ihre E-Mail-Adresse ein'
+                  label='E-Mail'
                   name='email'
                   value={values.email}
                   onChange={handleChange('email')}
@@ -210,8 +216,8 @@ export function User({user}: UserProps) {
                   error={errors.email}
                 />
                 <Input
-                  placeholder='Telefon numaranizi girin'
-                  label='Telefon Numarası'
+                  placeholder='Geben Sie Ihre Telefonnummer ein'
+                  label='Telefonnummer'
                   name='phone'
                   inputMode='numeric'
                   pattern='[0-9]*'
@@ -222,7 +228,7 @@ export function User({user}: UserProps) {
                   error={errors.phone}
                 />
                 <Input
-                  placeholder='Facebookunuzu girin'
+                  placeholder='Geben Sie Ihren Facebook-Link ein'
                   label='Facebook'
                   name='facebook'
                   value={values.facebook}
@@ -231,7 +237,7 @@ export function User({user}: UserProps) {
                   error={errors.facebook}
                 />
                 <Input
-                  placeholder='Instagramınızı girin'
+                  placeholder='Geben Sie Ihren Instagram-Link ein'
                   label='Instagram'
                   name='instagram'
                   value={values.instagram}
@@ -240,7 +246,7 @@ export function User({user}: UserProps) {
                   error={errors.instagram}
                 />
                 <Input
-                  placeholder='YouTube kanalınızı girin'
+                  placeholder='Geben Sie Ihren YouTube-Link ein'
                   label='YouTube'
                   name='youtube'
                   value={values.youtube}
@@ -249,8 +255,8 @@ export function User({user}: UserProps) {
                   error={errors.youtube}
                 />
                 <Input
-                  placeholder='Anasayfa hero metnini girin'
-                  label='Hero Metni'
+                  placeholder='Geben Sie Ihren Hero-Text ein'
+                  label='Hero-Text'
                   name='heroText'
                   value={values.heroText}
                   onChange={handleChange('heroText')}
@@ -258,42 +264,49 @@ export function User({user}: UserProps) {
                   error={errors.heroText}
                 />
                 <Textarea
-                  label='Hakkında'
+                  label='Über mich'
                   name='about'
-                  placeholder='Hakkında bilgi girin'
+                  placeholder='Geben Sie Informationen über sich ein'
                   value={values.about}
                   onChange={handleChange('about')}
                   onBlur={handleBlur('about')}
                   error={errors.about}
                 />
                 <label htmlFor='' className='-mb-2'>
-                  Görsellerinizi aşağıya ekleyin
+                  Fügen Sie Ihre Bilder unten hinzu
                 </label>
                 <div
                   className='flex self-end gap-1 w-40 rounded-sm border-2 border-gray-300 p-1 transition-all duration-150
                         focus-within:border-primary/50 focus-within:outline-0'
                 >
+                  <input
+                    type='hidden'
+                    name='heroImageDeleted'
+                    value={heroImageDeleted ? 'true' : 'false'}
+                  />
                   <ImageUpload
                     defaultValue={
                       values.heroImage
                         ? URL.createObjectURL(values.heroImage)
-                        : user.heroImage || undefined
+                        : heroImageDeleted
+                          ? undefined
+                          : user.heroImage || undefined
                     }
                     name='heroImage'
                     onDeleteAction={() => markImageSlotRemoved()}
-                    onFileSelectedAction={() => markImageSlotRemoved()}
+                    onFileSelectedAction={() => markImageSlotReplaced()}
                   />
                 </div>
                 <Textarea
-                  label='Adres'
+                  label='Adresse'
                   name='address'
-                  placeholder='Adresinizi girin'
+                  placeholder='Geben Sie Ihre Adresse ein'
                   value={values.address}
                   onChange={handleChange('address')}
                   onBlur={handleBlur('address')}
                   error={errors.address}
                 />
-                <FormActions close={close} label='Düzenle' />
+                <FormActions close={close} label='Bearbeiten' />
               </form>
             </div>
           )}

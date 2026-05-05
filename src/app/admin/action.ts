@@ -45,11 +45,11 @@ function getR2Config() {
     process.env.CLOUDFLARE_R2_PUBLIC_URL ?? process.env.R2_PUBLIC_BASE_URL;
 
   if (!accountId || !accessKeyId || !secretAccessKey || !bucketName) {
-    throw new Error('R2 environment variables are missing');
+    throw new Error('R2-Umgebungsvariablen fehlen');
   }
 
   if (!publicBaseUrl) {
-    throw new Error('R2 public URL is missing');
+    throw new Error('R2 öffentliche URL fehlt');
   }
 
   return {
@@ -84,7 +84,7 @@ function getR2Client() {
 export async function uploadHeroImagesToR2(
   file: File,
 ): Promise<UploadedHeroImage> {
-  if (!file) {
+  if (!file || file.size === 0) {
     return {
       id: 1,
       img: '',
@@ -150,7 +150,7 @@ async function deleteHeroImagesFromR2(imageUrls: string[]) {
     } catch (err) {
       return err instanceof Error
         ? err
-        : new Error('Unknown error during R2 deletion');
+        : new Error('Unbekannter Fehler beim Löschen in R2');
     }
   }
 }
@@ -163,6 +163,7 @@ export async function logout() {
 
 export async function updateUser(formData: FormData) {
   const submittedValues = getUserFormValues(formData);
+  const heroImageDeleted = formData.get('heroImageDeleted') === 'true';
   const validationResult = userSchema.safeParse(submittedValues);
   const user = await prisma.user.findFirst({});
 
@@ -173,26 +174,9 @@ export async function updateUser(formData: FormData) {
     } as const;
   }
 
-  // Delete old hero image if a new one is uploaded
-  if (submittedValues.heroImage && user?.heroImage) {
-    const deletionResult = await deleteHeroImagesFromR2([user.heroImage]);
-    if (deletionResult instanceof Error) {
-      return {
-        ok: false,
-        message: 'Mevcut hero görseli silinirken bir hata oluştu',
-      } as const;
-    }
-  }
-
-  // Delete old hero image if removing image
-  if (!submittedValues.heroImage && user?.heroImage) {
-    const deletionResult = await deleteHeroImagesFromR2([user.heroImage]);
-    if (deletionResult instanceof Error) {
-      return {
-        ok: false,
-        message: 'Mevcut hero görseli silinirken bir hata oluştu',
-      } as const;
-    }
+  // Delete old image from R2 if replaced with a new one, or explicitly deleted
+  if ((submittedValues.heroImage || heroImageDeleted) && user?.heroImage) {
+    await deleteHeroImagesFromR2([user.heroImage]);
   }
 
   let uploadedImage: UploadedHeroImage | null = null;
@@ -204,9 +188,19 @@ export async function updateUser(formData: FormData) {
   if (submittedValues.heroImage && !uploadedImage) {
     return {
       ok: false,
-      message: 'Hero görseli yüklenirken bir hata oluştu',
+      message: 'Fehler beim Hochladen des Hero-Bildes',
     } as const;
   }
+
+  // heroImage in DB:
+  // - new file uploaded → use new URL
+  // - existing image deleted → null
+  // - existing image kept → keep unchanged (don't include in update)
+  const heroImageUpdate = submittedValues.heroImage
+    ? {heroImage: uploadedImage?.img}
+    : heroImageDeleted
+      ? {heroImage: null as null}
+      : {};
 
   const result = await prisma.user.update({
     where: {id: submittedValues.id},
@@ -219,7 +213,7 @@ export async function updateUser(formData: FormData) {
       instagram: submittedValues.instagram,
       youtube: submittedValues.youtube,
       heroText: submittedValues.heroText,
-      heroImage: uploadedImage?.img || undefined,
+      ...heroImageUpdate,
       about: submittedValues.about,
     },
   });
@@ -227,12 +221,12 @@ export async function updateUser(formData: FormData) {
   if (!result) {
     return {
       ok: false,
-      message: 'Kullanıcı güncellenirken bir hata oluştu',
+      message: 'Fehler beim Aktualisieren des Benutzers',
     } as const;
   }
   revalidatePath('/admin');
   return {
     ok: true,
-    message: 'Kullanıcı başarıyla güncellendi',
+    message: 'Benutzer erfolgreich aktualisiert',
   } as const;
 }

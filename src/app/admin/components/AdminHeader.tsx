@@ -15,7 +15,7 @@ export function AdminHeader() {
   ];
   return (
     <header
-      className='bg-secondary/80 flex max-w-120 shadow-lg
+      className='bg-secondary/80 flex shadow-lg
                     justify-between items-center sticky top-0 w-full pt-2 z-30'
     >
       {adminLinks.map((link) => (

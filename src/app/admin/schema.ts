@@ -15,7 +15,7 @@ export const userSchema = z.object({
   heroText: z
     .string()
     .min(10, 'Hero-Text muss mindestens 10 Zeichen lang sein'),
-  heroImage: z.instanceof(File),
+  heroImage: z.instanceof(File).optional(),
   about: z.string().min(10, 'Über mich muss mindestens 10 Zeichen lang sein'),
 });
 
@@ -50,7 +50,10 @@ export function getUserFormValues(formData: FormData): UserFormValues {
     instagram: (formData.get('instagram') as string) ?? '',
     youtube: (formData.get('youtube') as string) ?? '',
     heroText: (formData.get('heroText') as string) ?? '',
-    heroImage: (formData.get('heroImage') as File) ?? undefined,
+    heroImage: (() => {
+      const file = formData.get('heroImage') as File | null;
+      return file && file.size > 0 ? file : undefined;
+    })(),
     about: (formData.get('about') as string) ?? '',
   };
 }

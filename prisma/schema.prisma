@@ -25,7 +25,7 @@ model User {
   instagram String?
   youtube   String?
   about     String
-  heroImage String
+  heroImage String?
   heroText  String
   password  String
   resetToken String?
