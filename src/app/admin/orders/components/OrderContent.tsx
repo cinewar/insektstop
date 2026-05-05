@@ -55,10 +55,10 @@ const sortingIconColors = {
 
 const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
   const confirmation = {
-    pending: 'Beklemede',
-    in_progress: 'İşleniyor',
-    completed: 'Tamamlandı',
-    cancelled: 'İptal',
+    pending: 'Ausstehend',
+    in_progress: 'In Bearbeitung',
+    completed: 'Abgeschlossen',
+    cancelled: 'Abgebrochen',
   };
   const [showConfirmation, setShowConfirmation] = useState({
     type: '' as 'pending' | 'in_progress' | 'completed' | 'cancelled' | null,
@@ -81,7 +81,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
     if (!result.ok) {
       notify({
         type: 'error',
-        title: 'Durum Güncelleme Hatası',
+        title: 'Fehler bei der Statusaktualisierung',
         message: result.message,
       });
       setIsChangingStatus(false);
@@ -90,7 +90,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
     }
     notify({
       type: 'success',
-      title: 'Durum Güncellendi',
+      title: 'Status aktualisiert',
       message: result.message,
     });
     setIsChangingStatus(false);
@@ -123,13 +123,13 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
                 actions={[
                   {
                     id: 'pending',
-                    label: 'Beklemede',
+                    label: 'Ausstehend',
                     icon: HOURSGLASSESVG,
                     iconSize: 40,
                     onClick: () => handleStatusChange('pending'),
                   },
                   {
-                    label: 'İşleniyor',
+                    label: 'In Bearbeitung',
                     id: 'in_progress',
                     icon: INPROGRESSSVG,
                     iconSize: 40,
@@ -137,7 +137,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
                     onClick: () => handleStatusChange('in_progress'),
                   },
                   {
-                    label: 'Tamamlandı',
+                    label: 'Abgeschlossen',
                     id: 'completed',
                     icon: OKSVG,
                     iconSize: 40,
@@ -145,7 +145,7 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
                     className: '[&>svg]:stroke-3',
                   },
                   {
-                    label: 'İptal',
+                    label: 'Abgebrochen',
                     id: 'cancelled',
                     icon: CLOSESVG,
                     iconSize: 40,
@@ -165,10 +165,10 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
       </div>
       {showConfirmation.isVisible && (
         <Confirmation
-          title='Sipariş Durumunu Değiştir'
+          title='Bestellstatus ändern'
           message={
             showConfirmation.type
-              ? `Bu siparişi ${confirmation[showConfirmation.type]} durumuna getirmek istediginize emin misiniz?`
+              ? `Sind Sie sicher, dass Sie diese Bestellung in den Status ${confirmation[showConfirmation.type]} ändern möchten?`
               : ''
           }
           onConfirmAction={handleConfirmStatusChange}
@@ -185,9 +185,9 @@ const Title: React.FC<TitleProps> = ({order, isOpen, setIsEdit, item}) => {
 const Content: React.FC<{order: Order}> = ({order}) => {
   const router = useRouter();
   const handleEmailClick = (emailAddress: string) => {
-    const subject = encodeURIComponent('Merhaba');
+    const subject = encodeURIComponent('Hallo');
     const body = encodeURIComponent(
-      'Insektstop icin sizinle iletişime gecmek istiyorum.',
+      'Ich möchte Sie wegen Insektstop kontaktieren.',
     );
 
     window.open(
@@ -198,7 +198,7 @@ const Content: React.FC<{order: Order}> = ({order}) => {
 
   const handleWhatsAppClick = (whatsAppNumber: string) => {
     const message = encodeURIComponent(
-      'Merhaba, Insektstop icin sizinle iletişime gecmek istiyorum.',
+      'Hallo, ich möchte Sie wegen Insektstop kontaktieren.',
     );
 
     window.open(`https://wa.me/${whatsAppNumber}?text=${message}`, '_blank');
@@ -224,12 +224,12 @@ const Content: React.FC<{order: Order}> = ({order}) => {
     >
       <div className='bg-white w-full rounded-lg p-3 shadow-[inset_0_0_10px_rgba(255,71,249,0.45)]'>
         <div>
-          <div className='text-sm text-tertiary'>Name & Surname:</div>
+          <div className='text-sm text-tertiary'>Vorname & Nachname:</div>
           <div>{order.createrName}</div>
         </div>
         <div className='flex items-center justify-between'>
           <div>
-            <div className='text-sm text-tertiary'>Phone Number:</div>
+            <div className='text-sm text-tertiary'>Telefonnummer:</div>
             <div>{order.createrPhone}</div>
           </div>
           <div>
@@ -254,7 +254,7 @@ const Content: React.FC<{order: Order}> = ({order}) => {
         </div>
         <div className='flex items-center justify-between'>
           <div>
-            <div className='text-sm text-tertiary'>Address:</div>
+            <div className='text-sm text-tertiary'>Adresse:</div>
             <div>{order.createrAddress}</div>
           </div>
           <div>
@@ -273,7 +273,7 @@ const Content: React.FC<{order: Order}> = ({order}) => {
         </div>
         <div className='flex items-center justify-between'>
           <div>
-            <div className='text-sm text-tertiary'>Email:</div>
+            <div className='text-sm text-tertiary'>E-Mail:</div>
             <div>{order.createrEmail}</div>
           </div>
           <div>
@@ -291,13 +291,13 @@ const Content: React.FC<{order: Order}> = ({order}) => {
           </div>
         </div>
         <div>
-          <div className='text-sm text-tertiary'>Total Price:</div>
+          <div className='text-sm text-tertiary'>Gesamtpreis:</div>
           <div>£{order.totalPrice}</div>
         </div>
         <div className='bg-gray p-2 float-end rounded-full mt-4 max-w-fit'>
           <GlassyButton
             icon={RIGHTARROWSVG}
-            label='Siparişi Detayı Gör'
+            label='Bestelldetails anzeigen'
             iconSize={28}
             className='pr-4 gap-4'
             onClick={() => router.push(`/admin/orders/${order.id}`)}
@@ -346,10 +346,10 @@ export function OrderContent({orders}: OrderContentProps) {
     }));
 
   return (
-    <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
+    <div className='w-full p-2 sm:px-16 mx-auto bg-secondary rounded-2xl'>
       <div className='flex items-center gap-1 py-2'>
-        <div className='w-full'>
-          <Search placeholder='Siparişlerde Ara...' className='mb-4' />
+        <div className='w-full sm:w-1/2'>
+          <Search placeholder='In Bestellungen suchen…' className='mb-4' />
         </div>
         <div
           className='pointer-events-auto flex gap-1 bg-gray/90 backdrop-blur-sm 
@@ -361,14 +361,14 @@ export function OrderContent({orders}: OrderContentProps) {
             actions={[
               {
                 id: 'pending',
-                label: 'Beklemede',
+                label: 'Ausstehend',
                 icon: HOURSGLASSESVG,
                 iconSize: 40,
                 className: '[&>svg]:fill-[#FFA500] ',
                 onClick: () => setSort('pending'),
               },
               {
-                label: 'İşleniyor',
+                label: 'In Bearbeitung',
                 id: 'in_progress',
                 icon: INPROGRESSSVG,
                 iconSize: 40,
@@ -376,7 +376,7 @@ export function OrderContent({orders}: OrderContentProps) {
                 onClick: () => setSort('in_progress'),
               },
               {
-                label: 'Tamamlandı',
+                label: 'Abgeschlossen',
                 id: 'completed',
                 icon: OKSVG,
                 iconSize: 40,
@@ -384,7 +384,7 @@ export function OrderContent({orders}: OrderContentProps) {
                 className: '[&>svg]:stroke-3',
               },
               {
-                label: 'İptal',
+                label: 'Abgebrochen',
                 id: 'cancelled',
                 icon: CLOSESVG,
                 iconSize: 40,
@@ -392,7 +392,7 @@ export function OrderContent({orders}: OrderContentProps) {
                 className: '[&>svg]:stroke-red',
               },
               {
-                label: 'Temizle',
+                label: 'Zurücksetzen',
                 id: 'wipe',
                 icon: CLEARSORTINGSVG,
                 iconSize: 40,

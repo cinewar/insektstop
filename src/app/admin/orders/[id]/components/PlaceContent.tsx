@@ -66,16 +66,16 @@ const Content = ({
                   rounded-lg'
         >
           <div className='flex px-2 text-secondary font-semibold bg-gray rounded-t-lg'>
-            <span className='flex-3'>Urun</span>
-            <span className='flex-1'>Genislik(m)</span>
-            <span className='flex-1'>Uzunluk(m)</span>
+            <span className='flex-3'>Produkt</span>
+            <span className='flex-1'>Breite(cm)</span>
+            <span className='flex-1'>Länge(cm)</span>
           </div>
           <div className='p-1 flex flex-col gap-2'>
             <div className='grid grid-cols-5 items-center px-1'>
               <span className='col-span-3'>{productLink.product.name}</span>
-              <span className='col-span-1'>{productLink.width}m</span>
+              <span className='col-span-1'>{productLink.width}cm</span>
               <span className='col-span-1 flex items-center gap-2'>
-                {productLink.length}m{' '}
+                {productLink.length}cm{' '}
               </span>
             </div>
             <div className='flex gap-2 p-1'>
@@ -110,7 +110,7 @@ const Content = ({
               className='bg-gray max-w-max py-1 px-3 text-secondary text-base rounded-full
                         font-semibold ml-1'
             >
-              fiyat: £{productLink.product.price.toFixed(2)}
+              Preis: £{productLink.product.price.toFixed(2)}
             </span>
           </div>
         </div>
@@ -146,7 +146,10 @@ export function AdminPlaceContent({
       });
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
-        console.error('Failed to sync order messages from the server.', error);
+        console.error(
+          'Bestellnachrichten konnten nicht vom Server synchronisiert werden.',
+          error,
+        );
       }
     }
   }, [orderId]);

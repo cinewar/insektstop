@@ -5,10 +5,10 @@ import {ProcessStatus} from '../../../../generated/prisma';
 import {revalidatePath} from 'next/cache';
 
 const confirmation = {
-  pending: 'Beklemede',
-  in_progress: 'İşleniyor',
-  completed: 'Tamamlandı',
-  cancelled: 'İptal',
+  pending: 'Ausstehend',
+  in_progress: 'In Bearbeitung',
+  completed: 'Abgeschlossen',
+  cancelled: 'Abgebrochen',
 };
 
 export async function updateStatus(orderId: string, newStatus: string) {
@@ -18,7 +18,7 @@ export async function updateStatus(orderId: string, newStatus: string) {
   ) {
     return {
       ok: false,
-      message: 'Geçersiz sipariş durumu veya geçersiz sipariş ID',
+      message: 'Ungültiger Bestellstatus oder ungültige Bestell-ID',
     } as const;
   }
 
@@ -29,12 +29,12 @@ export async function updateStatus(orderId: string, newStatus: string) {
   if (!response) {
     return {
       ok: false,
-      message: 'Sipariş güncellenirken bir hata oluştu',
+      message: 'Fehler beim Aktualisieren der Bestellung',
     } as const;
   }
   revalidatePath('/admin/orders');
   return {
     ok: true,
-    message: `Sipariş durumu başarıyla ${confirmation[newStatus as keyof typeof confirmation]} durumuna güncellendi`,
+    message: `Bestellstatus erfolgreich auf ${confirmation[newStatus as keyof typeof confirmation]} aktualisiert`,
   } as const;
 }

@@ -1,9 +1,8 @@
 import {GlassyButton} from '@/app/components/GlassyButton';
-import {BACKSVG, HOMESVG} from '@/app/utils/svg';
+import {BACKSVG} from '@/app/utils/svg';
 import {prisma} from '@/lib/prisma';
 import Link from 'next/link';
 import {AdminPlaceContent} from './components/PlaceContent';
-import {OrderItemProduct, OrderProduct} from '../../../../../generated/prisma';
 import {OrderProductWithProducts} from '@/lib/prisma-types';
 
 export default async function AdminOrderPlaces({
@@ -39,7 +38,7 @@ export default async function AdminOrderPlaces({
   return (
     <>
       <header
-        className='bg-secondary/80 flex gap-4 max-w-120 shadow-lg
+        className='bg-secondary/80 flex gap-4 shadow-lg
                 justify-between items-center sticky top-0 w-full p-2 z-30'
       >
         <div
@@ -54,16 +53,18 @@ export default async function AdminOrderPlaces({
             />
           </Link>
         </div>
-        <div className='flex justify-between w-full gap-1 relative text-base font-bold text-dark-text'>
-          <div className='flex w-full flex-col'>
-            <span className='text-sm text-end text-tertiary mr-1'>Sipariş</span>
+        <div className='flex justify-between sm:justify-end w-full gap-1 relative text-base font-bold text-dark-text'>
+          <div className='flex w-full sm:w-auto flex-col'>
+            <span className='text-sm text-end text-tertiary mr-1'>
+              Bestellung
+            </span>
             <span className='bg-gray text-secondary rounded-full p-1 px-2'>
               {order?.orderName}
             </span>
           </div>
-          <div className='flex w-full flex-col'>
+          <div className='flex w-full sm:w-auto flex-col'>
             <span className='text-sm text-end text-tertiary mr-1'>
-              Toplam Fiyat
+              Gesamtpreis
             </span>
             <span className='bg-gray text-secondary rounded-full p-1 px-2'>
               £{order?.totalPrice.toFixed(2)}
@@ -71,7 +72,7 @@ export default async function AdminOrderPlaces({
           </div>
         </div>
       </header>
-      <div className='w-full max-w-md p-2 mx-auto bg-secondary rounded-2xl'>
+      <div className='w-full sm:px-16 p-2 mx-auto bg-secondary rounded-2xl'>
         <AdminPlaceContent
           items={accordionItems}
           orderId={orderId}

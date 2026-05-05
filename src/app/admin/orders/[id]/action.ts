@@ -36,11 +36,11 @@ export async function sendAdminMessageToOrder(formData: FormData) {
   try {
     const orderId = formData.get('orderId');
     if (typeof orderId !== 'string' || !orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Eine Bestell-ID ist erforderlich'} as const;
     }
     const content = formData.get('content');
     if (typeof content !== 'string') {
-      return {ok: false, message: 'Mesaj içeriği gereklidir'} as const;
+      return {ok: false, message: 'Eine Nachricht ist erforderlich'} as const;
     }
 
     const imageFile = formData.get('image');
@@ -50,7 +50,10 @@ export async function sendAdminMessageToOrder(formData: FormData) {
         : null;
 
     if (!content && !uploadedImage) {
-      return {ok: false, message: 'Mesaj veya görsel gereklidir'} as const;
+      return {
+        ok: false,
+        message: 'Eine Nachricht oder ein Bild ist erforderlich',
+      } as const;
     }
 
     const newMessage = await prisma.message.create({
@@ -70,7 +73,7 @@ export async function sendAdminMessageToOrder(formData: FormData) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mesaj gönderme başarısız, ${getErrorMessage(error)}`,
+      message: `Nachricht konnte nicht gesendet werden, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -82,7 +85,7 @@ export async function sendAdminMessageToOrder(formData: FormData) {
 export async function markOrderMessagesAsRead(orderId: string) {
   try {
     if (!orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Eine Bestell-ID ist erforderlich'} as const;
     }
 
     const unreadMessages = await prisma.message.findMany({
@@ -118,7 +121,7 @@ export async function markOrderMessagesAsRead(orderId: string) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mesajlar okundu olarak işaretlenemedi, ${getErrorMessage(error)}`,
+      message: `Nachrichten konnten nicht als gelesen markiert werden, ${getErrorMessage(error)}`,
     } as const;
   }
 }
@@ -126,7 +129,7 @@ export async function markOrderMessagesAsRead(orderId: string) {
 export async function getMessages(orderId: string) {
   try {
     if (!orderId) {
-      return {ok: false, message: 'Sipariş kimliği gereklidir'} as const;
+      return {ok: false, message: 'Eine Bestell-ID ist erforderlich'} as const;
     }
 
     const messages = await prisma.message.findMany({
@@ -142,7 +145,7 @@ export async function getMessages(orderId: string) {
   } catch (error) {
     return {
       ok: false,
-      message: `Mesajlar alınamadı, ${getErrorMessage(error)}`,
+      message: `Nachrichten konnten nicht abgerufen werden, ${getErrorMessage(error)}`,
     } as const;
   }
 }
