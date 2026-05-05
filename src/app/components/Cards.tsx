@@ -48,6 +48,9 @@ export function Cards({products}: CardsProps) {
     if (!el) return;
 
     const onWheel = (event: WheelEvent) => {
+      // Only intercept wheel events on non-mobile (sm+) screens.
+      if (!window.matchMedia('(min-width: 640px)').matches) return;
+
       const hasHorizontalOverflow = el.scrollWidth > el.clientWidth;
       const horizontalDelta =
         Math.abs(event.deltaX) > Math.abs(event.deltaY)
