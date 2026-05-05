@@ -6,9 +6,10 @@ import {ADDPHOTOSVG, EDITSVG, TRASHSVG} from '../utils/svg';
 import ActionMenu from './ActionMenu';
 import Svg from './Svg';
 
-const MAX_UPLOAD_DIMENSION = 2000;
-const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
-const JPEG_QUALITY = 0.82;
+const MAX_UPLOAD_DIMENSION = 1600;
+const MAX_UPLOAD_BYTES = 240 * 1024;
+const INITIAL_JPEG_QUALITY = 0.82;
+const MIN_JPEG_QUALITY = 0.55;
 
 async function loadImageFromFile(file: File): Promise<HTMLImageElement> {
   const imageUrl = URL.createObjectURL(file);
@@ -52,17 +53,44 @@ async function compressImageFile(file: File): Promise<File> {
 
   context.drawImage(image, 0, 0, width, height);
 
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
-  });
+  let quality = INITIAL_JPEG_QUALITY;
+  let outputBlob: Blob | null = null;
 
-  if (!blob || blob.size >= file.size) {
+  for (let attempt = 0; attempt < 8; attempt++) {
+    outputBlob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, 'image/jpeg', quality);
+    });
+
+    if (!outputBlob) {
+      return file;
+    }
+
+    if (outputBlob.size <= MAX_UPLOAD_BYTES) {
+      break;
+    }
+
+    if (quality > MIN_JPEG_QUALITY) {
+      quality = Math.max(MIN_JPEG_QUALITY, quality - 0.07);
+      continue;
+    }
+
+    const nextWidth = Math.max(1, Math.round(canvas.width * 0.85));
+    const nextHeight = Math.max(1, Math.round(canvas.height * 0.85));
+    if (nextWidth === canvas.width && nextHeight === canvas.height) {
+      break;
+    }
+    canvas.width = nextWidth;
+    canvas.height = nextHeight;
+    context.drawImage(image, 0, 0, nextWidth, nextHeight);
+  }
+
+  if (!outputBlob || outputBlob.size >= file.size) {
     return file;
   }
 
   const nextName = file.name.replace(/\.[^.]+$/, '') || 'upload';
 
-  return new File([blob], `${nextName}.jpg`, {
+  return new File([outputBlob], `${nextName}.jpg`, {
     type: 'image/jpeg',
     lastModified: file.lastModified,
   });

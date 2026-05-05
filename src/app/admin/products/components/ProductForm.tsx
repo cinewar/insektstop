@@ -14,6 +14,8 @@ import {ImageUpload} from '@/app/components/ImageUpload';
 import {createProduct, updateProduct} from '../action';
 import {notify} from '@/app/lib/notifications';
 
+const MAX_ACTION_PAYLOAD_BYTES = 3.5 * 1024 * 1024;
+
 interface ProductFormProps {
   type: 'create' | 'edit';
   product?: Product;
@@ -39,6 +41,20 @@ export function ProductForm({product, type, close}: ProductFormProps) {
   );
 
   async function handleAction(formData: FormData) {
+    const totalNewImageBytes = imageFiles.reduce((sum, file) => {
+      return sum + file.size;
+    }, 0);
+
+    if (totalNewImageBytes > MAX_ACTION_PAYLOAD_BYTES) {
+      notify({
+        type: 'error',
+        title: 'Hata',
+        message:
+          'Bilddaten sind zu groß. Bitte weniger oder stärker komprimierte Bilder hochladen.',
+      });
+      return;
+    }
+
     // Remove any existing 'images' and 'existingImages' entries
     formData.delete('images');
     formData.delete('existingImages');

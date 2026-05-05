@@ -166,7 +166,7 @@ export async function createProduct(data: FormData) {
 
   let uploadedImages: UploadedProductImage[] = [];
 
-  if (submittedValues.images.length > 1) {
+  if (submittedValues.images.length > 0) {
     uploadedImages = await uploadProductImagesToR2(submittedValues.images);
     if (uploadedImages.length !== submittedValues.images.length) {
       return {
