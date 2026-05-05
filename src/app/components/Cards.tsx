@@ -77,7 +77,7 @@ export function Cards({products}: CardsProps) {
       <div
         ref={scrollRef}
         onScroll={updateGlowVisibility}
-        className='flex gap-3 w-full py-4 px-2 overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none touch-pan-x no-scrollbar'
+        className='flex gap-3 w-full py-4 px-2 overflow-x-auto touch-auto sm:overscroll-x-contain sm:overscroll-y-none sm:touch-pan-x no-scrollbar'
       >
         {products.map((product) => (
           <Link
