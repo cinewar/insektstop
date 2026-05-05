@@ -93,7 +93,7 @@ export function AdminProductContent({products}: AdminProductContentProps) {
             </Link>
           ))}
         {activeProduct && (
-          <div className='flex justify-center mt-4'>
+          <div className='flex justify-center mt-4 mb-8'>
             <Button
               className='shining px-10 active:scale-95 transition-all'
               onClick={() => {
