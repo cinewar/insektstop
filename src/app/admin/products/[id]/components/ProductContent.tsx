@@ -53,27 +53,29 @@ export function AdminProductContent({product}: AdminProductContentProps) {
         >
           £{product.price}
         </div>
-        <div className='p-2 -mt-6'>
+        <div className='p-2 -mt-6 mb-2'>
           <p className='text-base sm:text-lg leading-tight'>
             {product.description}
           </p>
         </div>
-        <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit self-end mb-8 mt-6 mr-2'>
-          <GlassyButton
-            icon={CLOSESVG}
-            label='löschen'
-            iconSize={32}
-            onClick={() => setShowDeleteConfirmation(true)}
-            className='gap-3 [&>svg]:stroke-red'
-          />
-          <GlassyButton
-            icon={EDITSVG}
-            label='Bearbeiten'
-            iconSize={40}
-            onClick={() => setShowModal(true)}
-            className='gap-3 '
-          />
-        </div>
+        {product.active && (
+          <div className='flex gap-2 bg-gray p-1 rounded-full max-w-fit self-end mb-8 mt-6 mr-2'>
+            <GlassyButton
+              icon={CLOSESVG}
+              label='löschen'
+              iconSize={32}
+              onClick={() => setShowDeleteConfirmation(true)}
+              className='gap-3 [&>svg]:stroke-red'
+            />
+            <GlassyButton
+              icon={EDITSVG}
+              label='Bearbeiten'
+              iconSize={40}
+              onClick={() => setShowModal(true)}
+              className='gap-3 '
+            />
+          </div>
+        )}
       </div>
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>

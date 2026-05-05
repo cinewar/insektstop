@@ -15,7 +15,7 @@ export default async function AdminProduct({
     },
   });
   return (
-    <>
+    <div className='bg-secondary'>
       <header
         className='bg-secondary/80 flex gap-4 shadow-lg
                 justify-between items-center sticky top-0 w-full p-2 z-30'
@@ -42,6 +42,6 @@ export default async function AdminProduct({
         </div>
       </header>
       <AdminProductContent product={product!} />
-    </>
+    </div>
   );
 }
