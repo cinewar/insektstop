@@ -1,7 +1,65 @@
 import {Cards} from '@/app/components/Cards';
 import Link from 'next/link';
+import type {Metadata} from 'next';
 import {ProductImageGallery} from '../../components/ProductImageGallery';
 import {prisma} from '@/lib/prisma';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: {productId: string};
+}): Promise<Metadata> {
+  const {productId} = await params;
+
+  if (!productId) {
+    return {
+      title: 'Produkt nicht gefunden | Insektstop',
+      description:
+        'Das angeforderte Insektenschutz Produkt konnte nicht gefunden werden.',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const product = await prisma.product.findUnique({
+    where: {id: productId},
+  });
+
+  if (!product) {
+    return {
+      title: 'Produkt nicht gefunden | Insektstop',
+      description:
+        'Das angeforderte Insektenschutz Produkt konnte nicht gefunden werden.',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  return {
+    title: `${product.name} | Insektstop`,
+    description: `${product.description} - Hochwertiges Insektenschutz Produkt von Insektstop.`,
+    openGraph: {
+      title: `${product.name} | Insektstop`,
+      description: `${product.description} - Insektenschutz Produkt von Insektstop.`,
+      type: 'website',
+    },
+  };
+}
+
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany({
+    select: {
+      id: true,
+    },
+  });
+  return products.map((product) => ({
+    productId: product.id,
+  }));
+}
 
 export default async function ProductPage({
   params,

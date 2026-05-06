@@ -54,7 +54,7 @@ export default function Accordion({
         return (
           <div
             key={item.id}
-            className={`shadow-custom p-1 rounded-lg  ${itemClassName} 
+            className={`shadow-custom p-1 sm:cursor-pointer rounded-lg  ${itemClassName} 
               ${isOpen ? 'border-2 border-primary bg-secondary' : 'bg-white'}`}
           >
             <div

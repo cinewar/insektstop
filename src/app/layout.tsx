@@ -22,8 +22,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Insektstop',
-  description: 'Insektstop resmi web uygulamasi',
+  metadataBase: new URL('https://inseka.de'),
+  title: {
+    default: 'Insektstop - Insektenschutz Produkte',
+    template: '%s | Insektstop',
+  },
+  description:
+    'Insektstop bietet hochwertige Insektenschutz Produkte fuer Fenster, Tueren und Wohnbereiche.',
+  keywords: [
+    'Insektenschutz',
+    'Insektenschutz Produkte',
+    'Fliegengitter',
+    'Mueckenschutz',
+    'Insektenschutz fuer Fenster',
+    'Insektenschutz fuer Tueren',
+  ],
+  openGraph: {
+    title: 'Insektstop - Insektenschutz Produkte',
+    description:
+      'Entdecken Sie passgenaue Insektenschutz Produkte fuer Fenster und Tueren bei Insektstop.',
+    type: 'website',
+    locale: 'de_DE',
+    siteName: 'Insektstop',
+  },
 };
 
 export type SessionUser = string | JwtPayload | null;
@@ -37,7 +58,7 @@ export default async function RootLayout({
   const sessionUser: SessionUser = await getSessionUser();
 
   return (
-    <html lang='tr'>
+    <html lang='de'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-200`}
       >

@@ -1,6 +1,13 @@
 'use client';
 
-import {ComponentType, SVGProps, useEffect, useRef, useState} from 'react';
+import {
+  ComponentType,
+  SVGProps,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {createPortal} from 'react-dom';
 import Svg from './Svg';
 import {CLOSESVG, VERTICALDOTSSVG} from '../utils/svg';
@@ -55,61 +62,53 @@ export default function ActionMenu({
   const containerRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+  const calcPosition = (panelWidth = 220, panelHeight = 180) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const viewportPadding = 8;
+    const triggerRect = container.getBoundingClientRect();
+
+    const shouldOpenToRight = triggerRect.right - panelWidth < viewportPadding;
+    const spaceBelow = window.innerHeight - triggerRect.bottom;
+    const spaceAbove = triggerRect.top;
+    const shouldOpenUpward =
+      spaceBelow < panelHeight + viewportPadding &&
+      spaceAbove > panelHeight + viewportPadding;
+
+    let left = shouldOpenToRight
+      ? triggerRect.left + viewportPadding
+      : triggerRect.right - panelWidth - viewportPadding;
+    let top = shouldOpenUpward
+      ? triggerRect.top - panelHeight - viewportPadding
+      : triggerRect.bottom + viewportPadding;
+
+    left = Math.min(
+      Math.max(left, viewportPadding),
+      window.innerWidth - panelWidth - viewportPadding,
+    );
+    top = Math.min(
+      Math.max(top, viewportPadding),
+      window.innerHeight - panelHeight - viewportPadding,
+    );
+
+    setOpenToRight(shouldOpenToRight);
+    setOpenUpward(shouldOpenUpward);
+    setPanelPosition({top, left});
+  };
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
 
     const updateMenuPosition = () => {
-      const container = containerRef.current;
       const panel = panelRef.current;
-      if (!container) {
-        return;
-      }
-      const viewportPadding = 8;
-      const triggerRect = container.getBoundingClientRect();
-      const panelWidth = panel?.offsetWidth ?? 220;
-      const panelHeight = panel?.offsetHeight ?? 180;
-
-      const shouldOpenToRight =
-        triggerRect.right - panelWidth < viewportPadding;
-      setOpenToRight(shouldOpenToRight);
-
-      // Upward logic
-      const spaceBelow = window.innerHeight - triggerRect.bottom;
-      const spaceAbove = triggerRect.top;
-      const shouldOpenUpward =
-        spaceBelow < panelHeight + viewportPadding &&
-        spaceAbove > panelHeight + viewportPadding;
-      setOpenUpward(shouldOpenUpward);
-
-      let left = shouldOpenToRight
-        ? triggerRect.left + viewportPadding
-        : triggerRect.right - panelWidth - viewportPadding;
-      let top = shouldOpenUpward
-        ? triggerRect.top - panelHeight - viewportPadding
-        : triggerRect.bottom + viewportPadding;
-
-      left = Math.min(
-        Math.max(left, viewportPadding),
-        window.innerWidth - panelWidth - viewportPadding,
-      );
-      top = Math.min(
-        Math.max(top, viewportPadding),
-        window.innerHeight - panelHeight - viewportPadding,
-      );
-
-      setPanelPosition({top, left});
+      calcPosition(panel?.offsetWidth ?? 220, panel?.offsetHeight ?? 180);
     };
 
     updateMenuPosition();
     window.addEventListener('resize', updateMenuPosition);
     window.addEventListener('scroll', updateMenuPosition, true);
 
-    const frame = requestAnimationFrame(updateMenuPosition);
-
     return () => {
-      cancelAnimationFrame(frame);
       window.removeEventListener('resize', updateMenuPosition);
       window.removeEventListener('scroll', updateMenuPosition, true);
     };
@@ -156,6 +155,7 @@ export default function ActionMenu({
             setIsClosing(true);
             setIsOpen(false);
           } else {
+            calcPosition();
             setIsOpen(true);
           }
         }}

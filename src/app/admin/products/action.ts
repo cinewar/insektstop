@@ -194,6 +194,7 @@ export async function createProduct(data: FormData) {
   }
 
   revalidatePath(`/admin/products`);
+  revalidatePath(`/products`);
 
   return {
     ok: true,
@@ -279,6 +280,8 @@ export async function updateProduct(data: FormData) {
   }
 
   revalidatePath(`/admin/products`);
+  revalidatePath(`/products`);
+  revalidatePath(`/products/${productId}`);
 
   return {
     ok: true,
@@ -309,6 +312,8 @@ export async function deleteProduct(productId: string) {
   }
 
   revalidatePath(`/admin/products`);
+  revalidatePath(`/products`);
+  revalidatePath(`/products/${productId}`);
 
   return {
     ok: true,

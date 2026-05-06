@@ -69,7 +69,7 @@ function NotificationCard({notification}: {notification: NotificationItem}) {
 
   return (
     <div
-      className={`pointer-events-auto relative overflow-hidden rounded-full border border-primary
+      className={`pointer-events-auto relative overflow-hidden rounded-xl border border-primary
          bg-dark-text shadow-custom notification-toast-enter ${theme.panel}`}
       role='status'
       aria-live='polite'
