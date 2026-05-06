@@ -129,7 +129,7 @@ export function ProductImageGallery({images}: {images: ProductImage[]}) {
               thumbnailRefs.current[index] = element;
             }}
             onClick={() => setSelectedImageIndex(index)}
-            className={`border object-cover w-16 h-16 sm:w-20 sm:h-20 aspect-square shadow-lg rounded-lg ${
+            className={`border sm:cursor-pointer object-cover w-16 h-16 sm:w-20 sm:h-20 aspect-square shadow-lg rounded-lg ${
               selectedImageIndex === index
                 ? 'border-primary'
                 : 'border-dark-text hover:border-primary'
