@@ -29,12 +29,12 @@ export function Modal({children, onClose}: ModalProps) {
       className={`fixed inset-0 text-dark-text bg-black/15 backdrop-blur-sm flex items-center justify-center z-50 px-2 ${
         isClosing ? 'animate-fade-out' : 'animate-fade-in'
       }`}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (e.target === e.currentTarget) {
-          close();
-        }
-      }}
+      // onClick={(e) => {
+      //   e.stopPropagation();
+      //   if (e.target === e.currentTarget) {
+      //     close();
+      //   }
+      // }}
       onAnimationEnd={() => {
         if (isClosing) {
           onClose();
